@@ -1,3 +1,4 @@
+
 @extends('layouts.base')
 
 @section('title', 'Register')
@@ -7,6 +8,7 @@
         <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
             <div class="mx-auto w-full max-w-sm">
                 <div>
+
                     <img class="h-12 w-auto justify-center" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
                     <h2 class="mt-6 text-3xl leading-9 font-thin text-gray-800 tracking-wide">
                         Register your account
@@ -95,8 +97,6 @@
                                 </div>
                                 @enderror
                             </div>
-
-
                             <div class="mt-6">
                                 <span class="block w-full rounded-md shadow-sm">
                                     <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
