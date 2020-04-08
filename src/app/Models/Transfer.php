@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\UsesUUID;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
+use Illuminate\Support\Arr;
 use SM\Factory\Factory as SMFactory;
 
 class Transfer extends Model implements Auditable
@@ -30,6 +31,23 @@ class Transfer extends Model implements Auditable
         'status',
         'stripe_id',
     ];
+
+    protected $transferStatuses = [
+        "Unable to get Status",
+        "Awaiting Acceptance",
+        "Accepted",
+        "Rejected",
+        "Cancelled",
+        "Pending Approval",
+        "Approved",
+        "In Dispute",
+        "Closed",
+        "Closed (Non-Payment)",
+    ];
+
+    public function getStatusAttribute($value) {
+        return Arr::get($this->transferStatuses, $value);
+    }
 
     public function statusStateMachine()
     {

@@ -54,16 +54,30 @@ class TransfersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Transfer $transfer
+     * @param int $id
      * @return Factory|View
      */
-    public function show(Transfer $transfer)
+    public function show($id)
     {
+        $transfer = Transfer::where('id', $id)->first();
         $showDeliveryDetails =
             Auth::id() === $transfer->sending_party_id ||
             Auth::id() === $transfer->receiving_party_id;
 
-        // return view('transfer', ['showDeliveryDetails' => $showDeliveryDetails]);
+        $sending_user = User::where('id', $transfer->sending_party_id)->first();
+        $receiving_user = User::where('id', $transfer->sending_party_id)->first();
+
+//        TODO - Charity controller needs to be made for this
+        $charity = "Charity"; // Charity::where('id', $transfer->charity_id)->first();
+
+        return view('pages.dashing.transfers.show', [
+            'balance' => 1,
+            'transfer' => $transfer,
+            'charity' => $charity,
+            'sending_user' => $sending_user,
+            'receiving_user' => $receiving_user,
+            'show_Delivery_Details' => $showDeliveryDetails
+        ]);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 use App\Transfer;
 use App\TransferStatus;
+use App\TransferStatusId;
 use App\TransferStatusTransitions;
 
 return [
@@ -11,53 +12,53 @@ return [
         'property_path' => 'status',
 
         'states' => [
-            TransferStatus::AwaitingAcceptance,
-            TransferStatus::Accepted,
-            TransferStatus::Rejected,
-            TransferStatus::Cancelled,
-            TransferStatus::PendingApproval,
-            TransferStatus::Approved,
-            TransferStatus::InDispute,
-            TransferStatus::Closed,
-            TransferStatus::ClosedNonPayment,
+            TransferStatusId::AwaitingAcceptance,
+            TransferStatusId::Accepted,
+            TransferStatusId::Rejected,
+            TransferStatusId::Cancelled,
+            TransferStatusId::PendingApproval,
+            TransferStatusId::Approved,
+            TransferStatusId::InDispute,
+            TransferStatusId::Closed,
+            TransferStatusId::ClosedNonPayment,
         ],
 
         'transitions' => [
             TransferStatusTransitions::ToAwaitingAcceptance => [
                 'from' => [TransferStatus::Rejected],
-                'to' => TransferStatus::AwaitingAcceptance,
+                'to' => TransferStatusId::AwaitingAcceptance,
             ],
             TransferStatusTransitions::ToAccepted => [
                 'from' => [TransferStatus::AwaitingAcceptance],
-                'to' => TransferStatus::Accepted,
+                'to' => TransferStatusId::Accepted,
             ],
             TransferStatusTransitions::ToRejected => [
                 'from' => [TransferStatus::Accepted],
-                'to' => TransferStatus::Rejected,
+                'to' => TransferStatusId::Rejected,
             ],
             TransferStatusTransitions::ToCancelled => [
                 'from' => [TransferStatus::AwaitingAcceptance, TransferStatus::Accepted, TransferStatus::Rejected],
-                'to' => TransferStatus::Cancelled,
+                'to' => TransferStatusId::Cancelled,
             ],
             TransferStatusTransitions::ToPendingApproval => [
                 'from' => [TransferStatus::Accepted],
-                'to' => TransferStatus::PendingApproval,
+                'to' => TransferStatusId::PendingApproval,
             ],
             TransferStatusTransitions::ToApproved => [
                 'from' => [TransferStatus::PendingApproval],
-                'to' => TransferStatus::Approved,
+                'to' => TransferStatusId::Approved,
             ],
             TransferStatusTransitions::ToInDispute => [
                 'from' => [TransferStatus::PendingApproval],
-                'to' => TransferStatus::InDispute,
+                'to' => TransferStatusId::InDispute,
             ],
             TransferStatusTransitions::ToClosed => [
                 'from' => [TransferStatus::Approved, TransferStatus::InDispute],
-                'to' => TransferStatus::Closed,
+                'to' => TransferStatusId::Closed,
             ],
             TransferStatusTransitions::ToClosedNonPayment => [
                 'from' => [TransferStatus::InDispute],
-                'to' => TransferStatus::ClosedNonPayment,
+                'to' => TransferStatusId::ClosedNonPayment,
             ],
         ],
     ],
