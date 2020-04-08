@@ -1,3 +1,4 @@
+
 @extends('layouts.base')
 
 @section('title', 'Register')
@@ -12,6 +13,7 @@
                         Register your account
                     </h2>
                 </div>
+
                 <div class="mt-8">
                     <div class="mt-6">
                         <form action="{{ route('register') }}" method="POST">
@@ -96,7 +98,6 @@
                                 @enderror
                             </div>
 
-
                             <div class="mt-6">
                                 <span class="block w-full rounded-md shadow-sm">
                                     <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
@@ -118,5 +119,6 @@
         <div class="hidden lg:block relative w-0 flex-1">
             <img class="absolute inset-0 h-full w-full object-cover" src="https://images.unsplash.com/photo-1505904267569-f02eaeb45a4c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80" alt="" />
         </div>
+
     </div>
 @endsection
