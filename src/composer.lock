@@ -2088,6 +2088,7 @@
             ],
             "time": "2020-04-03T19:26:27+00:00"
         },
+        {
             "name": "sebdesign/laravel-state-machine",
             "version": "v3.0.0",
             "source": {
@@ -2149,7 +2150,6 @@
                 "statemachine"
             ],
             "time": "2020-03-03T21:20:22+00:00"
-        },
         },
         {
             "name": "swiftmailer/swiftmailer",
