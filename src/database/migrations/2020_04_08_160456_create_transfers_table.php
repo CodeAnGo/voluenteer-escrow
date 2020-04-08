@@ -31,7 +31,7 @@ class CreateTransfersTable extends Migration
             $table->decimal('transfer_amount', 6, 2);
             $table->string('transfer_reason');
             $table->string('transfer_note')->nullable();
-            $table->string('status');
+            $table->tinyInteger('status');
             $table->string('stripe_id');
             $table->string('escrow_link');
             $table->timestamps();
