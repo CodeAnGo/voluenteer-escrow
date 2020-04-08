@@ -1,3 +1,4 @@
+
 @extends('layouts.base')
 
 @section('title', 'Register')
@@ -7,11 +8,13 @@
         <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
             <div class="mx-auto w-full max-w-sm">
                 <div>
+
                     <img class="h-12 w-auto justify-center" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
                     <h2 class="mt-6 text-3xl leading-9 font-thin text-gray-800 tracking-wide">
                         Register your account
                     </h2>
                 </div>
+
                 <div class="mt-8">
                     <div class="mt-6">
                         <form action="{{ route('register') }}" method="POST">
@@ -108,6 +111,7 @@
                     </div>
                     <div class="mt-6">
                         <a href="{{route('login')}}" class="block text-sm font-medium leading-5 text-indigo-600 hover:text-indigo-500 text-center">
+
                             Already have an account? Login here
                         </a>
                     </div>
@@ -118,5 +122,6 @@
         <div class="hidden lg:block relative w-0 flex-1">
             <img class="absolute inset-0 h-full w-full object-cover" src="https://images.unsplash.com/photo-1505904267569-f02eaeb45a4c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80" alt="" />
         </div>
+
     </div>
 @endsection
