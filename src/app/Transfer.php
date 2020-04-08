@@ -4,7 +4,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use SM\Factory\Factory as SMFactory;
-use TransferStatus;
 
 class Transfer extends Model
 {

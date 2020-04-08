@@ -77,12 +77,13 @@ class TransferController extends Controller
         {
             try {
                 $transfer->statusStateMachine()->apply($request->input('statusTransition')); // pass in the expected status transition from a hidden input on button
+                // TODO: save to database
             } catch (SMException $e) {
                 // invalid status transition attempted
             }
         }
 
-        // TODO: save to database and return view
+        // TODO: return view
     }
 
     /**

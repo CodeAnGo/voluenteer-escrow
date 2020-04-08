@@ -1,5 +1,7 @@
 <?php
 
+namespace App;
+
 abstract class TransferStatus
 {
     const AwaitingAcceptance = 1;

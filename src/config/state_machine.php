@@ -1,6 +1,7 @@
 <?php
 
 use App\Transfer;
+use App\TransferStatus;
 
 return [
     'transfer_status' => [
