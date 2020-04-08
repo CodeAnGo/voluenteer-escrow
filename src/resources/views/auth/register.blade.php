@@ -1,84 +1,124 @@
-@extends('layouts.app')
+
+@extends('layouts.base')
+
+@section('title', 'Register')
 
 @section('content')
-    <div class="container mx-auto">
-        <div class="flex flex-wrap justify-center">
-            <div class="w-full max-w-sm">
-                <div class="flex flex-col break-words bg-white border border-2 rounded shadow-md">
+    <div class="min-h-screen bg-white flex">
+        <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+            <div class="mx-auto w-full max-w-sm">
+                <div>
+                    <img class="h-12 w-auto" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
+                    <h2 class="mt-6 text-3xl leading-9 font-extrabold text-gray-900">
+                        Register your account
+                    </h2>
+                </div>
 
-                    <div class="font-semibold bg-gray-200 text-gray-700 py-3 px-6 mb-0">
-                        {{ __('Register') }}
+                <div class="mt-8">
+                    <div class="mt-6">
+                        <form action="{{ route('register') }}" method="POST">
+                            @csrf
+                            <div>
+                                <label for="email" class="block text-sm font-medium leading-5 text-gray-700">
+                                    Email address
+                                </label>
+                                <div class="mt-1 rounded-md shadow-sm">
+                                    <input id="email" name="email" type="email" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                </div>
+                                @error('email')
+                                <div class="mt-1 rounded-md shadow-sm">
+                                    <p class="text-red-600 text-sm tracking-wide font-light">
+                                        {{ $message }}
+                                    </p>
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="mt-6 flex flex-row">
+                                <div class="w-full">
+                                    <label for="fname" class="block text-sm font-medium leading-5 text-gray-700">
+                                        First Name
+                                    </label>
+                                    <div class="mt-1 rounded-md shadow-sm mr-3">
+                                        <input id="fname" name="fname" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                    </div>
+                                    @error('fname')
+                                    <div class="mt-1 rounded-md shadow-sm">
+                                        <p class="text-red-600 text-sm tracking-wide font-light">
+                                            {{ $message }}
+                                        </p>
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="w-full">
+                                    <label for="lname" class="block text-sm font-medium leading-5 text-gray-700">
+                                        Last Name
+                                    </label>
+                                    <div class="mt-1 rounded-md shadow-sm">
+                                        <input id="lname" name="lname" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                    </div>
+                                    @error('lname')
+                                    <div class="mt-1 rounded-md shadow-sm">
+                                        <p class="text-red-600 text-sm tracking-wide font-light">
+                                            {{ $message }}
+                                        </p>
+                                    </div>
+                                    @enderror
+                                </div>
+
+                            </div>
+
+                            <div class="mt-6">
+                                <label for="password" class="block text-sm font-medium leading-5 text-gray-700">
+                                    Password
+                                </label>
+                                <div class="mt-1 rounded-md shadow-sm">
+                                    <input id="password" name="password" type="password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                </div>
+                                @error('password')
+                                <div class="mt-1 rounded-md shadow-sm">
+                                    <p class="text-red-600 text-sm tracking-wide font-light">
+                                        {{ $message }}
+                                    </p>
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="mt-6">
+                                <label for="password-confirm" class="block text-sm font-medium leading-5 text-gray-700">
+                                    Confirm Password
+                                </label>
+                                <div class="mt-1 rounded-md shadow-sm">
+                                    <input id="password-confirm" type="password" name="password_confirmation" required autocomplete="new-password" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                </div>
+                                @error('password')
+                                <div class="mt-1 rounded-md shadow-sm">
+                                    <p class="text-red-600 text-sm tracking-wide font-light">
+                                        {{ $message }}
+                                    </p>
+                                </div>
+                                @enderror
+                            </div>
+
+                            <div class="mt-6">
+                                <span class="block w-full rounded-md shadow-sm">
+                                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+                                        Register
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
                     </div>
-
-                    <form class="w-full p-6" method="POST" action="{{ route('register') }}">
-                        @csrf
-
-                        <div class="flex flex-wrap mb-6">
-                            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">
-                                {{ __('Name') }}:
-                            </label>
-
-                            <input id="name" type="text" class="form-input w-full @error('name')  border-red-500 @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-
-                            @error('name')
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $message }}
-                                </p>
-                            @enderror
-                        </div>
-
-                        <div class="flex flex-wrap mb-6">
-                            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">
-                                {{ __('E-Mail Address') }}:
-                            </label>
-
-                            <input id="email" type="email" class="form-input w-full @error('email') border-red-500 @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-
-                            @error('email')
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $message }}
-                                </p>
-                            @enderror
-                        </div>
-
-                        <div class="flex flex-wrap mb-6">
-                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">
-                                {{ __('Password') }}:
-                            </label>
-
-                            <input id="password" type="password" class="form-input w-full @error('password') border-red-500 @enderror" name="password" required autocomplete="new-password">
-
-                            @error('password')
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $message }}
-                                </p>
-                            @enderror
-                        </div>
-
-                        <div class="flex flex-wrap mb-6">
-                            <label for="password-confirm" class="block text-gray-700 text-sm font-bold mb-2">
-                                {{ __('Confirm Password') }}:
-                            </label>
-
-                            <input id="password-confirm" type="password" class="form-input w-full" name="password_confirmation" required autocomplete="new-password">
-                        </div>
-
-                        <div class="flex flex-wrap">
-                            <button type="submit" class="inline-block align-middle text-center select-none border font-bold whitespace-no-wrap py-2 px-4 rounded text-base leading-normal no-underline text-gray-100 bg-blue-500 hover:bg-blue-700">
-                                {{ __('Register') }}
-                            </button>
-
-                            <p class="w-full text-xs text-center text-gray-700 mt-8 -mb-4">
-                                {{ __('Already have an account?') }}
-                                <a class="text-blue-500 hover:text-blue-700 no-underline" href="{{ route('login') }}">
-                                    {{ __('Login') }}
-                                </a>
-                            </p>
-                        </div>
-                    </form>
+                    <div class="mt-6">
+                        <a href="{{route('login')}}" class="block text-sm font-medium leading-5 text-gray-700 hover:text-gray-600 text-center">
+                            Already have an account? Login here
+                        </a>
+                    </div>
 
                 </div>
             </div>
         </div>
+        <div class="hidden lg:block relative w-0 flex-1">
+            <img class="absolute inset-0 h-full w-full object-cover" src="https://images.unsplash.com/photo-1505904267569-f02eaeb45a4c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80" alt="" />
+        </div>
+
     </div>
 @endsection
