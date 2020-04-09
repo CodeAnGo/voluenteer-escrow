@@ -20,7 +20,7 @@ class OAuthRedirectController extends Controller
         ]);
 
         Account::create([
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::id(),
             'access_token' => $response->access_token,
             'refresh_token' => $response->refresh_token,
             'token_type' => $response->token_type,
