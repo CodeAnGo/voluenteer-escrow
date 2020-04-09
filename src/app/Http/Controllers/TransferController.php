@@ -7,6 +7,7 @@ use App\TransferStatus;
 use App\TransferStatusTransitions;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use SM\SMException;
 
 class TransferController extends Controller
@@ -39,8 +40,10 @@ class TransferController extends Controller
      */
     public function store(Request $request)
     {
-        $transfer = new Transfer($request->all());
-        $transfer->sending_party_id = $request.auth()->id();
+        $transfer = Transfer::create([
+            'sending_party_id' => Auth::id(),
+            'status' => TransferStatus::AwaitingAcceptance,
+        ]); // TODO: add attributes from transfer creation form in here
         $transfer->save();
 
         // TODO: return view
@@ -80,7 +83,7 @@ class TransferController extends Controller
         $transfer = Transfer::where('id', $id)->first();
         $statusTransition = $request->input('statusTransition');
 
-        if ($statusTransition !== null) // update should always have statusTransition EXCEPT when Sending Party is editing an Awaiting Acceptance transfer
+        if (!is_null($statusTransition)) // update should always have statusTransition EXCEPT when Sending Party is editing an Awaiting Acceptance transfer
         {
             if ($request->input('statusTransition') === TransferStatusTransitions::ToAccepted) {
                 $transfer->receiving_party_id = $request.auth()->id();

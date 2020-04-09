@@ -23,7 +23,7 @@ class Transfer extends Model
         'transfer_amount',
         'transfer_reason',
         'transfer_note',
-        'status' => TransferStatus::AwaitingAcceptance,
+        'status',
         'stripe_id',
         'escrow_link',
     ];
