@@ -20,15 +20,24 @@
                         <form action="{{ route('register') }}" method="POST">
                             @csrf
                             <div>
-                                <label for="item_id" class="block text-sm font-medium leading-5 text-gray-700">
-                                    Select charities
+                                <label for="charityselect" class="block text-sm font-medium leading-5 text-gray-700 text-center">
+                                    Select charities (Ctrl + Click for multiple)
                                 </label>
-                                <select class="form-control" name="item_id">
+                                <select class="form-multiselect block w-full mt-1 appearance-none bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-50" name="item_id" multiple>
                                     @foreach($charities_list as $charity)
                                         <option value="{{$charity}}">{{$charity}}</option>
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="py-5">
+                                <label for="photoupload" class="block text-sm font-medium leading-5 text-gray-700 text-center">
+                                    Upload your face
+                                </label>
+                                <div class="mt-1 rounded-md shadow-sm">
+                                    <input id="photoupload" name="photoupload" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                </div>
+                            </div>
+                            Blocked until file upload done, needs styling too
                         </form>
                     </div>
 
