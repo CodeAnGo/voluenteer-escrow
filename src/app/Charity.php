@@ -12,4 +12,6 @@ class Charity extends Model
     ];
 
     protected $table = 'charities';
+
+
 }

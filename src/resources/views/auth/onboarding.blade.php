@@ -9,8 +9,7 @@
             <div class="mx-auto w-full max-w-sm">
                 <div>
 
-                    <img class="h-12 w-auto justify-center" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
-                    <h2 class="mt-6 text-3xl leading-9 font-thin text-gray-800 tracking-wide">
+                    <h2 class="mt-6 text-3xl leading-9 font-medium text-gray-700 tracking-wide text-center">
                         Complete your profile
                     </h2>
                 </div>
