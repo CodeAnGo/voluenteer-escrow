@@ -2,6 +2,7 @@
 
 use App\Transfer;
 use App\TransferStatus;
+use App\TransferStatusTransitions;
 
 return [
     'transfer_status' => [
@@ -22,39 +23,39 @@ return [
         ],
 
         'transitions' => [
-            'to_awaiting_acceptance' => [
+            TransferStatusTransitions::ToAwaitingAcceptance => [
                 'from' => [TransferStatus::Rejected],
                 'to' => TransferStatus::AwaitingAcceptance,
             ],
-            'to_accepted' => [
+            TransferStatusTransitions::ToAccepted => [
                 'from' => [TransferStatus::AwaitingAcceptance],
                 'to' => TransferStatus::Accepted,
             ],
-            'to_rejected' => [
+            TransferStatusTransitions::ToRejected => [
                 'from' => [TransferStatus::Accepted],
                 'to' => TransferStatus::Rejected,
             ],
-            'to_cancelled' => [
+            TransferStatusTransitions::ToCancelled => [
                 'from' => [TransferStatus::AwaitingAcceptance, TransferStatus::Accepted, TransferStatus::Rejected],
                 'to' => TransferStatus::Cancelled,
             ],
-            'to_pending_approval' => [
+            TransferStatusTransitions::ToPendingApproval => [
                 'from' => [TransferStatus::Accepted],
                 'to' => TransferStatus::PendingApproval,
             ],
-            'to_approved' => [
+            TransferStatusTransitions::ToApproved => [
                 'from' => [TransferStatus::PendingApproval],
                 'to' => TransferStatus::Approved,
             ],
-            'to_in_dispute' => [
+            TransferStatusTransitions::ToInDispute => [
                 'from' => [TransferStatus::PendingApproval],
                 'to' => TransferStatus::InDispute,
             ],
-            'to_close' => [
+            TransferStatusTransitions::ToClosed => [
                 'from' => [TransferStatus::Approved, TransferStatus::InDispute],
                 'to' => TransferStatus::Closed,
             ],
-            'to_closed_non_payment' => [
+            TransferStatusTransitions::ToClosedNonPayment => [
                 'from' => [TransferStatus::InDispute],
                 'to' => TransferStatus::ClosedNonPayment,
             ],
