@@ -29,7 +29,7 @@ class TransferController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.dashing.transfers.create');
     }
 
     /**
@@ -40,10 +40,30 @@ class TransferController extends Controller
      */
     public function store(Request $request)
     {
+        //  'sending_party_id' => Auth::id(),
         $transfer = Transfer::create([
-            'sending_party_id' => Auth::id(),
+
+            'sending_party_id' =>12121,
             'status' => TransferStatus::AwaitingAcceptance,
-        ]); // TODO: add attributes from transfer creation form in here
+            'charity_id'=>122,
+        'delivery_first_name'=> $request->input('first_name'),
+        'delivery_last_name'=> $request->input('last_name'),
+        'delivery_email'=>$request->input('email_address'),
+        'delivery_street'=>$request->input('street_address'),
+       'delivery_city'=>$request->input('city'),
+       'delivery_town'=>$request->input('state'),
+        'delivery_postcode' =>$request->input('postal_code'),
+       'delivery_country'=>$request->input('country'),
+       'transfer_amount'=>$request->input('transfer_amount'),
+        'transfer_reason'=>$request->input('transfer_reason'),
+        'transfer_note'=>$request->input('transfer_note'),
+       'stripe_id'=>'null',
+        'escrow_link'=>'null'
+
+
+        ]);
+
+        //ToDO: Need to fill stripe_id,charity it
         $transfer->save();
 
         // TODO: return view
