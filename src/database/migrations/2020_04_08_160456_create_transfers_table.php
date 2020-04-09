@@ -14,7 +14,7 @@ class CreateTransfersTable extends Migration
     public function up()
     {
         Schema::create('transfers', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid("id")->primary();
             $table->foreignId('sending_party_id')->references('id')->on('users');
             $table->unsignedBigInteger('receiving_party_id')->nullable();
             $table->foreign('receiving_party_id')->references('id')->on('users');

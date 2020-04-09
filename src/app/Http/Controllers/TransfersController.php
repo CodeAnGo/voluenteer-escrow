@@ -45,7 +45,6 @@ class TransfersController extends Controller
     public function store(Request $request)
     {
         $transfer = Transfer::create([
-            'id' => Uuid::uuid4(),
             'sending_party_id' => Auth::id(),
             'status' => TransferStatus::AwaitingAcceptance,
         ]); // TODO: add attributes from transfer creation form in here

@@ -2,11 +2,14 @@
 
 namespace App;
 
+use App\Models\Concerns\UsesUUID;
 use Illuminate\Database\Eloquent\Model;
 use SM\Factory\Factory as SMFactory;
 
 class Transfer extends Model
 {
+    use UsesUUID;
+
     protected $fillable = [
         'sending_party_id',
         'receiving_party_id',
