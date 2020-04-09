@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\User;
+use App\Charity;
 use Ramsey\Uuid\Uuid;
 use SM\SMException;
 

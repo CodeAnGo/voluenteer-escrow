@@ -79,7 +79,7 @@
                     </div>
                 @endif
                 @if (Auth::user()->volunteer === 0)
-                    <a href="/transfer/create">
+                    <a href="/transfers/create">
                         <div class="bg-white overflow-hidden shadow rounded-lg">
                             <div class="px-4 py-5 sm:p-6">
                                 <div class="flex items-center">
@@ -188,7 +188,7 @@
                                         <div class="text-sm leading-5 text-gray-500">{{ $transfer->created_at }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
-                                        <a href="/transfer/{{ $transfer->id }}" class="text-indigo-600 hover:text-indigo-900 focus:outline-none focus:underline">View</a>
+                                        <a href="/transfers/{{ $transfer->id }}" class="text-indigo-600 hover:text-indigo-900 focus:outline-none focus:underline">View</a>
                                     </td>
                                 </tr>
                             @empty
@@ -261,13 +261,13 @@
                                             @if (in_array($transfer->status, $closed_status))
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                                                     @else
-                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"/>
                                                             @endif
                                                             {{ $status_map[$transfer->status] }}
                                                         </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
-                                            <a href="/transfer/{{ $transfer->id }}" class="text-indigo-600 hover:text-indigo-900 focus:outline-none focus:underline">View</a>
+                                            <a href="/transfers/{{ $transfer->id }}" class="text-indigo-600 hover:text-indigo-900 focus:outline-none focus:underline">View</a>
                                         </td>
                                     </tr>
                                 @empty
