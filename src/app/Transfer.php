@@ -25,7 +25,6 @@ class Transfer extends Model
         'transfer_note',
         'status',
         'stripe_id',
-        'escrow_link',
     ];
 
     public function statusStateMachine()
