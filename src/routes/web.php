@@ -21,8 +21,6 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
-Route::resource('transfer', 'TransferController');
-
+Route::resource('transfers', 'TransfersController')->middleware('auth');
