@@ -29,6 +29,7 @@ class OAuthRedirectController extends Controller
             'scope' => $response->scope
         ]);
 
-        return redirect(route('home'));
+       // return (User::select('volunteer')->where('id', Auth::id())->get()) ? redirect(route('onboarding')) : redirect(route('home'));
+        return redirect(route('onboarding'));
     }
 }

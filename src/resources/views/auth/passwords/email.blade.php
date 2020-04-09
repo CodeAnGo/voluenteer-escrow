@@ -9,7 +9,7 @@
                 <div>
                     <img class="h-12 w- object-center" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
                     <h2 class="mt-6 text-3xl leading-9 font-thin text-gray-800 tracking-wide">
-                        Reset Your Password
+                        Reset your password
                     </h2>
                 </div>
 

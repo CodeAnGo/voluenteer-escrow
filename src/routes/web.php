@@ -21,8 +21,16 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
 Route::resource('transfer', 'TransferController');
+
+Route::get('/onboarding', function() {
+
+
+    return view('auth.onboarding', [
+        'charities_list' => App\Charity::where('active', true)->pluck('name')
+    ]);
+
+});
 

@@ -100,6 +100,15 @@
                             </div>
 
 
+                                <div class="flex items-center mt-6">
+                                    <input id="volunteercheck" type="checkbox" name="volunteercheck" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out" />
+                                    <label for="volunteercheck" class="ml-2 block text-sm leading-5 text-gray-900">
+                                        I am a volunteer
+                                    </label>
+                                </div>
+
+
+
                             <div class="mt-6">
                                 <span class="block w-full rounded-md shadow-sm">
                                     <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
