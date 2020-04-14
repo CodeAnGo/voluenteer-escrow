@@ -16,27 +16,23 @@
 
                 <div class="mt-8">
                     <div class="mt-6">
-                        <form action="{{ route('register') }}" method="POST">
+                        <form action="{{ route('onboarding.store') }}" method="POST">
                             @csrf
                             <div>
-                                <label for="charityselect" class="block text-sm font-medium leading-5 text-gray-700 text-center">
-                                    Select charities (Ctrl + Click for multiple)
+                                <label class="block text-sm font-medium leading-5 text-gray-700 text-center">
+                                    Select charities
                                 </label>
-                                <select class="form-multiselect block w-full mt-1 appearance-none bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-50" name="item_id" multiple>
-                                    @foreach($charities_list as $charity)
-                                        <option value="{{$charity}}">{{$charity}}</option>
+                                @foreach($charities_list as $charity)
+                                    <div class="mt-2">
+                                    <input type="checkbox" class="form-checkbox" name="{{$charity->name}}" value="{{$charity->id}}">
+                                        <span class="ml-2">{{$charity->name}}</span>
+                                    </div>
                                     @endforeach
-                                </select>
                             </div>
-                            <div class="py-5">
-                                <label for="photoupload" class="block text-sm font-medium leading-5 text-gray-700 text-center">
-                                    Upload your face
-                                </label>
-                                <div class="mt-1 rounded-md shadow-sm">
-                                    <input id="photoupload" name="photoupload" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                </div>
-                            </div>
-                            Blocked until file upload done, needs styling too
+
+                            <button type="submit" class="mt-6 w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+                                Complete profile
+                            </button>
                         </form>
                     </div>
 
