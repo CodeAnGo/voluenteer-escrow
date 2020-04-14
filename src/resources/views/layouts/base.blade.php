@@ -4,7 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>@yield('title')</title>
+    <title>
+        @if(View::hasSection('title'))
+            @yield('title') - {{ config('app.name') }}
+        @else
+            {{ config('app.name') }}
+        @endif
+    </title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">

@@ -15,9 +15,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 Auth::routes();
+
+Route::get('dashboard', function () {
+    return view('dashboard');
+})->name('dashboard')->middleware('auth');
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
 

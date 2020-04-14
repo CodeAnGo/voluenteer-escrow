@@ -7,11 +7,17 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>
+        @if(View::hasSection('title'))
+            @yield('title') - {{ config('app.name') }}
+        @else
+            {{ config('app.name') }}
+        @endif
+    </title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    
+
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
