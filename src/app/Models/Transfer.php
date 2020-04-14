@@ -37,4 +37,10 @@ class Transfer extends Model implements Auditable
 
         return $factory->get($this, 'transfer_status');
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
 }

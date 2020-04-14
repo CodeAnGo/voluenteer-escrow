@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TransferAcceptedMail;
+use App\Mail\TransferDisputeMail;
 use App\Transfer;
 use App\TransferStatus;
 use App\TransferStatusTransitions;
@@ -10,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
 use SM\SMException;
@@ -44,7 +47,7 @@ class TransfersController extends Controller
      */
     public function store(Request $request)
     {
-        $transfer = Transfer::create([
+        $transfer = TransferAcceptedMail::create([
             'sending_party_id' => Auth::id(),
             'status' => TransferStatus::AwaitingAcceptance,
         ]); // TODO: add attributes from transfer creation form in here
@@ -55,10 +58,10 @@ class TransfersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Transfer $transfer
+     * @param TransferAcceptedMail $transfer
      * @return Factory|View
      */
-    public function show(Transfer $transfer)
+    public function show(TransferAcceptedMail $transfer)
     {
         $showDeliveryDetails =
             Auth::id() === $transfer->sending_party_id ||
@@ -87,13 +90,21 @@ class TransfersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $transfer = Transfer::where('id', $id)->first();
+        $transfer = TransferAcceptedMail::where('id', $id)->first();
         $statusTransition = $request->input('statusTransition');
 
         if (!is_null($statusTransition)) // update should always have statusTransition EXCEPT when Sending Party is editing an Awaiting Acceptance transfer
         {
             if ($request->input('statusTransition') === TransferStatusTransitions::ToAccepted) {
                 $transfer->receiving_party_id = $request.auth()->id();
+                Mail::to($transfer->delivery_email)->send(new TransferAcceptedMail($transfer));
+            }
+            if ($request->input('statusTransition') === TransferStatusTransitions::ToInDispute) {
+                if($transfer->receiving_party_id == $request.auth()->id()) {
+                    Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
+                } else {
+                    Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, true));
+                }
             }
             try {
                 $transfer->statusStateMachine()->apply($statusTransition);

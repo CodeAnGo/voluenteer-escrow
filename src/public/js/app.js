@@ -1467,7 +1467,7 @@ var ignoreDuplicateOf = [
  * Date: Wed, 27 Aug 2014 08:58:49 GMT
  * Content-Type: application/json
  * Connection: keep-alive
- * Transfer-Encoding: chunked
+ * TransferAcceptedMail-Encoding: chunked
  * ```
  *
  * @param {String} headers Headers needing to be parsed
