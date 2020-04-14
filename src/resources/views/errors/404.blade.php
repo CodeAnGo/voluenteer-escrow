@@ -1,6 +1,7 @@
 @extends('layouts.dashing')
 
 @section('title', 'Page not found')
+
 @section('page_title')
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
         <div class="max-w-6xl mx-auto">
@@ -37,7 +38,7 @@
                             @auth
                                 <a href="{{ route('dashboard') }}">Click here to return to your dashboard.</a>
                             @else
-                                <a href="{{ route('home') }}">Click here to return home.</a>
+                                <a href="{{ route('home') }}">Click here to return to home.</a>
                             @endauth
                         </p>
                     </div>
