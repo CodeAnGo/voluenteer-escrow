@@ -48,11 +48,9 @@ class TransferEvidencesController extends Controller
      */
     public function store(Request $request, $transfer_id)
     {
-        $validator = Validator::make((array)$request->files, [
-            'evidence' => 'required|image',
-        ]);
-        $validatedData = $request->validate([
-            'evidence' => 'required|image',
+        $validator = request()->validate([
+            'evidence' => 'required',
+            'evidence.*' => 'image',
         ]);
 
         $paths = [];

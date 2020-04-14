@@ -23,8 +23,6 @@ Route::get('dashboard', function () {
     return view('dashboard');
 })->name('dashboard')->middleware('auth');
 
-Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
-
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
 Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middleware('auth');
