@@ -16,6 +16,7 @@
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
+        "owen-it/laravel-auditing": "^10.0",
         "ramsey/uuid": "^4.0",
         "sebdesign/laravel-state-machine": "^3.0",
         "stripe/stripe-php": "^7.28"

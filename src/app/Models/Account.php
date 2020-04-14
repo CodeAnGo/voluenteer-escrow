@@ -3,9 +3,11 @@
 namespace App\Models\Stripe;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Account extends Model
+class Account extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'user_id',
