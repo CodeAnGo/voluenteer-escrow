@@ -48,7 +48,7 @@ class TransferController extends Controller
             ['object' => 'card', 'limit' => 3]
         );
 
-        $transfers= DB::table('transfers')->where('sending_party_id',2) ->orderByRaw('id DESC')->get();
+        $transfers= DB::table('transfers')->where('sending_party_id',Auth::id()) ->orderByRaw('id DESC')->get();
         return view('pages.dashing.transfers.create',['charities'=>$charities,'transfers'=>$transfers,'cards'=>$cards]);
     }
 
