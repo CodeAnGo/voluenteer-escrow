@@ -72,6 +72,7 @@ class RegisterController extends Controller
             'last_name' => $data['lname'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'volunteer' => array_key_exists("volunteercheck", $data)
         ]);
     }
 }
