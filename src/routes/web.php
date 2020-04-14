@@ -20,9 +20,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-
-
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
+Route::resource('transfers', 'TransferController')->middleware(['auth', 'connected']);
+Route::resource('charity', 'CharityController');
 
-Route::resource('transfers', 'TransferController');
 

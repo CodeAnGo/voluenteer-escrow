@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use SM\SMException;
+use App\Http\Contollers\CharityController;
+use DB;
+
+//cus_H4AGL7ic6XXhA4
 
 class TransferController extends Controller
 {
@@ -19,9 +23,14 @@ class TransferController extends Controller
      */
     public function index()
     {
-        //
+        \Stripe\Stripe::setApiKey('sk_test_CpMtZaazIi49jN69Efg6Nmfg00ZmtTLqVg');
+        $balance = \Stripe\Balance::retrieve([
+            'stripe_account' => Account::where('user_id', Auth::user()->id)->first()->stripe_user_id
+        ]);
+        return view('pages.dashing.transfers.index', [
+            'balance' => head($balance->toArray()['available'])['amount']
+        ]);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -29,7 +38,18 @@ class TransferController extends Controller
      */
     public function create()
     {
-        return view('pages.dashing.transfers.create');
+       $charities = DB::table('charities')->get();
+
+
+       /*TODO: need to change the API Key, User Code*/
+        \Stripe\Stripe::setApiKey('sk_test_CpMtZaazIi49jN69Efg6Nmfg00ZmtTLqVg');
+        $cards=\Stripe\Customer::allSources(
+            'cus_H4AGL7ic6XXhA4',
+            ['object' => 'card', 'limit' => 3]
+        );
+
+        $transfers= DB::table('transfers')->where('sending_party_id',2) ->orderByRaw('id DESC')->get();
+        return view('pages.dashing.transfers.create',['charities'=>$charities,'transfers'=>$transfers,'cards'=>$cards]);
     }
 
     /**
@@ -40,30 +60,32 @@ class TransferController extends Controller
      */
     public function store(Request $request)
     {
-        //  'sending_party_id' => Auth::id(),
+        //
         $transfer = Transfer::create([
 
-            'sending_party_id' =>12121,
-            'status' => TransferStatus::AwaitingAcceptance,
-            'charity_id'=>122,
-        'delivery_first_name'=> $request->input('first_name'),
-        'delivery_last_name'=> $request->input('last_name'),
-        'delivery_email'=>$request->input('email_address'),
-        'delivery_street'=>$request->input('street_address'),
-       'delivery_city'=>$request->input('city'),
-       'delivery_town'=>$request->input('state'),
-        'delivery_postcode' =>$request->input('postal_code'),
-       'delivery_country'=>$request->input('country'),
-       'transfer_amount'=>$request->input('transfer_amount'),
-        'transfer_reason'=>$request->input('transfer_reason'),
-        'transfer_note'=>$request->input('transfer_note'),
-       'stripe_id'=>'null',
-        'escrow_link'=>'null'
-
-
+         //'sending_party_id' =>2,
+         'sending_party_id' => Auth::id(),
+         'status' => TransferStatus::AwaitingAcceptance,
+         'charity_id'=>$request->input('charity'),
+         'delivery_first_name'=> $request->input('first_name'),
+         'delivery_last_name'=> $request->input('last_name'),
+         'delivery_email'=>$request->input('email_address'),
+         'delivery_street'=>$request->input('street_address'),
+         'delivery_city'=>$request->input('city'),
+         'delivery_town'=>$request->input('state'),
+         'delivery_postcode' =>$request->input('postal_code'),
+         'delivery_country'=>$request->input('country'),
+         'transfer_amount'=>$request->input('transfer_amount'),
+         'transfer_reason'=>$request->input('transfer_reason'),
+         'transfer_note'=>$request->input('transfer_note'),
+         'stripe_id'=>'null',
+         'escrow_link'=>'null'
         ]);
 
+
+        return view('pages.dashing.transfers.view');
         //ToDO: Need to fill stripe_id,charity it
+        //Need to change sending party id
         $transfer->save();
 
         // TODO: return view
