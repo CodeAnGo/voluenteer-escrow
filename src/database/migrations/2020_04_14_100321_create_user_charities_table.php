@@ -14,7 +14,7 @@ class CreateUserCharitiesTable extends Migration
     public function up()
     {
         Schema::create('user_charities', function (Blueprint $table) {
-            $table->uuid();
+            $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->uuid('charity_id');
