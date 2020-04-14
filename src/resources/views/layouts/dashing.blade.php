@@ -4,7 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>@yield('title')</title>
+    <title>
+        @if(View::hasSection('title'))
+            @yield('title') - {{ config('app.name') }}
+        @else
+            {{ config('app.name') }}
+        @endif
+    </title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -26,17 +32,17 @@
                         <img class="hidden lg:block h-8 w-auto" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow logo" />
                     </div>
                     <div class="hidden sm:ml-6 sm:flex">
-                        <a href="{{ route('dashing.dashboard.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'dashing.dashboard.index') border-indigo-500 @else border-transparent @endif text-sm font-medium leading-5 text-gray-900 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out">
+                        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-1 pt-1 border-b-2 @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'dashboard') border-indigo-500 text-gray-900 @else border-transparent @endif text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out">
                             Dashboard
                         </a>
-                        <a href="{{ route('transfers.index') }}" class="ml-8 inline-flex items-center px-1 pt-1 border-b-2 @if(Illuminate\Support\Facades\Route::currentRouteName() == 'transfers.index') border-indigo-500 @else border-transparent @endif text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                        <a href="{{ route('transfers.index') }}" class="ml-8 inline-flex items-center px-1 pt-1 border-b-2 @if(Illuminate\Support\Facades\Route::currentRouteName() == 'transfers.index') border-indigo-500 text-gray-900 @else border-transparent @endif text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out">
                             Transfers
                         </a>
                     </div>
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center">
                     <a href="" class="text-gray-700 pr-2">
-                        Account Balance £{{ $balance }}
+                        Account Balance £ {{ $balance ?? 'undefined' }}
                     </a>
                     <div @click.away="open = false" class="ml-3 relative" x-data="{ open: false }">
                         <div>
