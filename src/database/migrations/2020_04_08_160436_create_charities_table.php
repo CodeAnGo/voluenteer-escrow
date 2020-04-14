@@ -14,7 +14,7 @@ class CreateCharitiesTable extends Migration
     public function up()
     {
         Schema::create('charities', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->boolean('active');
             $table->timestamps();
