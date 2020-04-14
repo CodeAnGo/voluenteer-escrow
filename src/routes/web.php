@@ -32,3 +32,6 @@ Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middle
 
 Route::resource('transfers', 'TransfersController')->middleware('auth');
 
+Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
+    'edit', 'update'
+])->middleware(['auth', 'canViewTransferEvidence']);

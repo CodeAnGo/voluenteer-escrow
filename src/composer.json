@@ -19,6 +19,8 @@
         "league/flysystem-aws-s3-v3": "^1.0",
         "laravel/vapor-cli": "^1.6",
         "laravel/vapor-core": "^2.5",
+        "laravelcollective/html": "^6.1",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "owen-it/laravel-auditing": "^10.0",
         "ramsey/uuid": "^4.0",
         "sebdesign/laravel-state-machine": "^3.0",

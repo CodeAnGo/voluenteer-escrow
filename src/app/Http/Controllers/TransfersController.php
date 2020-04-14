@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
 use SM\SMException;
@@ -48,6 +49,7 @@ class TransfersController extends Controller
             'sending_party_id' => Auth::id(),
             'status' => TransferStatus::AwaitingAcceptance,
         ]); // TODO: add attributes from transfer creation form in here
+        Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
 
         return redirect()->route('transfer.show');
     }
@@ -70,7 +72,7 @@ class TransfersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  uuid  $id
      * @return Response
      */
     public function edit($id)
@@ -82,7 +84,7 @@ class TransfersController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  int  $id
+     * @param  uuid  $id
      * @return Response
      */
     public function update(Request $request, $id)
@@ -93,7 +95,8 @@ class TransfersController extends Controller
         if (!is_null($statusTransition)) // update should always have statusTransition EXCEPT when Sending Party is editing an Awaiting Acceptance transfer
         {
             if ($request->input('statusTransition') === TransferStatusTransitions::ToAccepted) {
-                $transfer->receiving_party_id = $request.auth()->id();
+                $transfer->receiving_party_id = Auth::id();
+                Storage::makeDirectory('/evidence/' . $id . '/' . Auth::id());
             }
             try {
                 $transfer->statusStateMachine()->apply($statusTransition);
@@ -114,7 +117,7 @@ class TransfersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  uuid  $id
      * @return Response
      */
     public function destroy($id)
