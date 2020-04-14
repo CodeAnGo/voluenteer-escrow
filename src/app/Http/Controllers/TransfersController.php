@@ -48,9 +48,8 @@ class TransfersController extends Controller
             'sending_party_id' => Auth::id(),
             'status' => TransferStatus::AwaitingAcceptance,
         ]); // TODO: add attributes from transfer creation form in here
-        $transfer->save();
 
-        return redirect()->action($this->show($transfer));
+        return redirect()->route('transfer.show');
     }
 
     /**
