@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use App\Transfer;
 use App\TransferStatus;
 use App\TransferStatusTransitions;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
+use Ramsey\Uuid\Uuid;
 use SM\SMException;
 
-class TransferController extends Controller
+class TransfersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -36,7 +40,7 @@ class TransferController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response
+     * @return RedirectResponse
      */
     public function store(Request $request)
     {
@@ -44,20 +48,23 @@ class TransferController extends Controller
             'sending_party_id' => Auth::id(),
             'status' => TransferStatus::AwaitingAcceptance,
         ]); // TODO: add attributes from transfer creation form in here
-        $transfer->save();
 
-        // TODO: return view
+        return redirect()->route('transfer.show');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return Response
+     * @param Transfer $transfer
+     * @return Factory|View
      */
-    public function show($id)
+    public function show(Transfer $transfer)
     {
-        //
+        $showDeliveryDetails =
+            Auth::id() === $transfer->sending_party_id ||
+            Auth::id() === $transfer->receiving_party_id;
+
+        // return view('transfer', ['showDeliveryDetails' => $showDeliveryDetails]);
     }
 
     /**

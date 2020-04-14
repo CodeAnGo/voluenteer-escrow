@@ -2,11 +2,15 @@
 
 namespace App;
 
+use App\Models\Concerns\UsesUUID;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 use SM\Factory\Factory as SMFactory;
 
-class Transfer extends Model
+class Transfer extends Model implements Auditable
 {
+    use UsesUUID, \OwenIt\Auditing\Auditable;
+
     protected $fillable = [
         'sending_party_id',
         'receiving_party_id',
@@ -25,7 +29,6 @@ class Transfer extends Model
         'transfer_note',
         'status',
         'stripe_id',
-        'escrow_link',
     ];
 
     public function statusStateMachine()

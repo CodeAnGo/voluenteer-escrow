@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
@@ -16,6 +17,10 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "league/flysystem-aws-s3-v3": "^1.0",
+        "laravel/vapor-cli": "^1.6",
+        "laravel/vapor-core": "^2.5",
+        "owen-it/laravel-auditing": "^10.0",
+        "ramsey/uuid": "^4.0",
         "sebdesign/laravel-state-machine": "^3.0",
         "stripe/stripe-php": "^7.28"
     },

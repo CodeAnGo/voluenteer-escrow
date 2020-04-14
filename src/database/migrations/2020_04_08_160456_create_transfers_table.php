@@ -14,11 +14,12 @@ class CreateTransfersTable extends Migration
     public function up()
     {
         Schema::create('transfers', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('sending_party_id')->references('id')->on('users');
-            $table->unsignedBigInteger('receiving_party_id')->nullable();
+            $table->uuid('id')->primary();
+            $table->uuid('sending_party_id');
+            $table->foreign('sending_party_id')->references('id')->on('users');
+            $table->uuid('receiving_party_id')->nullable();
             $table->foreign('receiving_party_id')->references('id')->on('users');
-            $table->unsignedBigInteger('charity_id')->nullable();
+            $table->uuid('charity_id')->nullable();
             $table->foreign('charity_id')->references('id')->on('charities');
             $table->string('delivery_first_name');
             $table->string('delivery_last_name');
@@ -33,7 +34,6 @@ class CreateTransfersTable extends Migration
             $table->string('transfer_note')->nullable();
             $table->tinyInteger('status');
             $table->string('stripe_id');
-            $table->string('escrow_link');
             $table->timestamps();
         });
     }

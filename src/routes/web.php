@@ -23,8 +23,8 @@ Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
 
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
-Route::resource('transfer', 'TransferController');
-
-
 Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middleware('auth');
 Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middleware('auth');
+
+Route::resource('transfers', 'TransfersController')->middleware('auth');
+
