@@ -19,10 +19,16 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
-
 Route::get('dashboard', function () {
     return view('dashboard');
 })->name('dashboard')->middleware('auth');
 
+Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
+
+Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
+
+Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middleware('auth');
+Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middleware('auth');
+
 Route::resource('transfers', 'TransfersController')->middleware('auth');
+

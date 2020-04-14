@@ -9,8 +9,7 @@
             <div class="mx-auto w-full max-w-sm">
                 <div>
 
-                    <img class="h-12 w-auto justify-center" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
-                    <h2 class="mt-6 text-3xl leading-9 font-thin text-gray-800 tracking-wide">
+                    <h2 class="mt-6 text-3xl leading-9 font-medium text-gray-700 tracking-wide text-center">
                         Register your account
                     </h2>
                 </div>
@@ -19,28 +18,14 @@
                     <div class="mt-6">
                         <form action="{{ route('register') }}" method="POST">
                             @csrf
-                            <div>
-                                <label for="email" class="block text-sm font-medium leading-5 text-gray-700">
-                                    Email address
-                                </label>
-                                <div class="mt-1 rounded-md shadow-sm">
-                                    <input id="email" name="email" type="email" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                </div>
-                                @error('email')
-                                <div class="mt-1 rounded-md shadow-sm">
-                                    <p class="text-red-600 text-sm tracking-wide font-light">
-                                        {{ $message }}
-                                    </p>
-                                </div>
-                                @enderror
-                            </div>
+
                             <div class="mt-6 flex flex-row">
                                 <div class="w-full">
-                                    <label for="fname" class="block text-sm font-medium leading-5 text-gray-700">
+                                    <label for="fname" class="block text-sm font-medium leading-5 text-gray-700 text-center">
                                         First Name
                                     </label>
                                     <div class="mt-1 rounded-md shadow-sm mr-3">
-                                        <input id="fname" name="fname" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        <input id="fname" name="fname" type="text" required class="text-center appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
                                     @error('fname')
                                     <div class="mt-1 rounded-md shadow-sm">
@@ -51,11 +36,11 @@
                                     @enderror
                                 </div>
                                 <div class="w-full">
-                                    <label for="lname" class="block text-sm font-medium leading-5 text-gray-700">
+                                    <label for="lname" class="block text-sm font-medium leading-5 text-gray-700 text-center">
                                         Last Name
                                     </label>
                                     <div class="mt-1 rounded-md shadow-sm">
-                                        <input id="lname" name="lname" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        <input id="lname" name="lname" type="text" required class="text-center appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
                                     @error('lname')
                                     <div class="mt-1 rounded-md shadow-sm">
@@ -67,13 +52,27 @@
                                 </div>
 
                             </div>
-
                             <div class="mt-6">
-                                <label for="password" class="block text-sm font-medium leading-5 text-gray-700">
+                                <label for="email" class="block text-sm font-medium leading-5 text-gray-700 text-center">
+                                    Email address
+                                </label>
+                                <div class="mt-1 rounded-md shadow-sm">
+                                    <input id="email" name="email" type="email" required class="text-center appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                </div>
+                                @error('email')
+                                <div class="mt-1 rounded-md shadow-sm">
+                                    <p class="text-red-600 text-sm tracking-wide font-light">
+                                        {{ $message }}
+                                    </p>
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="mt-6">
+                                <label for="password" class="block text-sm font-medium leading-5 text-gray-700 text-center">
                                     Password
                                 </label>
                                 <div class="mt-1 rounded-md shadow-sm">
-                                    <input id="password" name="password" type="password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                    <input id="password" name="password" type="password" required class="text-center appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                 </div>
                                 @error('password')
                                 <div class="mt-1 rounded-md shadow-sm">
@@ -84,11 +83,11 @@
                                 @enderror
                             </div>
                             <div class="mt-6">
-                                <label for="password-confirm" class="block text-sm font-medium leading-5 text-gray-700">
+                                <label for="password-confirm" class="block text-sm font-medium leading-5 text-gray-700 text-center">
                                     Confirm Password
                                 </label>
                                 <div class="mt-1 rounded-md shadow-sm">
-                                    <input id="password-confirm" type="password" name="password_confirmation" required autocomplete="new-password" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                    <input id="password-confirm" type="password" name="password_confirmation" required autocomplete="new-password" class="text-center appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                 </div>
                                 @error('password')
                                 <div class="mt-1 rounded-md shadow-sm">
@@ -98,6 +97,15 @@
                                 </div>
                                 @enderror
                             </div>
+
+
+                                <div class="flex items-center justify-center mt-6">
+                                    <input id="volunteercheck" type="checkbox" name="volunteercheck" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out" />
+                                    <label for="volunteercheck" class="ml-2 block text-sm font-medium leading-5 text-gray-700">
+                                        I am a volunteer
+                                    </label>
+                                </div>
+
 
 
                             <div class="mt-6">

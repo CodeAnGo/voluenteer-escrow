@@ -29,6 +29,6 @@ class OAuthRedirectController extends Controller
             'scope' => $response->scope
         ]);
 
-        return redirect(route('home'));
+        return redirect('/onboarding');
     }
 }
