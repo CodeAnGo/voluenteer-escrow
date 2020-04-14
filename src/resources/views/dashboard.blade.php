@@ -1,6 +1,6 @@
 @extends('layouts.dashing')
 
-@section('title', __('dashboard.index.title'))
+@section('title', 'Dashboard')
 @section('content')
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- We've used 3xl here, but feel free to try other max-widths based on your needs -->
@@ -80,7 +80,7 @@
                 @endif
                 @if (Auth::user()->volunteer === 0)
                     <a href="/transfers/create">
-                        <div class="bg-white overflow-hidden shadow rounded-lg">
+                        <div class="bg-blue-300 hover:bg-blue-200 border-b overflow-hidden shadow rounded-lg">
                             <div class="px-4 py-5 sm:p-6">
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
@@ -151,7 +151,7 @@
                                         Amount
                                     </th>
                                     <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                                        Transfer created
+                                        Last Updated
                                     </th>
                                     <th class="px-6 py-3 border-b border-gray-200 bg-gray-50"></th>
                                 </tr>
@@ -162,19 +162,28 @@
                                 @if($volunteer) @if($other_party=$users->find($transfer->sending_party_id)) @endif
                                 @else @if($other_party=$users->find($transfer->receiving_party_id)) @endif @endif
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                    <td class="px-2 py-4 whitespace-no-wrap border-b border-gray-200">
                                         <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                                <img class="h-10 w-10 rounded-full" src="{{ $other_party->profile_image_url }}" alt="" />
-                                            </div>
                                             <div class="ml-4">
-                                                <div class="text-sm leading-5 font-medium text-gray-900">{{ $other_party->first_name }} {{ $other_party->last_name }}</div>
+                                                <div class="text-sm leading-5 font-medium text-gray-900">
+                                                    @if($other_party)
+                                                        {{ $other_party->first_name }} {{ $other_party->last_name }}
+                                                    @else
+                                                        Unassigned
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
                                     @if (Auth::user()->volunteer === 0)
                                         <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                            <div class="text-sm leading-5 text-gray-500">{{ $other_party->email }}</div>
+                                            <div class="text-sm leading-5 text-gray-500">
+                                                @if($other_party)
+                                                    {{ $other_party->email }}
+                                                @else
+                                                    Unassigned
+                                                @endif
+                                            </div>
                                         </td>
                                     @else
                                         <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -185,10 +194,13 @@
                                         <div class="text-sm leading-5 text-gray-500">{{ $transfer->transfer_amount }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                        <div class="text-sm leading-5 text-gray-500">{{ $transfer->created_at }}</div>
+                                        <div class="text-sm leading-5 text-gray-500">{{ \Carbon\Carbon::make($transfer->updated_at)->diffForHumans() }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
-                                        <a href="/transfers/{{ $transfer->id }}" class="text-indigo-600 hover:text-indigo-900 focus:outline-none focus:underline">View</a>
+                                        <a href="/transfers/{{ $transfer->id }}"
+                                           class="text-black hover:text-gray-800 focus:outline-none focus:underline bg-blue-300 hover:bg-blue-200 px-4 py-2 rounded-full">
+                                            View Transfer
+                                        </a>
                                     </td>
                                 </tr>
                             @empty
@@ -239,13 +251,16 @@
                                     @else @if($other_party=$users->find($transfer->receiving_party_id)) @endif @endif
                                     @if($charity = $charities->find($transfer->charity_id)) @endif
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                        <td class="px-2 py-4 whitespace-no-wrap border-b border-gray-200">
                                             <div class="flex items-center">
-                                                <div class="flex-shrink-0 h-10 w-10">
-                                                    <img class="h-10 w-10 rounded-full" src="{{ $other_party->profile_image_url }}" alt="" />
-                                                </div>
                                                 <div class="ml-4">
-                                                    <div class="text-sm leading-5 font-medium text-gray-900">{{ $other_party->first_name }} {{ $other_party->last_name }}</div>
+                                                    <div class="text-sm leading-5 font-medium text-gray-900">
+                                                        @if($other_party)
+                                                            {{ $other_party->first_name }} {{ $other_party->last_name }}
+                                                        @else
+                                                            Unassigned
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
@@ -259,15 +274,20 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                                             @if (in_array($transfer->status, $closed_status))
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-200 text-black">
                                                     @else
-                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"/>
-                                                            @endif
-                                                            {{ $status_map[$transfer->status] }}
-                                                        </span>
+                                                        <span
+                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-200 text-black"/>
+                                                    @endif
+                                                    {{$transfer->status}}
+                                                </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
-                                            <a href="/transfers/{{ $transfer->id }}" class="text-indigo-600 hover:text-indigo-900 focus:outline-none focus:underline">View</a>
+                                            <a href="/transfers/{{ $transfer->id }}"
+                                               class="text-black hover:text-gray-800 focus:outline-none focus:underline bg-blue-300 hover:bg-blue-200 px-4 py-2 rounded-full">
+                                                View Transfer
+                                            </a>
                                         </td>
                                     </tr>
                                 @empty
