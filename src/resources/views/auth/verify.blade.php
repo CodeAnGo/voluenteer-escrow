@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Verify')
+
 @section('content')
     <div class="container mx-auto">
         <div class="flex flex-wrap justify-center">

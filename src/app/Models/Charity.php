@@ -16,4 +16,6 @@ class Charity extends Model implements Auditable
     ];
 
     protected $table = 'charities';
+
+
 }

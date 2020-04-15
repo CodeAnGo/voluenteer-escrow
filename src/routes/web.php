@@ -20,13 +20,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/dashboard', 'TransfersController@index')->name('dashboard')->middleware('auth');
+Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
 
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
+
+Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middleware('auth');
+Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middleware('auth');
 
 Route::resource('transfers', 'TransfersController')->middleware('auth');
 
@@ -49,3 +53,4 @@ Route::get('/test1', function() {
             'transfer_id' => $transfer->id,
     ]);
 });
+

@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Notification extends Model
+class UserCharity extends Model
 {
     protected $fillable = [
-        'transfer_id', 'user_id', 'status'
+        'user_id', 'charity_id'
     ];
 }

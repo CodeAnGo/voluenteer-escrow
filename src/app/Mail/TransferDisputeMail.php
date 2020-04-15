@@ -63,7 +63,8 @@ class TransferDisputeMail extends Mailable
     public function createNotification($user_id, $transfer_id) {
         Notification::create([
             'user_id' => $user_id,
-            'transfer_id' => $transfer_id
+            'transfer_id' => $transfer_id,
+            'status' => $this->email_content['status']
         ]);
     }
 }

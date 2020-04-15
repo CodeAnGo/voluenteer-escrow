@@ -8,8 +8,7 @@
         <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
             <div class="mx-auto w-full max-w-sm">
                 <div>
-                    <img class="h-12 w-auto" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
-                    <h2 class="mt-6 text-3xl leading-9 font-thin text-gray-800 tracking-wide">
+                    <h2 class="mt-6 text-3xl leading-9 font-medium text-center text-gray-700 tracking-wide">
                         Sign in to your account
                     </h2>
                 </div>
@@ -24,21 +23,21 @@
                                     {{ $message }}
                                 </p>
                                 @enderror
-                                <label for="email" class="block text-sm font-medium leading-5 text-gray-700">
+                                <label for="email" class="block text-sm font-medium leading-5 text-gray-700 text-center">
                                     Email address
                                 </label>
                                 <div class="mt-1 rounded-md shadow-sm">
-                                    <input id="email" name="email" type="email" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                    <input id="email" name="email" type="email" required class="text-center appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                 </div>
 
                             </div>
 
                             <div class="mt-6">
-                                <label for="password" class="block text-sm font-medium leading-5 text-gray-700">
+                                <label for="password" class="block text-sm font-medium leading-5 text-gray-700 text-center">
                                     Password
                                 </label>
                                 <div class="mt-1 rounded-md shadow-sm">
-                                    <input id="password" name="password" type="password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                    <input id="password" name="password" type="password" required class="text-center appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                 </div>
                                 @error('auth')
                                 <div class="mt-1 rounded-md shadow-sm">

@@ -35,7 +35,8 @@ class TransferGenericMail extends Mailable
     {
         Notification::create([
            'user_id' => $this->email_content['sending_party_id'],
-            'transfer_id' => $this->email_content['id']
+            'transfer_id' => $this->email_content['id'],
+            'status' => $this->email_content['status']
         ]);
 
         // NEEDS AWS EMAIL
