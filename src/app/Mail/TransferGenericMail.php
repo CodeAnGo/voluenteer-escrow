@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class TransferAcceptedMail extends Mailable
+class TransferGenericMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -42,7 +42,6 @@ class TransferAcceptedMail extends Mailable
         return $this->from('AWS_EMAIL')->view('emails.transfer.accepted')
             ->with([
                 'sending_party_name' => $this->email_content['delivery_first_name'],
-                'receiving_party_name' => User::where('id', $this->email_content['receiving_party_id'])->pluck('first_name'),
                 'transfer_id' => $this->email_content['id']
             ]);
     }

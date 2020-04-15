@@ -1,7 +1,9 @@
 <?php
 
-use App\Mail\TransferAcceptedMail;
+use App\Mail\TransferGenericMail;
 use App\Transfer;
+use App\TransferStatus;
+use App\TransferStatusTemp;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -32,10 +34,10 @@ Route::resource('transfers', 'TransfersController')->middleware('auth');
 // TESTING ROUTES
 Route::get('/test', function() {
     $transfer = Transfer::first();
-    return view('emails.transfer.accepted')->with([
+    return view('emails.transfer.generic')->with([
         'sending_party_name' => $transfer['delivery_first_name'],
-        'receiving_party_name' => User::where('id', $transfer['receiving_party_id'])->pluck('first_name'),
-        'transfer_uuid' => $transfer->id
+        'transfer_id' => $transfer->id,
+        'transfer_status' => TransferStatusTemp::Rejected
     ]);
 });
 
@@ -44,6 +46,6 @@ Route::get('/test1', function() {
     return view('emails.transfer.dispute')->with([
             'disputer' => User::where('id', $transfer['receiving_party_id'])->pluck('first_name'),
             'disputee' => $transfer['delivery_first_name'],
-        'transfer_uuid' => $transfer->id
+            'transfer_id' => $transfer->id,
     ]);
 });

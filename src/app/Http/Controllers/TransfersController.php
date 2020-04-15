@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\TransferAcceptedMail;
+use App\Mail\TransferGenericMail;
 use App\Mail\TransferDisputeMail;
 use App\Transfer;
 use App\TransferStatus;
@@ -90,25 +90,27 @@ class TransfersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $transfer = TransferAcceptedMail::where('id', $id)->first();
+        $transfer = Transfer::where('id', $id)->first();
         $statusTransition = $request->input('statusTransition');
 
         if (!is_null($statusTransition)) // update should always have statusTransition EXCEPT when Sending Party is editing an Awaiting Acceptance transfer
         {
             if ($request->input('statusTransition') === TransferStatusTransitions::ToAccepted) {
                 $transfer->receiving_party_id = $request.auth()->id();
-                Mail::to($transfer->delivery_email)->send(new TransferAcceptedMail($transfer));
-            }
-            if ($request->input('statusTransition') === TransferStatusTransitions::ToInDispute) {
-                if($transfer->receiving_party_id == $request.auth()->id()) {
-                    Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
-                } else {
-                    Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, true));
-                }
             }
             try {
                 $transfer->statusStateMachine()->apply($statusTransition);
                 $transfer->save();
+
+                if ($request->input('statusTransition') === TransferStatusTransitions::ToInDispute) {
+                    if($transfer->receiving_party_id == $request.auth()->id()) {
+                        Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
+                    } else {
+                        Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, true));
+                    }
+                } else {
+                    Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer));
+                }
             } catch (SMException $e) {
                 // invalid status transition attempted
             }
