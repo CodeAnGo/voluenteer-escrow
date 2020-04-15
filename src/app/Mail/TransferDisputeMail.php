@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Notification;
 use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -34,19 +35,35 @@ class TransferDisputeMail extends Mailable
      */
     public function build()
     {
+        // NEEDS AWS_EMAIL
         if($this->bool) {
+
+            $this->createNotification($this->email_content['receiving_party_id'], $this->email_content['id']);
+
             return $this->from('AWS_EMAIL')->view('emails.transfer.dispute')
                 ->with([
                     'disputer' => $this->email_content['delivery_first_name'],
-                    'disputee' => User::where('id', $this->email_content['receiving_party_id'])->pluck('first_name')
+                    'disputee' => User::where('id', $this->email_content['receiving_party_id'])->pluck('first_name'),
+                    'transfer_id' => $this->email_content['id']
                 ]);
         } else {
-            // NEEDS AWS_EMAIL
+
+            $this->createNotification($this->email_content['sending_party_id'], $this->email_content['id']);
+
             return $this->from('AWS_EMAIL')->view('emails.transfer.dispute')
                 ->with([
                     'disputer' => User::where('id', $this->email_content['receiving_party_id'])->pluck('first_name'),
-                    'disputee' => $this->email_content['delivery_first_name']
+                    'disputee' => $this->email_content['delivery_first_name'],
+                    'transfer_id' => $this->email_content['id']
                 ]);
         }
+
+    }
+
+    public function createNotification($user_id, $transfer_id) {
+        Notification::create([
+            'user_id' => $user_id,
+            'transfer_id' => $transfer_id
+        ]);
     }
 }

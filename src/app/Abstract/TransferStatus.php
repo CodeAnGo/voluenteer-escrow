@@ -14,3 +14,5 @@ abstract class TransferStatus
     const Closed = 8;
     const ClosedNonPayment = 9;
 }
+
+

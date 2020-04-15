@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Customer;
+use App\Notification;
 use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -32,11 +33,17 @@ class TransferAcceptedMail extends Mailable
      */
     public function build()
     {
+        Notification::create([
+           'user_id' => $this->email_content['sending_party_id'],
+            'transfer_id' => $this->email_content['id']
+        ]);
+
         // NEEDS AWS EMAIL
         return $this->from('AWS_EMAIL')->view('emails.transfer.accepted')
             ->with([
                 'sending_party_name' => $this->email_content['delivery_first_name'],
-                'receiving_party_name' => User::where('id', $this->email_content['receiving_party_id'])->pluck('first_name')
+                'receiving_party_name' => User::where('id', $this->email_content['receiving_party_id'])->pluck('first_name'),
+                'transfer_id' => $this->email_content['id']
             ]);
     }
 }

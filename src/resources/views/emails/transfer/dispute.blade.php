@@ -311,8 +311,12 @@
                                 <tr>
                                     <td>
                                         <p>Hi {{ $disputee }},</p>
+                                        <br>
                                         <p>{{ $disputer[0] }} has raised a dispute on your transfer, you can resolve this by clicking
-                                            <a href="#">here</a>.</p>
+                                            <a href="url.com/transfers/{{$transfer_id}}">here</a>.</p>
+                                        <br>
+                                        <p>Or you can view all of your transfers by clicking
+                                            <a href="url.com/dashboard">here</a>.</p>
                                     </td>
                                 </tr>
                             </table>

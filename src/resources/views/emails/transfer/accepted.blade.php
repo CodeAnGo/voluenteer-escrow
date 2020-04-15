@@ -311,8 +311,12 @@
                                 <tr>
                                     <td>
                                         <p>Hi {{ $sending_party_name }},</p>
+                                        <br>
                                         <p>{{ $receiving_party_name[0] }} has accepted your transfer, you can view this by clicking
-                                            <a href="#">here</a>.</p>
+                                            <a href="url.com/transfers/{{$transfer_id}}">here</a>.</p>
+                                        <br>
+                                        <p>Or you can view all of your transfers by clicking
+                                            <a href="url.com/dashboard">here</a>.</p>
                                     </td>
                                 </tr>
                             </table>

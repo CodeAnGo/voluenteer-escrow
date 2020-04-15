@@ -34,7 +34,8 @@ Route::get('/test', function() {
     $transfer = Transfer::first();
     return view('emails.transfer.accepted')->with([
         'sending_party_name' => $transfer['delivery_first_name'],
-        'receiving_party_name' => User::where('id', $transfer['receiving_party_id'])->pluck('first_name')
+        'receiving_party_name' => User::where('id', $transfer['receiving_party_id'])->pluck('first_name'),
+        'transfer_uuid' => $transfer->id
     ]);
 });
 
@@ -42,6 +43,7 @@ Route::get('/test1', function() {
     $transfer = Transfer::first();
     return view('emails.transfer.dispute')->with([
             'disputer' => User::where('id', $transfer['receiving_party_id'])->pluck('first_name'),
-            'disputee' => $transfer['delivery_first_name']
+            'disputee' => $transfer['delivery_first_name'],
+        'transfer_uuid' => $transfer->id
     ]);
 });

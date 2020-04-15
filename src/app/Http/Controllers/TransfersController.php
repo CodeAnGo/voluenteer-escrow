@@ -47,7 +47,7 @@ class TransfersController extends Controller
      */
     public function store(Request $request)
     {
-        $transfer = TransferAcceptedMail::create([
+        $transfer = Transfer::create([
             'sending_party_id' => Auth::id(),
             'status' => TransferStatus::AwaitingAcceptance,
         ]); // TODO: add attributes from transfer creation form in here
@@ -58,10 +58,10 @@ class TransfersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param TransferAcceptedMail $transfer
-     * @return Factory|View
+     * @param Transfer $transfer
+     * @return void
      */
-    public function show(TransferAcceptedMail $transfer)
+    public function show(Transfer $transfer)
     {
         $showDeliveryDetails =
             Auth::id() === $transfer->sending_party_id ||
