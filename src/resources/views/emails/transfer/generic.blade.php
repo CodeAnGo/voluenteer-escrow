@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Your transfer has been accepted!</title>
+    <title>Your transfer status has been changed to {{ $transfer_status }}</title>
     <style>
         /* -------------------------------------
             GLOBAL RESETS
@@ -292,15 +292,22 @@
             }
         }
     </style>
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <!-- Styles -->
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
 <body class="">
-<span class="preheader">Transfer Accepted</span>
+<span class="preheader">{{ $transfer_status }} transfer</span>
 <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
     <tr>
         <td>&nbsp;</td>
         <td class="container">
             <div class="content">
-                <img class="h-12 w-auto" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
+
+                <img class="h-12 w-36 mb-6" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
                 <!-- START CENTERED WHITE CONTAINER -->
                 <table role="presentation" class="main">
 
@@ -312,13 +319,17 @@
                                     <td>
                                         <p>Hi {{ $sending_party_name }},</p>
                                         <br>
-                                        <p>The status of your transfer has been changed to <b>{{ $transfer_status }}</b>, you can view the changes or update your transfer by clicking
-                                            <a href="url.com/transfers/{{ $transfer_id }}">here</a>.</p>
-                                        <br>
-                                        <p>Or you can view all of your transfers by clicking
-                                            <a href="url.com/dashboard">here</a>.</p>
+                                        <p>The status of your transfer has been changed to <b>{{ $transfer_status }}</b>.</p>
+                                        <div class="mt-6">
+                                            <span class="block w-32 rounded-md">
+                                                <button onclick="window.location.href = 'url.com/transfer/{{ $transfer_id }}';" class="text-center w-full flex py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+                                                    View Transfer
+                                                </button>
+                                            </span>
+                                        </div>
                                     </td>
                                 </tr>
+
                             </table>
                         </td>
                     </tr>
