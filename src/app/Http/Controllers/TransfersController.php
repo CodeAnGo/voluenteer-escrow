@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Transfer;
+use App\Models\Transfer;
 use App\TransferStatus;
 use App\TransferStatusTransitions;
 use Illuminate\Contracts\View\Factory;
@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Ramsey\Uuid\Uuid;
 use SM\SMException;
 
 class TransfersController extends Controller

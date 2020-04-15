@@ -6,14 +6,13 @@ use App\Models\Concerns\UsesUUID;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class Charity extends Model implements Auditable
+class UserCharity extends Model implements Auditable
 {
     use UsesUUID, \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
-        'name',
-        'active'
+        'user_id', 'charity_id'
     ];
 
-    protected $table = 'charities';
+    protected $table = 'user_charities';
 }
