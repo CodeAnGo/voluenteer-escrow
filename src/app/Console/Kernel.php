@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\DeleteOldNotifications;
 use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
@@ -27,7 +28,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-            Notification::where('created_at','<=', Carbon::now()->subWeeks(2))->delete();
+            DeleteOldNotifications::dispatchNow();
         })->daily();
     }
 
