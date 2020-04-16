@@ -32,8 +32,97 @@ class TransfersController extends Controller
      */
     public function create()
     {
-        //
+        \Stripe\Stripe::setApiKey('sk_test_CpMtZaazIi49jN69Efg6Nmfg00ZmtTLqVg');
+        $stripeuserid = DB::table('accounts')->where('user_id',1)->value('stripe_user_id');
+
+
+        //storing a card
+        /* $customer = \Stripe\Customer::create([
+             'email' => 'madhu.pasumarthi@netcompany.com',
+             'source' => 'tok_mastercard',
+         ]);*/
+
+
+
+        //create a Payment Method
+        $paymentMethod= \Stripe\PaymentMethod::create([
+            'type' => 'card',
+            'card' => [
+                'number' => '4242424242424242',
+                'exp_month' => 5,
+                'exp_year' => 2022,
+                'cvc' => '314',
+            ],
+        ]);
+
+
+        //attach a payment method to customer
+        /* $paymentMethod->attach([
+             'customer' => 'cus_H6j2ch993HJ1V0',
+         ]);*/
+
+        //Get all payment methods
+        /*$test=\Stripe\PaymentMethod::all([
+               'customer' => 'cus_H6j2ch993HJ1V0',
+               'type' => 'card'
+           ]);*/
+
+
+
+        /*  $token = \Stripe\Token::create([
+               'customer' => 'cus_H6j2ch993HJ1V0'
+           ], [
+               'stripe_account' => 'acct_1GY8DHKRhsQ7vJ1Q',
+           ]);*/
+
+
+        // Create a PaymentIntent:
+//        $paymentIntent = \Stripe\PaymentIntent::create([
+//            'payment_method_types' => ['card'],
+//            'amount' => 1000,
+//            'currency' => 'gbp',
+//            'transfer_data' => [
+//                'destination' => 'acct_1GY8DHKRhsQ7vJ1Q'
+//            ]
+//        ]);
+//
+//         $paymentIntent->confirm([
+//            'payment_method' => 'pm_card_visa',
+//        ]);
+// Bal before £1343.66
+        /*  $transfer = \Stripe\Transfer::create([
+             'amount' => 1000,
+             'currency' => 'gbp',
+             'source_transaction' => 'ch_1GYYpBFr4BzKbeoHkGkkzUoL',
+             'destination' => 'acct_1GY8DHKRhsQ7vJ1Q'
+          ]);*/
+
+
+
+        // Create a Transfer to a connected account (later):
+//        $transfer = \Stripe\Transfer::create([
+//            'amount' => 100,
+//            'currency' => 'gbp',
+//            'destination' => 'acct_1GYYTCEc7FISZ7Zp',
+//            'transfer_group' => 'foo'
+//        ]);
+
+
+
+        $charities = DB::table('charities')->get();
+
+
+        /*TODO: need to change the API Key*/
+
+        $cards=\Stripe\Customer::allSources(
+            $stripeuserid,
+            ['object' => 'card', 'limit' => 3]
+        );
+
+        $transfers= DB::table('transfers')->where('sending_party_id',1) ->orderByRaw('id DESC')->get();
+        return view('pages.dashing.transfers.create',['charities'=>$charities,'transfers'=>$transfers,'cards'=>$cards]);
     }
+
 
     /**
      * Store a newly created resource in storage.
