@@ -12,8 +12,6 @@ use SM\SMException;
 use App\Http\Contollers\CharityController;
 use DB;
 
-//cus_H4AGL7ic6XXhA4
-
 class TransferController extends Controller
 {
     /**
@@ -23,8 +21,9 @@ class TransferController extends Controller
      */
     public function index()
     {
+
         \Stripe\Stripe::setApiKey('sk_test_CpMtZaazIi49jN69Efg6Nmfg00ZmtTLqVg');
-        $balance = \Stripe\Balance::retrieve([
+         $balance = \Stripe\Balance::retrieve([
             'stripe_account' => Account::where('user_id', Auth::user()->id)->first()->stripe_user_id
         ]);
         return view('pages.dashing.transfers.index', [
@@ -38,17 +37,94 @@ class TransferController extends Controller
      */
     public function create()
     {
+        \Stripe\Stripe::setApiKey('sk_test_CpMtZaazIi49jN69Efg6Nmfg00ZmtTLqVg');
+        $stripeuserid = DB::table('accounts')->where('user_id',1)->value('stripe_user_id');
+
+
+        //storing a card
+       /* $customer = \Stripe\Customer::create([
+            'email' => 'madhu.pasumarthi@netcompany.com',
+            'source' => 'tok_mastercard',
+        ]);*/
+
+
+
+              //create a Payment Method
+        $paymentMethod= \Stripe\PaymentMethod::create([
+            'type' => 'card',
+            'card' => [
+                'number' => '4242424242424242',
+                'exp_month' => 5,
+                'exp_year' => 2022,
+                'cvc' => '314',
+            ],
+        ]);
+
+
+      //attach a payment method to customer
+       /* $paymentMethod->attach([
+            'customer' => 'cus_H6j2ch993HJ1V0',
+        ]);*/
+
+        //Get all payment methods
+     /*$test=\Stripe\PaymentMethod::all([
+            'customer' => 'cus_H6j2ch993HJ1V0',
+            'type' => 'card'
+        ]);*/
+
+
+
+     /*  $token = \Stripe\Token::create([
+            'customer' => 'cus_H6j2ch993HJ1V0'
+        ], [
+            'stripe_account' => 'acct_1GY8DHKRhsQ7vJ1Q',
+        ]);*/
+
+
+           // Create a PaymentIntent:
+//        $paymentIntent = \Stripe\PaymentIntent::create([
+//            'payment_method_types' => ['card'],
+//            'amount' => 1000,
+//            'currency' => 'gbp',
+//            'transfer_data' => [
+//                'destination' => 'acct_1GY8DHKRhsQ7vJ1Q'
+//            ]
+//        ]);
+//
+//         $paymentIntent->confirm([
+//            'payment_method' => 'pm_card_visa',
+//        ]);
+// Bal before £1343.66
+        $transfer = \Stripe\Transfer::create([
+           'amount' => 1000,
+           'currency' => 'gbp',
+           'source_transaction' => 'ch_1GYYpBFr4BzKbeoHkGkkzUoL',
+           'destination' => 'acct_1GY8DHKRhsQ7vJ1Q'
+        ]);
+
+
+
+       // Create a Transfer to a connected account (later):
+//        $transfer = \Stripe\Transfer::create([
+//            'amount' => 100,
+//            'currency' => 'gbp',
+//            'destination' => 'acct_1GYYTCEc7FISZ7Zp',
+//            'transfer_group' => 'foo'
+//        ]);
+
+
+
        $charities = DB::table('charities')->get();
 
 
-       /*TODO: need to change the API Key, User Code*/
-        \Stripe\Stripe::setApiKey('sk_test_CpMtZaazIi49jN69Efg6Nmfg00ZmtTLqVg');
+       /*TODO: need to change the API Key*/
+
         $cards=\Stripe\Customer::allSources(
-            'cus_H4AGL7ic6XXhA4',
+            $stripeuserid,
             ['object' => 'card', 'limit' => 3]
         );
 
-        $transfers= DB::table('transfers')->where('sending_party_id',Auth::id()) ->orderByRaw('id DESC')->get();
+        $transfers= DB::table('transfers')->where('sending_party_id',1) ->orderByRaw('id DESC')->get();
         return view('pages.dashing.transfers.create',['charities'=>$charities,'transfers'=>$transfers,'cards'=>$cards]);
     }
 
@@ -63,7 +139,6 @@ class TransferController extends Controller
         //
         $transfer = Transfer::create([
 
-         //'sending_party_id' =>2,
          'sending_party_id' => Auth::id(),
          'status' => TransferStatus::AwaitingAcceptance,
          'charity_id'=>$request->input('charity'),
@@ -83,10 +158,14 @@ class TransferController extends Controller
         ]);
 
 
+        $transfer->save();
+
         return view('pages.dashing.transfers.view');
         //ToDO: Need to fill stripe_id,charity it
         //Need to change sending party id
-        $transfer->save();
+
+
+
 
         // TODO: return view
     }

@@ -4,6 +4,7 @@
 @section('page_title', 'Create a Transfer')
 
 @section('content')
+    <script src="https://js.stripe.com/v3/"></script>
     <form action="{{ route('transfers.store') }}" method="Post">
         @csrf
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
@@ -132,7 +133,8 @@
                 </div>
             </div>
             @if (count($cards['data'])==0)
-                <B>TODO</B>
+
+
         @else
 <!--Payment Details-->
 
@@ -196,7 +198,6 @@
                             <br/>
                         @endforeach
                     </div>
-
 
                 </div>
                 <div class="hidden sm:block">
