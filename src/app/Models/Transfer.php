@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Models\Concerns\UsesUUID;
 use Illuminate\Database\Eloquent\Model;
