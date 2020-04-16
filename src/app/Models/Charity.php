@@ -12,7 +12,9 @@ class Charity extends Model implements Auditable
 
     protected $fillable = [
         'name',
-        'active'
+        'active',
+        'api_key',
+        'domain'
     ];
 
     protected $table = 'charities';

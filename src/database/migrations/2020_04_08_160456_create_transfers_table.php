@@ -35,6 +35,7 @@ class CreateTransfersTable extends Migration
             $table->tinyInteger('status');
             $table->string('stripe_id');
             $table->timestamps();
+            $table->string('freshdesk_id');
         });
     }
 

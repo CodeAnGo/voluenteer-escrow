@@ -29,6 +29,7 @@ class Transfer extends Model implements Auditable
         'transfer_note',
         'status',
         'stripe_id',
+        'freshdesk_id'
     ];
 
     public function statusStateMachine()

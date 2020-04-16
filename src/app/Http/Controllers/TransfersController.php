@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\CreateFreshdeskTicket;
 use App\Transfer;
 use App\TransferStatus;
 use App\TransferStatusTransitions;
@@ -65,7 +66,8 @@ class TransfersController extends Controller
      */
     public function create()
     {
-        //
+        $transfer_id = 1;
+        $this->dispatch(new CreateFreshdeskTicket($transfer_id));
     }
 
     /**
@@ -81,7 +83,6 @@ class TransfersController extends Controller
             'status' => TransferStatus::AwaitingAcceptance,
         ]); // TODO: add attributes from transfer creation form in here
 
-        return redirect()->route('transfer.show');
     }
 
     /**
@@ -93,7 +94,7 @@ class TransfersController extends Controller
     public function show(Transfer $transfer)
     {
         $showDeliveryDetails =
-            Auth::id() === $transfer->sending_party_id ||
+            Auth::id() === $transfer->sending_party_id;
             Auth::id() === $transfer->receiving_party_id;
 
         // return view('transfer', ['showDeliveryDetails' => $showDeliveryDetails]);
