@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserAddressCreateRequest;
+use App\Http\Requests\UserAddressUpdateRequest;
+use App\Http\Requests\UserProfileUpdateRequest;
 use App\Models\Address;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -39,12 +42,12 @@ class UserAddress extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param UserAddressCreateRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request)
+    public function store(UserAddressCreateRequest $request)
     {
-        $this->validateRequest($request);
+        $request->validated();
 
         Address::create([
             'user_id' => Auth::id(),
@@ -81,20 +84,15 @@ class UserAddress extends Controller
     /**
      * Update the resource in storage.
      *
-     * @param Request $request
+     * @param UserAddressUpdateRequest $request
      * @param uuid $id
      * @return Factory|RedirectResponse|View
      */
-    public function update(Request $request, $id)
+    public function update(UserAddressUpdateRequest $request, $id)
     {
-        $this->validateRequest($request);
+        $request->validated();
 
         $address = Address::where('id', $id)->first();
-
-        if ($address->user_id !== Auth::id()) {
-            return redirect()->route('addresses.index');
-        }
-
         $address->name = $request->get('name');
         $address->email = $request->get('email');
         $address->line1 = $request->get('line1');
@@ -122,18 +120,5 @@ class UserAddress extends Controller
         }
 
         return redirect()->route('addresses.index');
-    }
-
-    private function validateRequest(Request $request) {
-        $request->validate([
-            'name' => 'required|between:1,255',
-            'email' => 'required|between:1,255|email',
-            'line1' => 'required|between:1,255',
-            'line2' => 'max:255',
-            'city' => 'required|between:1,255',
-            'county' => 'max:255',
-            'postcode' => 'required|between:1,255',
-            'country' => 'required|between:1,255',
-        ]);
     }
 }

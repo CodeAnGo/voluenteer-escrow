@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserProfileUpdateRequest;
 use App\Models\Account;
 use App\Models\Address;
 use App\Models\Charity;
@@ -76,13 +77,9 @@ class UserProfile extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function update(Request $request)
+    public function update(UserProfileUpdateRequest $request)
     {
-        $request->validate([
-            'first_name' => 'required|between:1,255',
-            'last_name' => 'required|between:1,255',
-            'email' => 'required|between:1,255|email',
-        ]);
+        $request->validated();
 
         $user = User::where('id', Auth::id())->first();
         $user->first_name = $request->get('first_name');
