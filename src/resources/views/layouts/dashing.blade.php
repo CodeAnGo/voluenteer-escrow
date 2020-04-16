@@ -87,7 +87,7 @@
             <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                 <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                     <div class="max-w-6xl mx-auto">
-                        <div class="flex items-center justify-between">
+                        <div class="flex flex-col sm:flex-row py-2 sm:py-0 justify-between sm:items-center">
                             <div class="flex-1 min-w-0">
                                 <h1 class="ml-4 text-3xl font-bold leading-tight text-gray-900">
                                     @yield('header_title')
@@ -96,8 +96,9 @@
                                     @yield('header_sub_title')
                                 </div>
                             </div>
-                            <div class="ml-2 mr-4 shadow-sm rounded-md">
-                                @yield('header_buttons')
+
+                            <div class="ml-2 mr-4 rounded-md flex flex-row justify-end">
+                                    @yield('header_buttons')
                             </div>
                         </div>
                     </div>

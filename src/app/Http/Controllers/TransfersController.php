@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Transfer;
 use App\TransferStatus;
+use App\TransferStatusId;
+use Illuminate\Foundation\Auth\User;
 use App\TransferStatusTransitions;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -12,6 +14,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use SM\SMException;
+use App\Models\Charity;
 
 class TransfersController extends Controller
 {

@@ -1,6 +1,6 @@
 @extends('layouts.dashing')
 
-@section('title', 'Dashboard')
+@section('title', __('dashboard.index.title'))
 @section('content')
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- We've used 3xl here, but feel free to try other max-widths based on your needs -->
