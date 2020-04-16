@@ -19,8 +19,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/dashboard', 'TransfersController@index')->name('dashboard')->middleware('auth');
-Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
+Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
 
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
@@ -29,3 +28,6 @@ Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middle
 
 Route::resource('transfers', 'TransfersController')->middleware('auth');
 
+Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
+    'edit', 'update'
+])->middleware(['auth', 'canViewTransferEvidence']);

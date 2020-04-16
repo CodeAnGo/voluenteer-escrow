@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Transfer;
+use App\Models\Transfer;
 use App\TransferStatus;
 use App\TransferStatusTransitions;
 use Illuminate\Contracts\View\Factory;
@@ -10,9 +10,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use App\User;
-use App\Charity;
 use Ramsey\Uuid\Uuid;
 use SM\SMException;
 
@@ -25,37 +24,7 @@ class TransfersController extends Controller
      */
     public function index()
     {
-        $transfer_identifier = (Auth::User()->volunteer === 0 ? 'sending_party_id' : 'receiving_party_id');
-        $other_identifier = (Auth::User()->volunteer === 0 ? 'receiving_party_id' : 'sending_party_id');
-
-        $transfers = Transfer::where($transfer_identifier, Auth::id());
-
-        $user_ids = $transfers->get($other_identifier);
-        $users = User::whereIn('id', $user_ids);
-
-        $charity_ids = $transfers->get('charity_id');
-        $charities = Charity::whereIn('id', $charity_ids);
-
-        $reflection = new \ReflectionClass('App\TransferStatus');
-        $status_map = array_flip($reflection->getConstants());
-
-        $closed_status = [
-            TransferStatus::Cancelled,
-            TransferStatus::Closed,
-            TransferStatus::ClosedNonPayment
-        ];
-        $active_transfers = clone $transfers;
-        $active_transfers = $active_transfers->whereNotIn('status', $closed_status);
-
-        return view('dashboard', [
-            'status_map' => $status_map,
-            'users' => $users->get(),
-            'charities' => $charities->get(),
-            'transfers' => $transfers->get(),
-            'active_transfers' => $active_transfers->get(),
-            'closed_status' => $closed_status,
-            'volunteer' => !(Auth::User()->volunteer === 0),
-        ]);
+        return view('transfers.index');
     }
 
     /**
@@ -80,6 +49,7 @@ class TransfersController extends Controller
             'sending_party_id' => Auth::id(),
             'status' => TransferStatus::AwaitingAcceptance,
         ]); // TODO: add attributes from transfer creation form in here
+        Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
 
         return redirect()->route('transfer.show');
     }
@@ -102,7 +72,7 @@ class TransfersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  uuid  $id
      * @return Response
      */
     public function edit($id)
@@ -114,7 +84,7 @@ class TransfersController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  int  $id
+     * @param  uuid  $id
      * @return Response
      */
     public function update(Request $request, $id)
@@ -125,7 +95,8 @@ class TransfersController extends Controller
         if (!is_null($statusTransition)) // update should always have statusTransition EXCEPT when Sending Party is editing an Awaiting Acceptance transfer
         {
             if ($request->input('statusTransition') === TransferStatusTransitions::ToAccepted) {
-                $transfer->receiving_party_id = $request.auth()->id();
+                $transfer->receiving_party_id = Auth::id();
+                Storage::makeDirectory('/evidence/' . $id . '/' . Auth::id());
             }
             try {
                 $transfer->statusStateMachine()->apply($statusTransition);
@@ -146,7 +117,7 @@ class TransfersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  uuid  $id
      * @return Response
      */
     public function destroy($id)

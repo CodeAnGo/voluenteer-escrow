@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Charity;
-use App\UserCharity;
+use App\Models\Charity;
+use App\Models\UserCharity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

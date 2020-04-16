@@ -6,17 +6,15 @@ use App\Models\Concerns\UsesUUID;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class Account extends Model implements Auditable
+class TransferEvidence extends Model implements Auditable
 {
     use UsesUUID, \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
+        'transfer_id',
         'user_id',
-        'access_token',
-        'refresh_token',
-        'token_type',
-        'stripe_publishable_key',
-        'stripe_user_id',
-        'scope',
+        'path'
     ];
+
+    protected $table = 'transfer_evidences';
 }

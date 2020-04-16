@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Stripe;
 
 use App\Http\Controllers\Controller;
-use App\Models\Stripe\Account;
+use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
