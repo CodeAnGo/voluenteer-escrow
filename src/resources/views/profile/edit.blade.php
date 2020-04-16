@@ -1,24 +1,11 @@
 @extends('layouts.dashing')
 
-@section('title', 'Edit Profile')
-
-@section('page_title')
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-        <div class="max-w-6xl mx-auto">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 min-w-0">
-                    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
-                        Edit Profile
-                    </h2>
-                </div>
-                <div class="hidden sm:block ml-3 shadow-sm rounded-md">
-                    <button type="submit" form="editProfile" class="flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
-                        Save Changes
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+@section('title', __('profile.edit.title'))
+@section('header_title', __('profile.edit.title'))
+@section('header_buttons')
+    <button type="submit" form="editProfile" class="flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+        {{ __('common.save_changes') }}
+    </button>
 @endsection
 
 @section('content')
@@ -31,7 +18,7 @@
                     <div class="bg-white shadow overflow-hidden sm:rounded-lg h-full">
                         <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
                             <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                Contact details
+                                {{ __('profile.contact_details') }}
                             </h3>
                         </div>
                         <div class="px-4 py-5 sm:px-6">
@@ -40,12 +27,12 @@
                                     <div class="w-full">
                                         <dt>
                                             <label for="first_name" class="text-sm leading-5 font-medium text-gray-500">
-                                                First Name
+                                                {{ __('common.first_name') }}
                                             </label>
                                         </dt>
                                         <dd>
                                             <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="first_name" name="first_name" type="text" value="{{ $user->first_name }}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                <input id="first_name" name="first_name" type="text" value="{{ $user->first_name }}" required class="@error('first_name') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                             </div>
                                             @error('first_name')
                                             <div class="mt-1 rounded-md shadow-sm">
@@ -61,12 +48,12 @@
                                     <div class="w-full">
                                         <dt>
                                             <label for="last_name" class="text-sm leading-5 font-medium text-gray-500">
-                                                Last Name
+                                                {{ __('common.last_name') }}
                                             </label>
                                         </dt>
                                         <dd>
                                             <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="last_name" name="last_name" type="text" value="{{ $user->last_name }}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                <input id="last_name" name="last_name" type="text" value="{{ $user->last_name }}" required class="@error('last_name') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                             </div>
                                             @error('last_name')
                                             <div class="mt-1 rounded-md shadow-sm">
@@ -82,12 +69,12 @@
                                     <div class="w-full">
                                         <dt>
                                             <label for="email" class="text-sm leading-5 font-medium text-gray-500">
-                                                Email Address
+                                                {{ __('common.email_address') }}
                                             </label>
                                         </dt>
                                         <dd>
                                             <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="email" name="email" type="email" value="{{ $user->email }}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                <input id="email" name="email" type="email" value="{{ $user->email }}" required class="@error('email') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                             </div>
                                             @error('email')
                                             <div class="mt-1 rounded-md shadow-sm">
@@ -107,12 +94,12 @@
                     <div class="bg-white shadow overflow-hidden sm:rounded-lg h-full">
                         <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
                             <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                Charity details
+                                {{ __('profile.charity_details') }}
                             </h3>
                         </div>
                         <div class="px-4 py-5 sm:px-6 text-gray-900">
                             <label class="text-sm leading-5 font-medium text-gray-500">
-                                Your Charities
+                                {{ __('profile.your_charities') }}
                             </label>
                             @foreach($charities as $charity)
                                 <div class="mt-2">

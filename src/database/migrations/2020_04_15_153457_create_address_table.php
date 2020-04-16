@@ -20,9 +20,9 @@ class CreateAddressTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('line1');
-            $table->string('line2');
+            $table->string('line2')->nullable();
             $table->string('city');
-            $table->string('county');
+            $table->string('county')->nullable();
             $table->string('postcode');
             $table->string('country');
             $table->timestamps();

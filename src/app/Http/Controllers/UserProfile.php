@@ -78,6 +78,12 @@ class UserProfile extends Controller
      */
     public function update(Request $request)
     {
+        $request->validate([
+            'first_name' => 'required|between:1,255',
+            'last_name' => 'required|between:1,255',
+            'email' => 'required|between:1,255|email',
+        ]);
+
         $user = User::where('id', Auth::id())->first();
         $user->first_name = $request->get('first_name');
         $user->last_name = $request->get('last_name');
@@ -117,8 +123,8 @@ class UserProfile extends Controller
         $address->line1 = $stripe_account->business_profile->support_address->line1 ?? null;
         $address->line2 = $stripe_account->business_profile->support_address->line2 ?? null;
         $address->city = $stripe_account->business_profile->support_address->city ?? null;
-        $address->state = $stripe_account->business_profile->support_address->state ?? null;
-        $address->postal_code = $stripe_account->business_profile->support_address->postal_code ?? null;
+        $address->county = $stripe_account->business_profile->support_address->state ?? null;
+        $address->postcode = $stripe_account->business_profile->support_address->postal_code ?? null;
         $address->country = $stripe_account->business_profile->support_address->country ?? null;
 
         $account = new StripeAccount();

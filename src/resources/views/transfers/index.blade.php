@@ -1,3 +1,4 @@
 @extends('layouts.dashing')
 
-@section('title', 'Transfers')
+@section('title', __('transfers.index.title'))
+@section('header_title', __('transfers.index.title'))

@@ -3,7 +3,7 @@
         <div class="flex flex-col sm:col-span-1">
             <div class="bg-white shadow overflow-hidden sm:rounded-lg h-full">
                 <div class="px-4 py-5 sm:px-6">
-                    You have no saved addresses.
+                    {{ __('addresses.no_saved_addresses') }}
                 </div>
             </div>
         </div>

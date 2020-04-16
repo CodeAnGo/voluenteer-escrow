@@ -1,24 +1,11 @@
 @extends('layouts.dashing')
 
-@section('title', 'Edit Address')
-
-@section('page_title')
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-        <div class="max-w-6xl mx-auto">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 min-w-0">
-                    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
-                        Create Address
-                    </h2>
-                </div>
-                <div class="hidden sm:block ml-3 shadow-sm rounded-md">
-                    <button type="submit" form="createAddress" class="flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
-                        Save Address
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+@section('title', __('addresses.create.title'))
+@section('header_title', __('addresses.create.title'))
+@section('header_buttons')
+    <button type="submit" form="createAddress" class="flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+        {{ __('addresses.save_address') }}
+    </button>
 @endsection
 
 @section('content')
@@ -30,7 +17,7 @@
                     <div class="bg-white shadow overflow-hidden sm:rounded-lg h-full">
                         <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
                             <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                Contact details
+                                {{ __('addresses.address_details') }}
                             </h3>
                         </div>
                         <div class="px-4 py-5 sm:px-6">
@@ -39,12 +26,12 @@
                                     <div class="w-full">
                                         <dt>
                                             <label for="name" class="text-sm leading-5 font-medium text-gray-500">
-                                                Name
+                                                {{ __('common.name') }}
                                             </label>
                                         </dt>
                                         <dd>
                                             <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="name" name="name" type="text" value="{{ old('name') }}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                <input id="name" name="name" type="text" value="{{ old('name') }}" required class="@error('name') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                             </div>
                                             @error('name')
                                             <div class="mt-1 rounded-md shadow-sm">
@@ -60,12 +47,12 @@
                                     <div class="w-full">
                                         <dt>
                                             <label for="email" class="text-sm leading-5 font-medium text-gray-500">
-                                                Email Address
+                                                {{ __('common.email_address') }}
                                             </label>
                                         </dt>
                                         <dd>
                                             <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="email" name="email" type="email" value="{{ old('email') }}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                <input id="email" name="email" type="email" value="{{ old('email') }}" required class="@error('email') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                             </div>
                                             @error('email')
                                             <div class="mt-1 rounded-md shadow-sm">
@@ -82,12 +69,12 @@
                                     <div class="w-full">
                                         <dt>
                                             <label for="line1" class="text-sm leading-5 font-medium text-gray-500">
-                                                Line 1
+                                                {{ __('common.line1') }}
                                             </label>
                                         </dt>
                                         <dd>
                                             <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="line1" name="line1" type="text" value="{{ old('line1') }}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                <input id="line1" name="line1" type="text" value="{{ old('line1') }}" required class="@error('line1') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                             </div>
                                             @error('line1')
                                             <div class="mt-1 rounded-md shadow-sm">
@@ -103,12 +90,12 @@
                                     <div class="w-full">
                                         <dt>
                                             <label for="line2" class="text-sm leading-5 font-medium text-gray-500">
-                                                Line 2
+                                                {{ __('common.line2') }}
                                             </label>
                                         </dt>
                                         <dd>
                                             <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="line2" name="line2" type="text" value="{{ old('line2') }}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                <input id="line2" name="line2" type="text" value="{{ old('line2') }}" class="@error('line2') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                             </div>
                                             @error('line2')
                                             <div class="mt-1 rounded-md shadow-sm">
@@ -124,12 +111,12 @@
                                     <div class="w-full">
                                         <dt>
                                             <label for="city" class="text-sm leading-5 font-medium text-gray-500">
-                                                City
+                                                {{ __('common.city') }}
                                             </label>
                                         </dt>
                                         <dd>
                                             <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="city" name="city" type="text" value="{{ old('city') }}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                <input id="city" name="city" type="text" value="{{ old('city') }}" required class="@error('city') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                             </div>
                                             @error('city')
                                             <div class="mt-1 rounded-md shadow-sm">
@@ -145,12 +132,12 @@
                                     <div class="w-full">
                                         <dt>
                                             <label for="county" class="text-sm leading-5 font-medium text-gray-500">
-                                                County
+                                                {{ __('common.county') }}
                                             </label>
                                         </dt>
                                         <dd>
                                             <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="county" name="county" type="text" value="{{ old('county') }}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                <input id="county" name="county" type="text" value="{{ old('county') }}" class="@error('county') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                             </div>
                                             @error('county')
                                             <div class="mt-1 rounded-md shadow-sm">
@@ -166,12 +153,12 @@
                                     <div class="w-full">
                                         <dt>
                                             <label for="postcode" class="text-sm leading-5 font-medium text-gray-500">
-                                                Post Code
+                                                {{ __('common.postcode') }}
                                             </label>
                                         </dt>
                                         <dd>
                                             <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="postcode" name="postcode" type="text" value="{{ old('postcode') }}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                <input id="postcode" name="postcode" type="text" value="{{ old('postcode') }}" required class="@error('postcode') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                             </div>
                                             @error('postcode')
                                             <div class="mt-1 rounded-md shadow-sm">
@@ -187,12 +174,12 @@
                                     <div class="w-full">
                                         <dt>
                                             <label for="country" class="text-sm leading-5 font-medium text-gray-500">
-                                                Country
+                                                {{ __('common.country') }}
                                             </label>
                                         </dt>
                                         <dd>
                                             <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="country" name="country" type="text" value="{{ old('country') }}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                <input id="country" name="country" type="text" value="{{ old('country') }}" required class="@error('country') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                             </div>
                                             @error('country')
                                             <div class="mt-1 rounded-md shadow-sm">

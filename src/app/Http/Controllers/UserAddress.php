@@ -44,6 +44,8 @@ class UserAddress extends Controller
      */
     public function store(Request $request)
     {
+        $this->validateRequest($request);
+
         Address::create([
             'user_id' => Auth::id(),
             'name' => $request->get('name'),
@@ -85,6 +87,8 @@ class UserAddress extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validateRequest($request);
+
         $address = Address::where('id', $id)->first();
 
         if ($address->user_id !== Auth::id()) {
@@ -118,5 +122,18 @@ class UserAddress extends Controller
         }
 
         return redirect()->route('addresses.index');
+    }
+
+    private function validateRequest(Request $request) {
+        $request->validate([
+            'name' => 'required|between:1,255',
+            'email' => 'required|between:1,255|email',
+            'line1' => 'required|between:1,255',
+            'line2' => 'max:255',
+            'city' => 'required|between:1,255',
+            'county' => 'max:255',
+            'postcode' => 'required|between:1,255',
+            'country' => 'required|between:1,255',
+        ]);
     }
 }
