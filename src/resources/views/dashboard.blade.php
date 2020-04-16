@@ -124,98 +124,67 @@
                 @endif
             </div>
 
-
             <div class="flex flex-col pt-4">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 p-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-800 p-4">
                     Active transfers
                 </h3>
-                <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-                    <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
-                        <table class="min-w-full">
-                            @if (count($transfers) > 0)
-                                <thead>
-                                <tr>
-                                    <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                                        Name
-                                    </th>
-                                    @if (Auth::user()->volunteer === 0)
-                                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                                            Email
-                                        </th>
-                                    @else
-                                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                                            Delivery City
-                                        </th>
-                                    @endif
-                                    <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                                        Amount
-                                    </th>
-                                    <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                                        Last Updated
-                                    </th>
-                                    <th class="px-6 py-3 border-b border-gray-200 bg-gray-50"></th>
-                                </tr>
-                                </thead>
-                            @endif
-                            <tbody class="bg-white">
-                            @forelse ($active_transfers as $transfer)
-                                @if($volunteer) @if($other_party=$users->find($transfer->sending_party_id)) @endif
-                                @else @if($other_party=$users->find($transfer->receiving_party_id)) @endif @endif
-                                <tr>
-                                    <td class="px-2 py-4 whitespace-no-wrap border-b border-gray-200">
-                                        <div class="flex items-center">
-                                            <div class="ml-4">
-                                                <div class="text-sm leading-5 font-medium text-gray-900">
+
+                <div class="bg-white shadow overflow-hidden sm:rounded-md">
+                    <ul>
+
+                        @forelse ($active_transfers as $transfer)
+                            @if($volunteer) @if($other_party=$users->find($transfer->sending_party_id)) @endif
+                            @else @if($other_party=$users->find($transfer->receiving_party_id)) @endif @endif
+
+                            <li class="border border-2 border-gray-100">
+                                <a href="/transfers/{{ $transfer->id }}" class="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
+                                    <div class="px-4 py-4 sm:px-6">
+                                        <div class="flex items-center justify-between">
+                                            <div class="text-sm leading-5 font-medium text-gray-500 truncate tracking-wider">
+                                                <span class="text-indigo-600">{{ $transfer->transfer_reason }}</span> by <span class="text-gray-600">
                                                     @if($other_party)
                                                         {{ $other_party->first_name }} {{ $other_party->last_name }}
                                                     @else
                                                         Unassigned
                                                     @endif
+                                                </span>
+                                            </div>
+                                            <div class="ml-2 flex-shrink-0 flex">
+              <span class="px-2 inline-flex text-xs leading-5 rounded-full text-green-600 tracking-wide font-normal md:text-green-700 md:bg-green-100">
+                In Progress
+              </span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 sm:flex sm:justify-between">
+                                            <div class="sm:flex">
+                                                <div class="mt-2 flex items-center text-sm leading-5 text-green-600 tracking-wider font-normal  sm:mt-0">
+                                                    £{{ number_format($transfer->transfer_amount, 2) }}
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    @if (Auth::user()->volunteer === 0)
-                                        <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                            <div class="text-sm leading-5 text-gray-500">
-                                                @if($other_party)
-                                                    {{ $other_party->email }}
-                                                @else
-                                                    Unassigned
-                                                @endif
+                                            <div class="mt-2 flex items-center text-sm leading-5 text-gray-600 sm:mt-0 font-thin tracking-wide">
+                                                <span>
+                                                Updated
+                                                <time datetime="{{ $transfer->updated_at }}">{{ \Carbon\Carbon::make($transfer->updated_at)->diffForHumans() }}</time>
+                                            </span>
                                             </div>
-                                        </td>
-                                    @else
-                                        <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                            <div class="text-sm leading-5 text-gray-500">{{ $transfer->delivery_city }}</div>
-                                        </td>
-                                    @endif
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                        <div class="text-sm leading-5 text-gray-500">{{ $transfer->transfer_amount }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                        <div class="text-sm leading-5 text-gray-500">{{ \Carbon\Carbon::make($transfer->updated_at)->diffForHumans() }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
-                                        <a href="/transfers/{{ $transfer->id }}"
-                                           class="text-black hover:text-gray-800 focus:outline-none focus:underline bg-blue-300 hover:bg-blue-200 px-4 py-2 rounded-full">
-                                            View Transfer
-                                        </a>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                        <div class="flex items-center">
-                                            No Active Transfers.
                                         </div>
-                                </tr>
-                                </tr>
-                            @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                                    </div>
+                                </a>
+                            </li>
+
+                        @empty
+                            <div class="bg-white shadow p-4">
+                                <div class="flex justify-center">
+                                    <div class="text-gray-800  font-normal tracking-wider">
+                                        No Active Transfers
+                                    </div>
+                                </div>
+                            </div>
+                        @endforelse
+
+                    </ul>
                 </div>
+            </div>
 
                 <div class="flex flex-col pt-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 p-4">
