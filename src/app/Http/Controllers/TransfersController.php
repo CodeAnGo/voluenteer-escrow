@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Mail\TransferGenericMail;
 use App\Mail\TransferDisputeMail;
-use App\Notification;
-use App\Transfer;
+use App\Models\Notification;
+use App\Models\Transfer;
 use App\TransferStatus;
 use App\TransferStatusTransitions;
 use Illuminate\Contracts\View\Factory;
@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use App\User;
-use App\Charity;
+use App\Models\Charity;
 use Ramsey\Uuid\Uuid;
 use SM\SMException;
 
@@ -103,6 +103,8 @@ class TransfersController extends Controller
 
         // return view('transfer', ['showDeliveryDetails' => $showDeliveryDetails]);
     }
+
+
 
     /**
      * Show the form for editing the specified resource.

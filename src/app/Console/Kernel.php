@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Notification;
+use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;

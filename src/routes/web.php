@@ -1,7 +1,7 @@
 <?php
 
 use App\Mail\TransferGenericMail;
-use App\Transfer;
+use App\Models\Transfer;
 use App\TransferStatus;
 use App\TransferStatusTemp;
 use App\User;
@@ -31,6 +31,8 @@ Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse
 
 Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middleware('auth');
 Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middleware('auth');
+
+Route::get('/notification/{notification}', 'Notification@delete');
 
 Route::resource('transfers', 'TransfersController')->middleware('auth');
 

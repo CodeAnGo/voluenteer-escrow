@@ -307,7 +307,6 @@
         <td class="container">
             <div class="content">
 
-                <img class="h-12 w-36 mb-6" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
                 <!-- START CENTERED WHITE CONTAINER -->
                 <table role="presentation" class="main">
 
@@ -317,9 +316,13 @@
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td>
+                                        <img class="h-12 w-36 mb-8" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
+
                                         <p>Hi {{ $sending_party_name }},</p>
-                                        <br>
+                                        <br><br>
                                         <p>The status of your transfer has been changed to <b>{{ $transfer_status }}</b>.</p>
+                                        <br><br>
+                                        <p>You can view the transfer by clicking below:</p>
                                         <div class="mt-6">
                                             <span class="block w-32 rounded-md">
                                                 <button onclick="window.location.href = 'url.com/transfer/{{ $transfer_id }}';" class="text-center w-full flex py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
