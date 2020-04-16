@@ -293,10 +293,10 @@
                                         </div>
                                         <div class="text-lg leading-6 font-medium text-gray-900 ml-auto text-center font-semibold rounded-full px-2
                                             @if (in_array($transfer->status, $closed_status))
-                                            bg-red-200 text-black
-@else
-                                            bg-green-200 text-black
-@endif
+                                                bg-red-200 text-black
+                                            @else
+                                                bg-green-200 text-black
+                                            @endif
                                             ">{{$status_map[$transfer->status]}}
                                         </div>
                                     </div>

@@ -1,7 +1,6 @@
 <?php
 
-use App\Transfer;
-use App\TransferStatus;
+use App\Models\Transfer;
 use App\TransferStatusId;
 use App\TransferStatusTransitions;
 
