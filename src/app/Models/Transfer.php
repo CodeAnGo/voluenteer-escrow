@@ -32,23 +32,6 @@ class Transfer extends Model implements Auditable
         'stripe_id',
     ];
 
-    protected $transferStatuses = [
-        "Unable to get Status",
-        "Awaiting Acceptance",
-        "Accepted",
-        "Rejected",
-        "Cancelled",
-        "Pending Approval",
-        "Approved",
-        "In Dispute",
-        "Closed",
-        "Closed (Non-Payment)",
-    ];
-
-    public function getStatusAttribute($value) {
-        return Arr::get($this->transferStatuses, $value);
-    }
-
     public function statusStateMachine()
     {
         $factory = new SMFactory(config('state_machine'));
