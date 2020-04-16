@@ -1,21 +1,21 @@
 @extends('layouts.dashing')
 
 @section('title', 'Transfer')
-@section('page_title')
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-        <!-- We've used 3xl here, but feel free to try other max-widths based on your needs -->
-        <div class="max-w-6xl mx-auto">
-            <div class="lg:flex lg:items-center lg:justify-between md:flex md:items-center md:justify-between">
-                <div class="flex-1 min-w-0">
-                    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
-                        {{ $transfer->transfer_reason }}
-                    </h2>
-                    <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mr-6">
-                        Collecting for {{ $sending_user->first_name }} {{ $sending_user->last_name }}
-                    </div>
-                </div>
 
-                <div class="flex flex-row py-2 justify-between">
+@section('header_title')
+    <div class="flex-1 min-w-0">
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
+            {{ $transfer->transfer_reason }}
+        </h2>
+
+    </div>
+@endsection
+@section('header_sub_title')
+    <div class="mt-2 flex items-center text-sm leading-5 text-gray-500 sm:mr-6">
+        Collecting for {{ $sending_user->first_name }} {{ $sending_user->last_name }}
+    </div>
+@endsection
+@section('header_buttons')
                     @if($is_sending_user)
                         @if($transfer->status == \App\TransferStatusId::Rejected)
                             <button type="submit" form="restartForm"
@@ -168,8 +168,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
             @endsection
 
             {{--TODO - put this into it's own file --}}
