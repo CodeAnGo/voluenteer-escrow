@@ -109,8 +109,7 @@ class TransfersController extends Controller
 
 
 
-        $charities = DB::table('charities')->get();
-
+        $charities = Charities::all();
 
         /*TODO: need to change the API Key*/
 
@@ -119,7 +118,8 @@ class TransfersController extends Controller
             ['object' => 'card', 'limit' => 3]
         );
 
-        $transfers= DB::table('transfers')->where('sending_party_id',1) ->orderByRaw('id DESC')->get();
+        $transfers = Transfer::where('sending_party_id',Auth::user()->id)->orderBy('id', 'desc')->get();
+
         return view('pages.dashing.transfers.create',['charities'=>$charities,'transfers'=>$transfers,'cards'=>$cards]);
     }
 
