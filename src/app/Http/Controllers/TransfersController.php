@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Transfer;
+use App\Jobs\CreateFreshdeskTicket;
 use App\TransferStatus;
 use App\TransferStatusId;
 use Exception;
@@ -186,6 +187,8 @@ class TransfersController extends Controller
             'stripe_id' => 1,
         ]);
         Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
+
+        $this->dispatch(new CreateFreshdeskTicket($transfer->id));
 
         return redirect()->route('transfers.show', $transfer->id);
     }

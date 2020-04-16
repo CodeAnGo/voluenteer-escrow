@@ -36,6 +36,7 @@ class CreateTransfersTable extends Migration
             $table->string('stripe_id');
             $table->string('freshdesk_id');
             $table->timestamps();
+            $table->string('freshdesk_id');
         });
     }
 
