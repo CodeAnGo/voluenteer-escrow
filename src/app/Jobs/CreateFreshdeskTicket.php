@@ -8,19 +8,23 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use mysql_xdevapi\Exception;
+use DB;
+
 
 class CreateFreshdeskTicket implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private $id;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($id)
     {
-        //
+        $this->id = $id;
     }
 
     /**
@@ -28,17 +32,20 @@ class CreateFreshdeskTicket implements ShouldQueue
      *
      * @return void
      */
-    public function handle($id)
+    public function handle()
     {
-        $transfer = DB::table('transfer')->where('id', $id)->first();
+        $transfer = DB::table('transfers')->where('id', $this->id)->first();
         $charity = DB::table('charities')->where('id',$transfer->charity_id)->first();
 
         $ticket_data = json_encode(array(
 
-            "description" => $transfer->escrow_link,
-            "subject" => "Test Escrow Transfer",
-            "email" => "", //don't set this, we don't decide who the ticket is assigned to
-            //Todo: Other fields may need populating on the freshdesk ticket.
+            "description" => "escrow stuff",//will be $transfer->escrow_link
+            "subject" => "Volunteer Escrow Transfer",
+            "email" => "beatt@netcompany.com", //this should be the same as the email associated with the charity freshdesk, or a standard email shared between the accounts.
+            "priority" => 1,
+            "status" => 2,
+            "unique_external_id" => "transfer".$this->id,
+            //Todo: Confirm other fields that need populating on the freshdesk ticket
         ));
 
         $url = "https://$charity->domain.freshdesk.com/api/v2/tickets";
@@ -61,8 +68,7 @@ class CreateFreshdeskTicket implements ShouldQueue
 
         if ($info['http_code'] == 201) {
             $decodedBody = json_decode($response);
-            $freshdesk_id = $decodedBody->id;
-            //Todo: Capture freshdesk id against transfer record
+            Transfer::find($this->id)->update(['freshdesk_id' => $decodedBody->id]);
         } else {
             if ($info['http_code'] == 404) {
                 $e = "Error, Please check the end point \n";
@@ -70,9 +76,10 @@ class CreateFreshdeskTicket implements ShouldQueue
                 $e = "Error, HTTP Status Code : " . $info['http_code'] . "\n";
                 $e .= "Header: " . $headers . "\n";
                 $e .= "Response: " . $response . "\n";
+                echo $response;
             }
-            //Todo: Throw an error so that job is reattempted
+            throw new \Exception($e);
         }
         curl_close($ch);
-    }
+}
 }
