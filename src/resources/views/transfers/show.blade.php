@@ -146,7 +146,7 @@
                     <div @click.away="open = false" x-data="{ open: false }">
                         <div>
                             <button type="button" @click="open = !open"
-                                    onclick="setClipboard('https://net.com/{{$transfer->id}}')"
+                                    onclick="setClipboard('{{env('APP_URL') . '/transfers/'. $transfer->id}}')"
                                     class="m-2 inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-900 bg-blue-300 hover:bg-blue-200 hover:text-gray-800 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:text-gray-800 active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out">
                                 <svg class="-ml-1 mr-2 h-5 w-5 text-gray-900" fill="currentColor"
                                      viewBox="0 0 20 20">
@@ -163,7 +163,7 @@
                                 <div
                                     class="overflow-x-scroll w-64 text-sm font-medium leading-5 text-gray-700 text-center"
                                     id="escrowLink">
-                                    https://net.com/{{$transfer->id}}
+                                    {{env('APP_URL') . '/transfers/'. $transfer->id}}
                                 </div>
                             </div>
                         </div>
@@ -291,11 +291,11 @@
                                         <div class="text-lg leading-6 font-medium text-gray-900">
                                             Transfer Information
                                         </div>
-                                        <div class="text-lg leading-6 font-medium text-gray-900 ml-auto text-center font-semibold rounded-full px-2
+                                        <div class="text-sm leading-6 font-medium text-gray-900 ml-auto text-center font-semibold rounded-full px-2
                                             @if (in_array($transfer->status, $closed_status))
-                                                bg-red-200 text-black
+                                                bg-red-200 text-red-800 tracking-wide font-thin
                                             @else
-                                                bg-green-200 text-black
+                                                bg-green-200 text-green-800 tracking-wide font-thin
                                             @endif
                                             ">{{$status_map[$transfer->status]}}
                                         </div>

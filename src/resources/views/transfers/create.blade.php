@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.dashing')
 
 @section('title', 'Create a Transfer')
-@section('page_title', 'Create a Transfer')
+@section('header_title', __('transfers.create.title'))
 
 @section('content')
     <script src="https://js.stripe.com/v3/"></script>
