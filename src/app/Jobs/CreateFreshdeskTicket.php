@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Transfer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -10,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use mysql_xdevapi\Exception;
 use DB;
+use App\{Charity, Transfer};
 
 
 class CreateFreshdeskTicket implements ShouldQueue
@@ -34,8 +34,8 @@ class CreateFreshdeskTicket implements ShouldQueue
      */
     public function handle()
     {
-        $transfer = DB::table('transfers')->where('id', $this->id)->first();
-        $charity = DB::table('charities')->where('id',$transfer->charity_id)->first();
+        $transfer = Transfer::where('id', $this->id)->first();
+        $charity = Charity::where('id',$transfer->charity_id)->first();
 
         $ticket_data = json_encode(array(
 
@@ -76,7 +76,6 @@ class CreateFreshdeskTicket implements ShouldQueue
                 $e = "Error, HTTP Status Code : " . $info['http_code'] . "\n";
                 $e .= "Header: " . $headers . "\n";
                 $e .= "Response: " . $response . "\n";
-                echo $response;
             }
             throw new \Exception($e);
         }
