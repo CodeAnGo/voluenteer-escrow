@@ -7,8 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use mysql_xdevapi\Exception;
-use DB;
 use App\{Charity, Transfer};
 
 
@@ -16,7 +14,9 @@ class CreateFreshdeskTicket implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 2;//number of times to attempt (doesn't work)
     private $id;
+
     /**
      * Create a new job instance.
      *
@@ -35,17 +35,18 @@ class CreateFreshdeskTicket implements ShouldQueue
     public function handle()
     {
         $transfer = Transfer::where('id', $this->id)->first();
-        $charity = Charity::where('id',$transfer->charity_id)->first();
-
+        $charity = Charity::where('id', $transfer->charity_id)->first();
         $ticket_data = json_encode(array(
 
-            "description" => "escrow stuff",//will be $transfer->escrow_link
+            "description" => "escrow link",//will be $transfer->escrow_link
             "subject" => "Volunteer Escrow Transfer",
             "email" => "beatt@netcompany.com", //this should be the same as the email associated with the charity freshdesk, or a standard email shared between the accounts.
             "priority" => 1,
             "status" => 2,
-            "unique_external_id" => "transfer".$this->id,
-            //Todo: Confirm other fields that need populating on the freshdesk ticket
+            "unique_external_id" => "transfer-" . $this->id,
+            "custom_fields" => array(
+                "cf_charity" => $charity->name,
+                "cf_transfer_amount" => $transfer->transfer_amount),
         ));
 
         $url = "https://$charity->domain.freshdesk.com/api/v2/tickets";
@@ -77,8 +78,8 @@ class CreateFreshdeskTicket implements ShouldQueue
                 $e .= "Header: " . $headers . "\n";
                 $e .= "Response: " . $response . "\n";
             }
-            throw new \Exception($e);
+            $this->fail($e);
         }
         curl_close($ch);
-}
+    }
 }
