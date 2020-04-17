@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Transfer;
 use App\TransferStatus;
+use App\TransferStatusId;
+use Illuminate\Foundation\Auth\User;
 use App\TransferStatusTransitions;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -14,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
 use SM\SMException;
+use App\Models\Charity;
 
 class TransfersController extends Controller
 {
@@ -24,7 +27,31 @@ class TransfersController extends Controller
      */
     public function index()
     {
-        return view('transfers.index');
+        $transfer_identifier = (Auth::User()->volunteer === 0 ? 'sending_party_id' : 'receiving_party_id');
+        $other_identifier = (Auth::User()->volunteer === 0 ? 'receiving_party_id' : 'sending_party_id');
+
+        $transfers = Transfer::where($transfer_identifier, Auth::id());
+
+        $user_ids = $transfers->get($other_identifier);
+        $users = User::whereIn('id', $user_ids);
+
+        $charity_ids = $transfers->get('charity_id');
+        $charities = Charity::whereIn('id', $charity_ids);
+
+        $status_map = $this->getStatusMap();
+        $closed_status_id = $this->getClosedStatus();
+        $active_transfers = clone $transfers;
+        $active_transfers = $active_transfers->whereNotIn('status', $closed_status_id);
+
+        return view('dashboard', [
+            'users' => $users->get(),
+            'charities' => $charities->get(),
+            'transfers' => $transfers->get(),
+            'active_transfers' => $active_transfers->get(),
+            'closed_status' => $closed_status_id,
+            'volunteer' => !(Auth::User()->volunteer === 0),
+            'status_map' => $status_map
+        ]);
     }
 
     /**
@@ -146,16 +173,36 @@ class TransfersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Transfer $transfer
+     * @param int $id
      * @return Factory|View
      */
-    public function show(Transfer $transfer)
+    public function show($id)
     {
+        $transfer = Transfer::where('id', $id)->first();
         $showDeliveryDetails =
             Auth::id() === $transfer->sending_party_id ||
             Auth::id() === $transfer->receiving_party_id;
+        $is_sending_user = Auth::id() === $transfer->sending_party_id;
 
-        // return view('transfer', ['showDeliveryDetails' => $showDeliveryDetails]);
+        $sending_user = User::where('id', $transfer->sending_party_id)->first();
+        $receiving_user = User::where('id', $transfer->receiving_party_id)->first();
+
+        $charity = Charity::where('id', $transfer->charity_id)->first();
+
+        $status_map = $this->getStatusMap();
+        $closed_status = $this->getClosedStatus();
+
+        return view('pages.dashing.transfers.show', [
+            'balance' => 1,
+            'transfer' => $transfer,
+            'charity' => $charity->name,
+            'sending_user' => $sending_user,
+            'receiving_user' => $receiving_user,
+            'show_delivery_details' => $showDeliveryDetails,
+            'is_sending_user' => $is_sending_user,
+            'closed_status' => $closed_status,
+            'status_map' => $status_map
+        ]);
     }
 
     /**
@@ -180,12 +227,17 @@ class TransfersController extends Controller
     {
         $transfer = Transfer::where('id', $id)->first();
         $statusTransition = $request->input('statusTransition');
-
-        if (!is_null($statusTransition)) // update should always have statusTransition EXCEPT when Sending Party is editing an Awaiting Acceptance transfer
-        {
-            if ($request->input('statusTransition') === TransferStatusTransitions::ToAccepted) {
+        $isEdit = is_null($statusTransition);
+        if ($isEdit) {
+            if (Auth::id() === $transfer->sending_party_id and $transfer->status === TransferStatusId::AwaitingAcceptance) {
+                //
+            }
+        } else {
+            if ($statusTransition == TransferStatusTransitions::ToAccepted) {
                 $transfer->receiving_party_id = Auth::id();
-                Storage::makeDirectory('/evidence/' . $id . '/' . Auth::id());
+            }
+            if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
+                $transfer->receiving_party_id = null;
             }
             try {
                 $transfer->statusStateMachine()->apply($statusTransition);
@@ -193,14 +245,8 @@ class TransfersController extends Controller
             } catch (SMException $e) {
                 // invalid status transition attempted
             }
-        } else {
-            if ($transfer->status === TransferStatus::AwaitingAcceptance) {
-                $transfer->fill($request->all());
-                $transfer->save();
-            }
         }
-
-        // TODO: return view
+        return redirect()->route('transfers.show', [$id]);
     }
 
     /**
@@ -212,5 +258,24 @@ class TransfersController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getClosedStatus(){
+        return [
+            TransferStatusId::Cancelled,
+            TransferStatusId::Closed,
+            TransferStatusId::ClosedNonPayment,
+            TransferStatusId::Rejected,
+            TransferStatusId::InDispute
+        ];
+    }
+
+    public function getStatusMap(){
+        $reflection = new \ReflectionClass('App\TransferStatus');
+        $status_map = array('Unable to get Status');
+        foreach ($reflection->getConstants() as $value){
+            array_push($status_map, $value);
+        }
+        return $status_map;
     }
 }

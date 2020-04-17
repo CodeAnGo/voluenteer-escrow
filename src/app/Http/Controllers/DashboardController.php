@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transfer;
 use App\TransferStatus;
+use App\TransferStatusId;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -27,30 +28,35 @@ class DashboardController extends Controller
         $transfers = Transfer::where($transfer_identifier, Auth::id());
 
         $user_ids = $transfers->get($other_identifier);
-        $users = User::whereIn('id', $user_ids);
+        $users = \Illuminate\Foundation\Auth\User::whereIn('id', $user_ids);
 
         $charity_ids = $transfers->get('charity_id');
         $charities = Charity::whereIn('id', $charity_ids);
 
-        $reflection = new \ReflectionClass('App\TransferStatus');
-        $status_map = array_flip($reflection->getConstants());
-
-        $closed_status = [
-            TransferStatus::Cancelled,
-            TransferStatus::Closed,
-            TransferStatus::ClosedNonPayment
+        $closed_status_id = [
+            TransferStatusId::Cancelled,
+            TransferStatusId::Closed,
+            TransferStatusId::ClosedNonPayment,
+            TransferStatusId::Rejected,
+            TransferStatusId::InDispute
         ];
         $active_transfers = clone $transfers;
-        $active_transfers = $active_transfers->whereNotIn('status', $closed_status);
+        $active_transfers = $active_transfers->whereNotIn('status', $closed_status_id);
+
+        $reflection = new \ReflectionClass('App\TransferStatus');
+        $status_map = array('Unable to get Status');
+        foreach ($reflection->getConstants() as $value){
+            array_push($status_map, $value);
+        }
 
         return view('dashboard', [
-            'status_map' => $status_map,
             'users' => $users->get(),
             'charities' => $charities->get(),
             'transfers' => $transfers->get(),
             'active_transfers' => $active_transfers->get(),
-            'closed_status' => $closed_status,
+            'closed_status' => $closed_status_id,
             'volunteer' => !(Auth::User()->volunteer === 0),
+            'status_map' => $status_map
         ]);
     }
 }
