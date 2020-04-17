@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Transfer;
 use App\TransferStatus;
 use App\TransferStatusId;
@@ -61,9 +62,9 @@ class TransfersController extends Controller
      */
     public function create()
     {
-        \Stripe\Stripe::setApiKey('sk_test_CpMtZaazIi49jN69Efg6Nmfg00ZmtTLqVg');
-        $stripeuserid = DB::table('accounts')->where('user_id',1)->value('stripe_user_id');
 
+        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
+        $stripeuserid = Account::where('user_id',1)->value('stripe_user_id');
 
         //storing a card
         /* $customer = \Stripe\Customer::create([
@@ -73,6 +74,7 @@ class TransfersController extends Controller
 
 
 
+        /*
         //create a Payment Method
         $paymentMethod= \Stripe\PaymentMethod::create([
             'type' => 'card',
@@ -83,6 +85,7 @@ class TransfersController extends Controller
                 'cvc' => '314',
             ],
         ]);
+        */
 
 
         //attach a payment method to customer
@@ -138,18 +141,21 @@ class TransfersController extends Controller
 
 
 
-        $charities = Charities::all();
+        $charities = Charity::all();
 
         /*TODO: need to change the API Key*/
 
+        /*
         $cards=\Stripe\Customer::allSources(
             $stripeuserid,
             ['object' => 'card', 'limit' => 3]
         );
+        */
+        $cards = [];
 
         $transfers = Transfer::where('sending_party_id',Auth::user()->id)->orderBy('id', 'desc')->get();
 
-        return view('pages.dashing.transfers.create',['charities'=>$charities,'transfers'=>$transfers,'cards'=>$cards]);
+        return view('transfers.create',['charities'=>$charities,'transfers'=>$transfers,'cards'=>$cards]);
     }
 
 
@@ -163,11 +169,24 @@ class TransfersController extends Controller
     {
         $transfer = Transfer::create([
             'sending_party_id' => Auth::id(),
-            'status' => TransferStatus::AwaitingAcceptance,
-        ]); // TODO: add attributes from transfer creation form in here
+            'status' => TransferStatusId::AwaitingAcceptance,
+            'delivery_first_name' => $request->get('first_name'),
+            'delivery_last_name' => $request->get('last_name'),
+            'delivery_email' => $request->get('email_address'),
+            'delivery_street' => $request->get('street_address'),
+            'delivery_city' => $request->get('city'),
+            'delivery_town' => $request->get('state'),
+            'delivery_postcode' => $request->get('postal_code'),
+            'delivery_country' => $request->get('country'),
+            'transfer_amount' => $request->get('transfer_amount'),
+            'transfer_reason' => $request->get('transfer_reason'),
+            'transfer_note' => $request->get('transfer_note'),
+            'charity_id' => $request->get('charity'),
+            'stripe_id' => 1,
+        ]);
         Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
 
-        return redirect()->route('transfer.show');
+        return redirect()->route('transfers.show', $transfer->id);
     }
 
     /**
@@ -192,7 +211,7 @@ class TransfersController extends Controller
         $status_map = $this->getStatusMap();
         $closed_status = $this->getClosedStatus();
 
-        return view('pages.dashing.transfers.show', [
+        return view('transfers.show', [
             'balance' => 1,
             'transfer' => $transfer,
             'charity' => $charity->name,

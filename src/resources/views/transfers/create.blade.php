@@ -132,10 +132,9 @@
                     <div class="border-t border-gray-200"></div>
                 </div>
             </div>
-            @if (count($cards['data'])==0)
+            @if (empty($cards))
 
-
-        @else
+            @else
 <!--Payment Details-->
 
         <div class="mt-10 sm:mt-0" >

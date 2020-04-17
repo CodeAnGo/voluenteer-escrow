@@ -13,9 +13,10 @@ return [
     'county' => 'County',
     'postcode' => 'Post Code',
     'country' => 'Country',
+    'cancel' => 'Cancel',
     'save' => 'Save',
-    'save_changes' => 'Save Changes',
     'create' => 'Create',
     'edit' => 'Edit',
     'delete' => 'Delete',
+    'balance' => 'Balance',
 ];
