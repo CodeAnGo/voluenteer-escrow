@@ -67,7 +67,7 @@ class TransfersController extends Controller
     public function create()
     {
         $transfer_id = 1;
-        $this->dispatch(new CreateFreshdeskTicket($transfer_id));
+        $create_ticket_job = dispatch(new CreateFreshdeskTicket($transfer_id));
     }
 
     /**
@@ -82,7 +82,7 @@ class TransfersController extends Controller
             'sending_party_id' => Auth::id(),
             'status' => TransferStatus::AwaitingAcceptance,
         ]); // TODO: add attributes from transfer creation form in here
-
+        return redirect()->route('transfer.show');
     }
 
     /**

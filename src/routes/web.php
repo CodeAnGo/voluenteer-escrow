@@ -27,5 +27,5 @@ Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse
 Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middleware('auth');
 Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middleware('auth');
 
-Route::resource('transfers', 'TransfersController')->middleware('auth');
+Route::resource('transfers', 'TransfersController');
 
