@@ -36,21 +36,10 @@ class TransfersController extends Controller
         $charity_ids = $transfers->get('charity_id');
         $charities = Charity::whereIn('id', $charity_ids);
 
-        $closed_status_id = [
-            TransferStatusId::Cancelled,
-            TransferStatusId::Closed,
-            TransferStatusId::ClosedNonPayment,
-            TransferStatusId::Rejected,
-            TransferStatusId::InDispute
-        ];
+        $status_map = $this->getStatusMap();
+        $closed_status_id = $this->getClosedStatus();
         $active_transfers = clone $transfers;
         $active_transfers = $active_transfers->whereNotIn('status', $closed_status_id);
-
-        $reflection = new \ReflectionClass('App\TransferStatus');
-        $status_map = array('Unable to get Status');
-        foreach ($reflection->getConstants() as $value){
-            array_push($status_map, $value);
-        }
 
         return view('dashboard', [
             'users' => $users->get(),
@@ -108,19 +97,8 @@ class TransfersController extends Controller
 
         $charity = Charity::where('id', $transfer->charity_id)->first();
 
-        $reflection = new \ReflectionClass('App\TransferStatus');
-        $status_map = array('Unable to get Status');
-        foreach ($reflection->getConstants() as $value){
-            array_push($status_map, $value);
-        }
-
-        $closed_status = [
-            TransferStatusId::Cancelled,
-            TransferStatusId::Closed,
-            TransferStatusId::ClosedNonPayment,
-            TransferStatusId::Rejected,
-            TransferStatusId::InDispute
-        ];
+        $status_map = $this->getStatusMap();
+        $closed_status = $this->getClosedStatus();
 
         return view('pages.dashing.transfers.show', [
             'balance' => 1,
@@ -143,16 +121,7 @@ class TransfersController extends Controller
      */
     public function edit($id)
     {
-        $transfer = Transfer::where('id', $id)->first();
-        $charity = Charity::where('id', $transfer->charity_id)->first();
-        if(Auth::id() === $transfer->sending_party_id) {
-            return view('pages.dashing.transfers.edit', [
-                'transfer' => $transfer,
-                'charity' => $charity->name
-            ]);
-        }else{
-            return redirect()->route('transfers.show', [$id]);
-        }
+        //
     }
 
     /**
@@ -169,18 +138,7 @@ class TransfersController extends Controller
         $isEdit = is_null($statusTransition);
         if ($isEdit) {
             if (Auth::id() === $transfer->sending_party_id and $transfer->status === TransferStatusId::AwaitingAcceptance) {
-                $updatedTransfer = $transfer;
-                $updatedTransfer->delivery_first_name = request('first_name');
-                $updatedTransfer->delivery_last_name = request('last_name');
-                $updatedTransfer->delivery_email = request('email_address');
-                $updatedTransfer->delivery_street = request('street_address');
-                $updatedTransfer->delivery_city = request('city');
-                $updatedTransfer->delivery_town = request('state');
-                $updatedTransfer->delivery_postcode = request('postal_code');
-                $updatedTransfer->delivery_country = request('country');
-                $updatedTransfer->transfer_reason = request('transfer_reason');
-                $updatedTransfer->transfer_note = request('transfer_note');
-                $transfer->save();
+                //
             }
         } else {
             if ($statusTransition == TransferStatusTransitions::ToAccepted) {
@@ -208,5 +166,24 @@ class TransfersController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getClosedStatus(){
+        return [
+            TransferStatusId::Cancelled,
+            TransferStatusId::Closed,
+            TransferStatusId::ClosedNonPayment,
+            TransferStatusId::Rejected,
+            TransferStatusId::InDispute
+        ];
+    }
+
+    public function getStatusMap(){
+        $reflection = new \ReflectionClass('App\TransferStatus');
+        $status_map = array('Unable to get Status');
+        foreach ($reflection->getConstants() as $value){
+            array_push($status_map, $value);
+        }
+        return $status_map;
     }
 }
