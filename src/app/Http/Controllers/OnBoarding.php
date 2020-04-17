@@ -13,20 +13,18 @@ class OnBoarding extends Controller
         return view('auth.onboarding', [
             'charities_list' => Charity::where('active', true)->get()
         ]);
-
     }
 
     public function store(Request $request) {
-
         foreach($request->input() as $key => $value) {
            if ($key !== "_token" && $key !== "file") {
                UserCharity::create([
                    'user_id' => Auth::id(),
-                    'charity_id' => $value
+                   'charity_id' => $value
                ]);
            }
         }
-        return redirect()->route('home');
-    }
 
+        return redirect()->route('dashboard');
+    }
 }
