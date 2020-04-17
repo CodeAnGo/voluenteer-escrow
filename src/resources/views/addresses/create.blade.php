@@ -2,18 +2,6 @@
 
 @section('title', __('addresses.create.title'))
 @section('header_title', __('addresses.create.title'))
-@section('header_buttons')
-    <a href="{{ route('addresses.index') }}" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg bg-white hover:bg-red-500 text-md font-medium text-red-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
-        <span class="inline-flex">{{ __('common.cancel') }}</span>
-    </a>
-    <button type="submit" form="createAddress" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg border-b-2 border-green-500 hover:border-green-700 bg-white hover:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
-        <span class="mr-2 hidden md:inline-flex">{{ __('addresses.save_address') }}</span>
-        <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.save') }}</span>
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
-            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-    </button>
-@endsection
 
 @section('content')
     <form action="{{ route('addresses.store') }}" method="POST" id="createAddress">
@@ -100,4 +88,17 @@
             </div>
         </div>
     </form>
+@endsection
+
+@section('footer_buttons')
+    <a href="{{ route('addresses.index') }}" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg bg-white hover:bg-red-500 text-md font-medium text-red-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
+        <span class="inline-flex">{{ __('common.cancel') }}</span>
+    </a>
+    <button type="submit" form="createAddress" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg border-b-2 border-green-500 hover:border-green-700 bg-white hover:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
+        <span class="mr-2 hidden md:inline-flex">{{ __('addresses.save_address') }}</span>
+        <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.save') }}</span>
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+    </button>
 @endsection

@@ -111,6 +111,11 @@
         <main>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 @yield('content')
+                <div class="max-w-6xl mx-auto px-4 mt-4">
+                    <div class="rounded-md flex flex-row justify-end">
+                        @yield('footer_buttons')
+                    </div>
+                </div>
             </div>
         </main>
     </div>

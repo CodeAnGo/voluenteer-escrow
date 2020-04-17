@@ -19,4 +19,9 @@ return [
     'edit' => 'Edit',
     'delete' => 'Delete',
     'balance' => 'Balance',
+    'restart' => 'Restart',
+    'approve' => 'Approve',
+    'accept' => 'Accept',
+    'reject' => 'Reject',
+    'dispute' => 'Dispute',
 ];

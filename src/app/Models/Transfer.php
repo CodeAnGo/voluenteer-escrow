@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Models\Concerns\UsesUUID;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
-use Illuminate\Support\Arr;
 use SM\Factory\Factory as SMFactory;
 
 class Transfer extends Model implements Auditable
@@ -35,7 +34,7 @@ class Transfer extends Model implements Auditable
     public function statusStateMachine()
     {
         $factory = new SMFactory(config('state_machine'));
-
+        //dd($factory);
         return $factory->get($this, 'transfer_status');
     }
 }

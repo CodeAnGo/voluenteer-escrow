@@ -262,6 +262,7 @@ class TransfersController extends Controller
                 $transfer->statusStateMachine()->apply($statusTransition);
                 $transfer->save();
             } catch (SMException $e) {
+                dd($e);
                 // invalid status transition attempted
             }
         }
