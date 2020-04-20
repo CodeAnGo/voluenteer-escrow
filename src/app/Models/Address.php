@@ -6,14 +6,19 @@ use App\Models\Concerns\UsesUUID;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class Charity extends Model implements Auditable
+class Address extends Model implements Auditable
 {
     use UsesUUID, \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
+        'user_id',
         'name',
-        'active'
+        'email',
+        'line1',
+        'line2',
+        'city',
+        'county',
+        'postcode',
+        'country',
     ];
-
-    protected $table = 'charities';
 }

@@ -24,7 +24,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/dashboard', 'TransfersController@index')->name('dashboard')->middleware('auth');
+Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
+
 Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
 
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
@@ -35,6 +36,7 @@ Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middle
 Route::get('/notification/{notification}', 'Notification@delete');
 
 Route::resource('transfers', 'TransfersController')->middleware('auth');
+
 
 
 // TESTING ROUTES
@@ -55,4 +57,15 @@ Route::get('/test1', function() {
             'transfer_id' => $transfer->id,
     ]);
 });
+
+
+Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
+    'edit', 'update'
+])->middleware(['auth', 'canViewTransferEvidence']);
+
+Route::get('/profile', 'UserProfile@index')->name('profile.index')->middleware('auth');
+Route::get('/profile/edit', 'UserProfile@edit')->name('profile.edit')->middleware('auth');
+Route::put('/profile/edit', 'UserProfile@update')->name('profile.update')->middleware('auth');
+
+Route::resource('addresses', 'UserAddress')->middleware('auth');
 

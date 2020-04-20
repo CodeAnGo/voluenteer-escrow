@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\UsesUUID;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
+use Illuminate\Support\Arr;
 use SM\Factory\Factory as SMFactory;
 
 class Transfer extends Model implements Auditable

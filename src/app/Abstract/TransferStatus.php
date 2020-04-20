@@ -4,15 +4,15 @@ namespace App;
 
 abstract class TransferStatus
 {
-    const AwaitingAcceptance = 1;
-    const Accepted = 2;
-    const Rejected = 3;
-    const Cancelled = 4;
-    const PendingApproval = 5;
-    const Approved = 6;
-    const InDispute = 7;
-    const Closed = 8;
-    const ClosedNonPayment = 9;
+    const AwaitingAcceptance = "Awaiting Acceptance";
+    const Accepted = "Accepted";
+    const Rejected = "Rejected";
+    const Cancelled = "Cancelled";
+    const PendingApproval = "Pending Approval";
+    const Approved = "Approved";
+    const InDispute = "In Dispute";
+    const Closed = "Closed";
+    const ClosedNonPayment = "Closed (Non Payment)";
 }
 
 

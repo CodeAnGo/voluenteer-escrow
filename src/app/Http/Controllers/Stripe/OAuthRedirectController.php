@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Stripe;
 
 use App\Http\Controllers\Controller;
-use App\Models\Stripe\Account;
+use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Stripe\Stripe;
 
 class OAuthRedirectController extends Controller
 {
     public function onboardingResponse(Request $request){
         $receivedAuthorizationCode = $request->get('code');
 
-        \Stripe\Stripe::setApiKey('sk_test_MCI5KycGY7r879aa2yq9toiq00sdg47a7r');
+        Stripe::setApiKey(Config::get('stripe.api_key'));
 
         $response = \Stripe\OAuth::token([
             'grant_type' => 'authorization_code',
