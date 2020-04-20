@@ -101,8 +101,8 @@
                                 </div>
                             </div>
 
-                            <div class="ml-2 mr-4 rounded-md flex flex-row justify-end">
-                                    @yield('header_buttons')
+                            <div class="mx-2 mt-2 sm:mt-0 sm:mx-4 rounded-md flex flex-row justify-end">
+                                @yield('header_buttons')
                             </div>
                         </div>
                     </div>
@@ -112,6 +112,11 @@
         <main>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 @yield('content')
+                <div class="max-w-6xl mx-auto px-4 mt-4">
+                    <div class="rounded-md flex flex-row justify-end">
+                        @yield('footer_buttons')
+                    </div>
+                </div>
             </div>
         </main>
     </div>

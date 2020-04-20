@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\Transfer;
 use App\TransferStatus;
 use App\TransferStatusId;
+use Exception;
 use Illuminate\Foundation\Auth\User;
 use App\TransferStatusTransitions;
 use Illuminate\Contracts\View\Factory;
@@ -58,13 +59,13 @@ class TransfersController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return Factory|View
      */
     public function create()
     {
 
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
-        $stripeuserid = Account::where('user_id',1)->value('stripe_user_id');
+        $stripeuserid = Account::where('user_id', Auth::id())->value('stripe_user_id');
 
         //storing a card
         /* $customer = \Stripe\Customer::create([
@@ -202,6 +203,7 @@ class TransfersController extends Controller
             Auth::id() === $transfer->sending_party_id ||
             Auth::id() === $transfer->receiving_party_id;
         $is_sending_user = Auth::id() === $transfer->sending_party_id;
+        $is_receiving_user = Auth::id() === $transfer->receiving_party_id;
 
         $sending_user = User::where('id', $transfer->sending_party_id)->first();
         $receiving_user = User::where('id', $transfer->receiving_party_id)->first();
@@ -219,6 +221,7 @@ class TransfersController extends Controller
             'receiving_user' => $receiving_user,
             'show_delivery_details' => $showDeliveryDetails,
             'is_sending_user' => $is_sending_user,
+            'is_receiving_user' => $is_receiving_user,
             'closed_status' => $closed_status,
             'status_map' => $status_map
         ]);
@@ -240,7 +243,7 @@ class TransfersController extends Controller
      *
      * @param Request $request
      * @param  uuid  $id
-     * @return Response
+     * @return RedirectResponse
      */
     public function update(Request $request, $id)
     {
@@ -252,17 +255,19 @@ class TransfersController extends Controller
                 //
             }
         } else {
-            if ($statusTransition == TransferStatusTransitions::ToAccepted) {
-                $transfer->receiving_party_id = Auth::id();
-            }
             if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
                 $transfer->receiving_party_id = null;
             }
-            try {
-                $transfer->statusStateMachine()->apply($statusTransition);
-                $transfer->save();
-            } catch (SMException $e) {
-                // invalid status transition attempted
+            if ($statusTransition == TransferStatusTransitions::ToAccepted || $statusTransition == TransferStatusTransitions::ToRejected) {
+                $transfer->receiving_party_id = Auth::id();
+            }
+            if ($transfer->transitionAllowed($statusTransition)) {
+                try {
+                    $transfer->transition($statusTransition);
+                    $transfer->save();
+                } catch (Exception $e) {
+                    // unable to transition
+                }
             }
         }
         return redirect()->route('transfers.show', [$id]);
@@ -290,7 +295,7 @@ class TransfersController extends Controller
     }
 
     public function getStatusMap(){
-        $reflection = new \ReflectionClass('App\TransferStatus');
+        $reflection = new \ReflectionClass(TransferStatus::class);
         $status_map = array('Unable to get Status');
         foreach ($reflection->getConstants() as $value){
             array_push($status_map, $value);
