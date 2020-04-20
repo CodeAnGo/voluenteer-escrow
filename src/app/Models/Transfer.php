@@ -21,7 +21,7 @@ class Transfer extends Model implements Auditable
         'delivery_country',
         'delivery_street',
         'delivery_city',
-        'delivery_town',
+        'delivery_county',
         'delivery_postcode',
         'charity_id',
         'transfer_amount',

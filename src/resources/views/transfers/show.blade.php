@@ -258,10 +258,10 @@
                                 </div>
                                 <div class="sm:col-span-1">
                                     <dt class="text-sm leading-5 font-medium text-gray-500">
-                                        Town
+                                        County
                                     </dt>
                                     <dd class="mt-1 text-sm leading-5 text-gray-900">
-                                        {{ $transfer->delivery_town }}
+                                        {{ $transfer->delivery_county }}
                                     </dd>
                                 </div>
                                 <div class="sm:col-span-1">

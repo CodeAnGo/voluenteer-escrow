@@ -26,7 +26,7 @@ class CreateTransfersTable extends Migration
             $table->string('delivery_email');
             $table->string('delivery_street');
             $table->string('delivery_city');
-            $table->string('delivery_town');
+            $table->string('delivery_county')->nullable();
             $table->string('delivery_postcode');
             $table->string('delivery_country');
             $table->decimal('transfer_amount', 6, 2);

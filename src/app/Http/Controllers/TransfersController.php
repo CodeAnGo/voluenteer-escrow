@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Address;
 use App\Models\Transfer;
 use App\TransferStatus;
 use App\TransferStatusId;
@@ -63,99 +64,19 @@ class TransfersController extends Controller
     public function create()
     {
 
-        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
-        $stripeuserid = Account::where('user_id', Auth::id())->value('stripe_user_id');
-
-        //storing a card
-        /* $customer = \Stripe\Customer::create([
-             'email' => 'madhu.pasumarthi@netcompany.com',
-             'source' => 'tok_mastercard',
-         ]);*/
-
-
-
-        /*
-        //create a Payment Method
-        $paymentMethod= \Stripe\PaymentMethod::create([
-            'type' => 'card',
-            'card' => [
-                'number' => '4242424242424242',
-                'exp_month' => 5,
-                'exp_year' => 2022,
-                'cvc' => '314',
-            ],
-        ]);
-        */
-
-
-        //attach a payment method to customer
-        /* $paymentMethod->attach([
-             'customer' => 'cus_H6j2ch993HJ1V0',
-         ]);*/
-
-        //Get all payment methods
-        /*$test=\Stripe\PaymentMethod::all([
-               'customer' => 'cus_H6j2ch993HJ1V0',
-               'type' => 'card'
-           ]);*/
-
-
-
-        /*  $token = \Stripe\Token::create([
-               'customer' => 'cus_H6j2ch993HJ1V0'
-           ], [
-               'stripe_account' => 'acct_1GY8DHKRhsQ7vJ1Q',
-           ]);*/
-
-
-        // Create a PaymentIntent:
-//        $paymentIntent = \Stripe\PaymentIntent::create([
-//            'payment_method_types' => ['card'],
-//            'amount' => 1000,
-//            'currency' => 'gbp',
-//            'transfer_data' => [
-//                'destination' => 'acct_1GY8DHKRhsQ7vJ1Q'
-//            ]
-//        ]);
-//
-//         $paymentIntent->confirm([
-//            'payment_method' => 'pm_card_visa',
-//        ]);
-// Bal before £1343.66
-        /*  $transfer = \Stripe\Transfer::create([
-             'amount' => 1000,
-             'currency' => 'gbp',
-             'source_transaction' => 'ch_1GYYpBFr4BzKbeoHkGkkzUoL',
-             'destination' => 'acct_1GY8DHKRhsQ7vJ1Q'
-          ]);*/
-
-
-
-        // Create a Transfer to a connected account (later):
-//        $transfer = \Stripe\Transfer::create([
-//            'amount' => 100,
-//            'currency' => 'gbp',
-//            'destination' => 'acct_1GYYTCEc7FISZ7Zp',
-//            'transfer_group' => 'foo'
-//        ]);
-
-
-
         $charities = Charity::all();
 
-        /*TODO: need to change the API Key*/
-
-        /*
-        $cards=\Stripe\Customer::allSources(
-            $stripeuserid,
-            ['object' => 'card', 'limit' => 3]
-        );
-        */
         $cards = [];
 
         $transfers = Transfer::where('sending_party_id',Auth::user()->id)->orderBy('id', 'desc')->get();
+        $addresses = Address::where('user_id', Auth::id())->get();
 
-        return view('transfers.create',['charities'=>$charities,'transfers'=>$transfers,'cards'=>$cards]);
+        return view('transfers.create', [
+            'charities'=>$charities,
+            'transfers'=>$transfers,
+            'cards'=>$cards,
+            'addresses' => $addresses
+        ]);
     }
 
 
@@ -167,23 +88,46 @@ class TransfersController extends Controller
      */
     public function store(Request $request)
     {
-        $transfer = Transfer::create([
-            'sending_party_id' => Auth::id(),
-            'status' => TransferStatusId::AwaitingAcceptance,
-            'delivery_first_name' => $request->get('first_name'),
-            'delivery_last_name' => $request->get('last_name'),
-            'delivery_email' => $request->get('email_address'),
-            'delivery_street' => $request->get('street_address'),
-            'delivery_city' => $request->get('city'),
-            'delivery_town' => $request->get('state'),
-            'delivery_postcode' => $request->get('postal_code'),
-            'delivery_country' => $request->get('country'),
-            'transfer_amount' => $request->get('transfer_amount'),
-            'transfer_reason' => $request->get('transfer_reason'),
-            'transfer_note' => $request->get('transfer_note'),
-            'charity_id' => $request->get('charity'),
-            'stripe_id' => 1,
-        ]);
+        if ($request->get('user_address_select')) {
+            $address = Address::where('id', $request->get('user_address_select'))->first();
+            $addressline =  ($address->line2) ? $addressline = $address->line1 . ", " . $address->line2 : $address->line1;
+
+            $transfer = Transfer::create([
+                'sending_party_id' => Auth::id(),
+                'status' => TransferStatusId::AwaitingAcceptance,
+                'delivery_first_name' => $request->get('first_name'),
+                'delivery_last_name' => $request->get('last_name'),
+                'delivery_email' => $request->get('email_address'),
+                'delivery_street' => $addressline,
+                'delivery_city' => $address->city,
+                'delivery_county' => $address->county,
+                'delivery_postcode' => $address->postcode,
+                'delivery_country' => $address->country,
+                'transfer_amount' => $request->get('transfer_amount'),
+                'transfer_reason' => $request->get('transfer_reason'),
+                'transfer_note' => $request->get('transfer_note'),
+                'charity_id' => $request->get('charity'),
+                'stripe_id' => 1,
+            ]);
+        } else {
+            $transfer = Transfer::create([
+                'sending_party_id' => Auth::id(),
+                'status' => TransferStatusId::AwaitingAcceptance,
+                'delivery_first_name' => $request->get('first_name'),
+                'delivery_last_name' => $request->get('last_name'),
+                'delivery_email' => $request->get('email_address'),
+                'delivery_street' => $request->get('street_address'),
+                'delivery_city' => $request->get('city'),
+                'delivery_county' => $request->get('county'),
+                'delivery_postcode' => $request->get('postal_code'),
+                'delivery_country' => $request->get('country'),
+                'transfer_amount' => $request->get('transfer_amount'),
+                'transfer_reason' => $request->get('transfer_reason'),
+                'transfer_note' => $request->get('transfer_note'),
+                'charity_id' => $request->get('charity'),
+                'stripe_id' => 1,
+            ]);
+        }
         Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
 
         return redirect()->route('transfers.show', $transfer->id);
