@@ -5,33 +5,16 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- We've used 3xl here, but feel free to try other max-widths based on your needs -->
         <div class="max-w-6xl mx-auto">
-            @if (Auth::user()->volunteer === 0)
-                <a href="/transfers/create">
-                    <div class="bg-blue-300 hover:bg-blue-200 border-b overflow-hidden shadow rounded-lg">
-                        <div class="px-4 py-5 sm:p-6">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
-                                    <svg class="h-6 w-6 text-white" stroke="currentColor" fill="none"
-                                         viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
-                                    </svg>
-                                </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <div class="text-2xl leading-8 font-semibold text-gray-900">
-                                        Create Transfer
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            @endif
+
+
+
+
                 <div class="flex flex-col pt-4">
                     <div class="flex flex-row justify-between items-center">
                         <h3 class="text-lg leading-6 font-medium text-gray-800 p-4">
                             Active transfers
                         </h3>
+                        @if (!$volunteer)
                         <a href="{{ route('transfers.create') }}" class="ml-2 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg border-b-2 border-green-500 hover:border-green-700 bg-white hover:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
                             <span class="mr-2 hidden md:inline-flex">{{ __('transfers.create_transfer') }}</span>
                             <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.create') }}</span>
@@ -39,6 +22,7 @@
                                 <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </a>
+                        @endif
                     </div>
 
                     <div class="bg-white shadow overflow-hidden sm:rounded-md">
