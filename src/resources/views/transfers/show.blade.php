@@ -22,6 +22,9 @@
         @if($transfer->status == \App\TransferStatusId::Rejected)
             @include('transfers.action_buttons.restart')
         @endif
+        @if($transfer->status == \App\TransferStatusId::Rejected || $transfer->status == \App\TransferStatusId::AwaitingAcceptance)
+            @include('transfers.action_buttons.edit')
+        @endif
         @if($transfer->status == \App\TransferStatusId::PendingApproval || $transfer->status == \App\TransferStatusId::InDispute)
             @include('transfers.action_buttons.approve')
         @endif
