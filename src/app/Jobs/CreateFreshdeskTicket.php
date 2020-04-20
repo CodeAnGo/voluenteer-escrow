@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\{Charity, Transfer};
+use Illuminate\Support\Facades\Http;
 
 
 class CreateFreshdeskTicket implements ShouldQueue
@@ -36,9 +37,11 @@ class CreateFreshdeskTicket implements ShouldQueue
     {
         $transfer = Transfer::where('id', $this->id)->first();
         $charity = Charity::where('id', $transfer->charity_id)->first();
-        $ticket_data = json_encode(array(
+        $url = "https://$charity->domain.freshdesk.com/api/v2/tickets";
 
-            "description" => "escrow link",//will be $transfer->escrow_link
+        $ticket_data = array(
+
+            "description" => "escrow linky",//will be $transfer->escrow_link
             "subject" => "Volunteer Escrow Transfer",
             "email" => "beatt@netcompany.com", //this should be the same as the email associated with the charity freshdesk, or a standard email shared between the accounts.
             "priority" => 1,
@@ -47,39 +50,17 @@ class CreateFreshdeskTicket implements ShouldQueue
             "custom_fields" => array(
                 "cf_charity" => $charity->name,
                 "cf_transfer_amount" => $transfer->transfer_amount),
-        ));
+        );
 
-        $url = "https://$charity->domain.freshdesk.com/api/v2/tickets";
+        $response = Http::withBasicAuth($charity->api_key, '')->post($url, $ticket_data);
+//        $response = Http::withBasicAuth('', $charity->api_key)->withHeader(["Content-type: application/json"])->post($url, $ticket_data);
 
-        $ch = curl_init($url);
-
-        $header[] = "Content-type: application/json";
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_USERPWD, $charity->api_key);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $ticket_data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $server_output = curl_exec($ch);
-        $info = curl_getinfo($ch);
-        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        $headers = substr($server_output, 0, $header_size);
-        $response = substr($server_output, $header_size);
-
-        if ($info['http_code'] == 201) {
-            $decodedBody = json_decode($response);
+        if ($response->successful()) {
+            $decodedBody = json_decode($response->getBody());
             Transfer::find($this->id)->update(['freshdesk_id' => $decodedBody->id]);
         } else {
-            if ($info['http_code'] == 404) {
-                $e = "Error, Please check the end point \n";
-            } else {
-                $e = "Error, HTTP Status Code : " . $info['http_code'] . "\n";
-                $e .= "Header: " . $headers . "\n";
-                $e .= "Response: " . $response . "\n";
-            }
-            $this->fail($e);
+            echo $response->getBody();
+            $response->throw();
         }
-        curl_close($ch);
     }
 }
