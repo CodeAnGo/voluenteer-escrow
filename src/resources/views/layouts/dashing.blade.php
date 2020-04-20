@@ -63,13 +63,11 @@
                             <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
                                 <div class="rounded-md bg-white shadow-xs">
                                     <div class="py-1">
-                                        @if(isset($notificationArr))
                                         @forelse($notificationArr as $notification)
-                                            <a href="/notification/{{$notification['id']}}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">Transfer STATUS, click here to view</a>
+                                            <a href="/notification/{{$notification['id']}}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">Transfer changed <b>{{ $notification->status }}</b>, click here to view</a>
                                         @empty
                                             <p class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 text-center">Nothing to see here!</p>
                                         @endforelse
-                                            @endif
                                     </div>
                                 </div>
                             </div>

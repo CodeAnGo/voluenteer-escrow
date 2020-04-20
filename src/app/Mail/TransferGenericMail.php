@@ -15,6 +15,7 @@ class TransferGenericMail extends Mailable
     use Queueable, SerializesModels;
 
     protected $email_content;
+    protected $status;
 
     /**
      * Create a new message instance.
@@ -22,9 +23,10 @@ class TransferGenericMail extends Mailable
      * @param $email_content
      * @param $status
      */
-    public function __construct($email_content)
+    public function __construct($email_content, $status)
     {
         $this->email_content = $email_content;
+        $this->status = $status;
     }
     /**
      * Build the message.
@@ -36,14 +38,15 @@ class TransferGenericMail extends Mailable
         Notification::create([
            'user_id' => $this->email_content['sending_party_id'],
             'transfer_id' => $this->email_content['id'],
-            'status' => $this->email_content['status']
+            'status' => $this->status
         ]);
 
         // NEEDS AWS EMAIL
         return $this->from('AWS_EMAIL')->view('emails.transfer.accepted')
             ->with([
                 'sending_party_name' => $this->email_content['delivery_first_name'],
-                'transfer_id' => $this->email_content['id']
+                'transfer_id' => $this->email_content['id'],
+                'status' => $this->status
             ]);
     }
 }

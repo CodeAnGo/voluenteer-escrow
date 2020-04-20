@@ -64,7 +64,7 @@ class TransferDisputeMail extends Mailable
         Notification::create([
             'user_id' => $user_id,
             'transfer_id' => $transfer_id,
-            'status' => $this->email_content['status']
+            'status' => "To in dispute"
         ]);
     }
 }

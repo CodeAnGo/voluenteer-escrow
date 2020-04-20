@@ -236,6 +236,8 @@ class TransfersController extends Controller
     {
         $transfer = Transfer::where('id', $id)->first();
         $statusTransition = $request->input('statusTransition');
+        $status_map = $this->getStatusMap();
+
         $isEdit = is_null($statusTransition);
         if ($isEdit) {
             if (Auth::id() === $transfer->sending_party_id and $transfer->status === TransferStatusId::AwaitingAcceptance) {
@@ -253,13 +255,13 @@ class TransfersController extends Controller
                 $transfer->save();
 
                 if ($request->input('statusTransition') === TransferStatusTransitions::ToInDispute) {
-                    if($transfer->receiving_party_id == $request.auth()->id()) {
+                    if($transfer->receiving_party_id == Auth::id()) {
                         Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
                     } else {
-                        Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, true));
+                        Mail::to(Auth::user()->email)->send(new TransferDisputeMail($transfer, true));
                     }
                 } else {
-                    Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer));
+                    Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer,  $status_map[$statusTransition]));
                 }
             } catch (SMException $e) {
                 // invalid status transition attempted

@@ -180,7 +180,7 @@
                                                 <span>
                                                     Updated
                                                     <time
-                                                        datetime="{{ $transfer->updated_at }}">{{ \Carbon\Carbon::make($transfer->updated_at)->diffForHumans() }}</time>
+{{--                                                        datetime="{{ $transfer->updated_at }}">{{ \Carbon\Carbon::make($transfer->updated_at)->diffForHumans() }}</time>--}}
                                                 </span>
                                             </div>
                                         </div>
@@ -252,7 +252,7 @@
                                                 <span>
                                                     Updated
                                                     <time
-                                                        datetime="{{ $transfer->updated_at }}">{{ \Carbon\Carbon::make($transfer->updated_at)->diffForHumans() }}</time>
+{{--                                                        datetime="{{ $transfer->updated_at }}">{{ \Carbon\Carbon::make($transfer->updated_at)->diffForHumans() }}</time>--}}
                                                 </span>
                                             </div>
                                         </div>

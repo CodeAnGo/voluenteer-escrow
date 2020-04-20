@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\Transfer;
 use App\TransferStatus;
 use App\TransferStatusId;
@@ -56,6 +57,7 @@ class DashboardController extends Controller
             'active_transfers' => $active_transfers->get(),
             'closed_status' => $closed_status_id,
             'volunteer' => !(Auth::User()->volunteer === 0),
+            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
             'status_map' => $status_map
         ]);
     }
