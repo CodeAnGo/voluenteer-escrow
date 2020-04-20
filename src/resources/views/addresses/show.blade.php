@@ -1,88 +1,46 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-    <div class="max-w-6xl mx-auto grid grid-cols-1 col-gap-4 row-gap-4 sm:grid-cols-1">
-        <div class="flex flex-col sm:col-span-1">
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg h-full">
-                <div class="px-4 py-5 border-b border-gray-200 sm:px-6 flex items-center justify-between">
-                    <div>
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">
-                            {{ $address->name ?? __('addresses.registered_address') }}
-                        </h3>
-                        @if (isset($address->email))
-                            <div class="flex items-center text-sm leading-5 text-gray-600 sm:mr-6">
-                                {{ $address->email }}
-                            </div>
-                        @endif
-                    </div>
-                    @if (isset($address->id))
-                        <div class="ml-3 shadow-sm rounded-md">
-                            <a href="{{ route('addresses.edit', $address->id) }}" class="inline-flex items-center justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
-                                <span class="hidden md:inline-flex">{{ __('addresses.edit_address') }}</span>
-                                <span class="sm:inline-flex md:hidden">{{ __('common.edit') }}</span>
-                            </a>
-                            <button type="submit" form="deleteAddress" class="inline-flex items-center justify-center ml-2 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-700 transition duration-150 ease-in-out">
-                                <span class="hidden md:inline-flex">{{ __('addresses.delete_address') }}</span>
-                                <span class="sm:inline-flex md:hidden">{{ __('common.delete') }}</span>
-                            </button>
-                            <form action="{{ route('addresses.destroy', $address->id) }}" method="POST" id="deleteAddress" class="hidden">
-                                @csrf
-                                @method('DELETE')
-                            </form>
-                        </div>
-                    @endif
-                </div>
-                <div class="px-4 py-5 sm:px-6">
-                    <dl class="grid grid-cols-1 col-gap-4 row-gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm leading-5 font-medium text-gray-500">
-                                {{ __('common.line1') }}
-                            </dt>
-                            <dd class="mt-1 text-sm leading-5 text-gray-900">
-                                {{ $address->line1 ?? '-' }}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm leading-5 font-medium text-gray-500">
-                                {{ __('common.line2') }}
-                            </dt>
-                            <dd class="mt-1 text-sm leading-5 text-gray-900">
-                                {{ $address->line2 ?? '-' }}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm leading-5 font-medium text-gray-500">
-                                {{ __('common.city') }}
-                            </dt>
-                            <dd class="mt-1 text-sm leading-5 text-gray-900">
-                                {{ $address->city ?? '-' }}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm leading-5 font-medium text-gray-500">
-                                {{ __('common.county') }}
-                            </dt>
-                            <dd class="mt-1 text-sm leading-5 text-gray-900">
-                                {{ $address->county ?? '-' }}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm leading-5 font-medium text-gray-500">
-                                {{ __('common.postcode') }}
-                            </dt>
-                            <dd class="mt-1 text-sm leading-5 text-gray-900">
-                                {{ $address->postcode ?? '-' }}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm leading-5 font-medium text-gray-500">
-                                {{ __('common.country') }}
-                            </dt>
-                            <dd class="mt-1 text-sm leading-5 text-gray-900">
-                                {{ $address->country ?? '-' }}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </div>
+<div class="flex flex-col justify-between bg-white shadow-md overflow-hidden sm:rounded-lg h-full text-gray-900">
+    <div class="flex flex-col">
+        <div class="flex flex-col px-4 py-2 border-b border-gray-200">
+            <span class="font-bold tracking-wide text-lg text-gray-900">
+                @isset($address->name)
+                    <span class="truncate">{{ $address->name }}</span>
+                @endisset
+            </span>
+            <span class="text-sm -gray-500">
+                @isset($address->email)
+                    <span class="truncate">{{ $address->email }}</span>
+                @endisset
+            </span>
         </div>
+        <div class="flex flex-col px-4 pt-2">
+            @isset($address->line1)<span class="truncate">{{ $address->line1 }}</span>@endisset
+            @isset($address->line2)<span class="truncate">{{ $address->line2 }}</span>@endisset
+            @isset($address->city)<span class="truncate">{{ $address->city }}</span>@endisset
+            @isset($address->county)<span class="truncate">{{ $address->county }}</span>@endisset
+            @isset($address->postcode)<span class="truncate">{{ $address->postcode }}</span>@endisset
+            @isset($address->country)<span class="truncate">{{ $address->country }}</span>@endisset
+        </div>
+    </div>
+    <div class="mb-2 mr-2 flex justify-end">
+        @if (isset($address->id))
+            <div class="ml-3 rounded-md flex flex-row items-center ">
+                <a href="{{ route('addresses.edit', $address->id) }}" class="ml-2 inline-flex items-center justify-center py-2 px-4 rounded bg-transparent text-md font-medium text-indigo-500 hover:text-indigo-700 focus:outline-none transition duration-150 ease-in-out">
+                    <span class="mr-2 inline-flex">{{ __('common.edit') }}</span>
+                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+                        <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                </a>
+                <button type="submit" form="deleteAddress" class="ml-2 inline-flex items-center justify-center py-2 px-4 rounded bg-transparent text-md font-medium text-red-500 hover:text-red-700 focus:outline-none transition duration-150 ease-in-out">
+                    <span class="mr-2 inline-flex">{{ __('common.delete') }}</span>
+                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </button>
+                <form action="{{ route('addresses.destroy', $address->id) }}" method="POST" id="deleteAddress" class="hidden">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            </div>
+        @endif
     </div>
 </div>

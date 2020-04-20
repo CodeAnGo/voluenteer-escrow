@@ -2,11 +2,6 @@
 
 @section('title', __('profile.edit.title'))
 @section('header_title', __('profile.edit.title'))
-@section('header_buttons')
-    <button type="submit" form="editProfile" class="flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
-        {{ __('common.save_changes') }}
-    </button>
-@endsection
 
 @section('content')
     <form action="{{ route('profile.update') }}" method="POST" id="editProfile">
@@ -24,25 +19,11 @@
                         <div class="px-4 py-5 sm:px-6">
                             <dl class="grid grid-cols-1 col-gap-4 row-gap-8 sm:grid-cols-2">
                                 <div class="sm:col-span-1">
-                                    <div class="w-full">
-                                        <dt>
-                                            <label for="first_name" class="text-sm leading-5 font-medium text-gray-500">
-                                                {{ __('common.first_name') }}
-                                            </label>
-                                        </dt>
-                                        <dd>
-                                            <div class="mt-1 rounded-md shadow-sm">
-                                                <input id="first_name" name="first_name" type="text" value="{{ $user->first_name }}" required class="@error('first_name') border-red-500 @enderror appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                            </div>
-                                            @error('first_name')
-                                            <div class="mt-1 rounded-md shadow-sm">
-                                                <p class="text-red-600 text-sm tracking-wide font-light">
-                                                    {{ $message }}
-                                                </p>
-                                            </div>
-                                            @enderror
-                                        </dd>
-                                    </div>
+                                    @include('layouts.input_with_label', [
+                                        'label' => __('common.first_name'),
+                                        'value' => $user->first_name,
+                                        'input_id' => 'first_name',
+                                    ])
                                 </div>
                                 <div class="sm:col-span-1">
                                     <div class="w-full">
@@ -113,4 +94,17 @@
             </div>
         </div>
     </form>
+@endsection
+
+@section('footer_buttons')
+    <a href="{{ route('profile.index') }}" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg bg-white hover:bg-red-500 text-md font-medium text-red-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
+        <span class="inline-flex">{{ __('common.cancel') }}</span>
+    </a>
+    <button type="submit" form="editProfile" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg border-b-2 border-green-500 hover:border-green-700 bg-white hover:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
+        <span class="mr-2 hidden md:inline-flex">{{ __('profile.save_profile') }}</span>
+        <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.save') }}</span>
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+    </button>
 @endsection

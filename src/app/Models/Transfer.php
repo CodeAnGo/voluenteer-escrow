@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Statable;
 use App\Models\Concerns\UsesUUID;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
-use Illuminate\Support\Arr;
-use SM\Factory\Factory as SMFactory;
 
 class Transfer extends Model implements Auditable
 {
-    use UsesUUID, \OwenIt\Auditing\Auditable;
+    use UsesUUID, \OwenIt\Auditing\Auditable, Statable;
 
     protected $fillable = [
         'sending_party_id',
@@ -32,10 +31,5 @@ class Transfer extends Model implements Auditable
         'stripe_id',
     ];
 
-    public function statusStateMachine()
-    {
-        $factory = new SMFactory(config('state_machine'));
-
-        return $factory->get($this, 'transfer_status');
-    }
+    const SM_CONFIG = 'transfer';
 }

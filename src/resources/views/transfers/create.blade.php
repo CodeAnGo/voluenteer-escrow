@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.dashing')
 
 @section('title', 'Create a Transfer')
-@section('page_title', 'Create a Transfer')
+@section('header_title', __('transfers.create.title'))
 
 @section('content')
     <script src="https://js.stripe.com/v3/"></script>
@@ -132,10 +132,9 @@
                     <div class="border-t border-gray-200"></div>
                 </div>
             </div>
-            @if (count($cards['data'])==0)
+            @if (empty($cards))
 
-
-        @else
+            @else
 <!--Payment Details-->
 
         <div class="mt-10 sm:mt-0" >
@@ -224,11 +223,18 @@
                             </p>
                         </div>
                         <div class="mt-5 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center">
-        <span class="inline-flex rounded-md shadow-sm">
-          <button type="submit"  class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
-            Begin Escrow
-          </button>
-        </span>
+                        <span class="inline-flex rounded-md shadow-sm">
+                            <a href="{{ route('transfers.index') }}" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg bg-white hover:bg-red-500 text-md font-medium text-red-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
+                                <span class="inline-flex">{{ __('common.cancel') }}</span>
+                            </a>
+                            <button type="submit" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg border-b-2 border-green-500 hover:border-green-700 bg-white hover:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
+                                <span class="mr-2 hidden md:inline-flex">{{ __('transfers.save_transfer') }}</span>
+                                <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.save') }}</span>
+                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </button>
+                        </span>
                         </div>
                     </div>
                 </div>

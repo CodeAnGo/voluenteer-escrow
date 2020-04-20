@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'index.title' => 'Your Addresses',
+    'index.title' => 'Saved Addresses',
     'index.sub_title' => 'Save addresses to create new transfers with ease',
     'create.title' => 'Create Address',
     'edit.title' => 'Edit Address',
