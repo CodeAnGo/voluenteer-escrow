@@ -100,8 +100,8 @@
                                 </div>
                             </div>
 
-                            <div class="ml-2 mr-4 rounded-md flex flex-row justify-end">
-                                    @yield('header_buttons')
+                            <div class="mx-2 mt-2 sm:mt-0 sm:mx-4 rounded-md flex flex-row justify-end">
+                                @yield('header_buttons')
                             </div>
                         </div>
                     </div>

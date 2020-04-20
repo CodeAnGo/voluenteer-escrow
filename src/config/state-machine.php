@@ -1,90 +1,61 @@
 <?php
 
+use App\Models\Transfer;
+use App\TransferStatusId;
+use App\TransferStatusTransitions;
+
 return [
-    'graphA' => [
-        // class of your domain object
-        'class' => App\User::class,
-
-        // name of the graph (default is "default")
-        'graph' => 'graphA',
-
-        // property of your object holding the actual state (default is "state")
-        'property_path' => 'state',
-
-        'metadata' => [
-            'title' => 'Graph A',
-        ],
-
-        // list of all possible states
+    'transfer' => [
+        'class' => Transfer::class,
+        'property_path' => 'status',
         'states' => [
-            // a state as associative array
-            ['name' => 'new'],
-            // a state as associative array with metadata
-            [
-                'name' => 'pending_review',
-                'metadata' => ['title' => 'Pending Review'],
-            ],
-            // states as string
-            'awaiting_changes',
-            'accepted',
-            'published',
-            'rejected',
+            TransferStatusId::AwaitingAcceptance,
+            TransferStatusId::Accepted,
+            TransferStatusId::Rejected,
+            TransferStatusId::Cancelled,
+            TransferStatusId::PendingApproval,
+            TransferStatusId::Approved,
+            TransferStatusId::InDispute,
+            TransferStatusId::Closed,
+            TransferStatusId::ClosedNonPayment,
         ],
-
-        // list of all possible transitions
         'transitions' => [
-            'create' => [
-                'from' => ['new'],
-                'to' => 'pending_review',
+            TransferStatusTransitions::ToAwaitingAcceptance => [
+                'from' => [TransferStatusId::Rejected],
+                'to' => TransferStatusId::AwaitingAcceptance,
             ],
-            'ask_for_changes' => [
-                'from' =>  ['pending_review', 'accepted'],
-                'to' => 'awaiting_changes',
-                'metadata' => ['title' => 'Ask for changes'],
+            TransferStatusTransitions::ToAccepted => [
+                'from' => [TransferStatusId::AwaitingAcceptance],
+                'to' => TransferStatusId::Accepted,
             ],
-            'cancel_changes' => [
-                'from' => ['awaiting_changes'],
-                'to' => 'pending_review',
+            TransferStatusTransitions::ToRejected => [
+                'from' => [TransferStatusId::AwaitingAcceptance, TransferStatusId::Accepted],
+                'to' => TransferStatusId::Rejected,
             ],
-            'submit_changes' => [
-                'from' => ['awaiting_changes'],
-                'to' =>  'pending_review',
+            TransferStatusTransitions::ToCancelled => [
+                'from' => [TransferStatusId::AwaitingAcceptance, TransferStatusId::Accepted, TransferStatusId::Rejected],
+                'to' => TransferStatusId::Cancelled,
             ],
-            'approve' => [
-                'from' => ['pending_review', 'rejected'],
-                'to' =>  'accepted',
+            TransferStatusTransitions::ToPendingApproval => [
+                'from' => [TransferStatusId::Accepted],
+                'to' => TransferStatusId::PendingApproval,
             ],
-            'publish' => [
-                'from' => ['accepted'],
-                'to' =>  'published',
+            TransferStatusTransitions::ToApproved => [
+                'from' => [TransferStatusId::PendingApproval, TransferStatusId::InDispute],
+                'to' => TransferStatusId::Approved,
             ],
-        ],
-
-        // list of all callbacks
-        'callbacks' => [
-            // will be called when testing a transition
-            'guard' => [
-                'guard_on_submitting' => [
-                    // call the callback on a specific transition
-                    'on' => 'submit_changes',
-                    // will call the method of this class
-                    'do' => ['MyClass', 'handle'],
-                    // arguments for the callback
-                    'args' => ['object'],
-                ],
-                'guard_on_approving' => [
-                    // call the callback on a specific transition
-                    'on' => 'approve',
-                    // will check the ability on the gate or the class policy
-                    'can' => 'approve',
-                ],
+            TransferStatusTransitions::ToInDispute => [
+                'from' => [TransferStatusId::PendingApproval],
+                'to' => TransferStatusId::InDispute,
             ],
-
-            // will be called before applying a transition
-            'before' => [],
-
-            // will be called after applying a transition
-            'after' => [],
+            TransferStatusTransitions::ToClosed => [
+                'from' => [TransferStatusId::Approved, TransferStatusId::InDispute],
+                'to' => TransferStatusId::Closed,
+            ],
+            TransferStatusTransitions::ToClosedNonPayment => [
+                'from' => [TransferStatusId::InDispute],
+                'to' => TransferStatusId::ClosedNonPayment,
+            ],
         ],
     ],
 ];
