@@ -64,7 +64,7 @@ class TransfersController extends Controller
     {
 
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
-        $stripeuserid = Account::where('user_id',1)->value('stripe_user_id');
+        $stripeuserid = Account::where('user_id', Auth::id())->value('stripe_user_id');
 
         //storing a card
         /* $customer = \Stripe\Customer::create([
