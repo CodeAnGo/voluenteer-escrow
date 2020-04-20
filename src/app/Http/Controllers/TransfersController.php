@@ -14,6 +14,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use OwenIt\Auditing\Models\Audit;
 use Ramsey\Uuid\Uuid;
 use SM\SMException;
 use App\Models\Charity;
@@ -191,6 +192,12 @@ class TransfersController extends Controller
 
         $status_map = $this->getStatusMap();
         $closed_status = $this->getClosedStatus();
+        $history = Audit::where('auditable_type', 'App\Models\Transfer')
+            ->where('auditable_id', $transfer->id)
+            ->orderBy('created_at', 'desc');
+
+        $user_ids = $history->get('user_id');
+        $change_users = User::whereIn('id', $user_ids)->get();
 
         return view('pages.dashing.transfers.show', [
             'balance' => 1,
@@ -201,6 +208,8 @@ class TransfersController extends Controller
             'show_delivery_details' => $showDeliveryDetails,
             'is_sending_user' => $is_sending_user,
             'closed_status' => $closed_status,
+            'transfer_history' => $history->get(),
+            'change_users' => $change_users,
             'status_map' => $status_map
         ]);
     }
