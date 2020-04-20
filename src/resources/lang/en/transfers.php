@@ -12,6 +12,7 @@ return [
     'approve_transfer' => 'Approve Transfer',
     'accept_transfer' => 'Accept Transfer',
     'reject_transfer' => 'Reject Transfer',
+    'submit_evidence' => 'Submit Evidence',
     'dispute_transfer' => 'Dispute Transfer',
     'copy_link' => 'Copy Link',
 ];
