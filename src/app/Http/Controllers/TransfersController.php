@@ -44,7 +44,7 @@ class TransfersController extends Controller
         $active_transfers = clone $transfers;
         $active_transfers = $active_transfers->whereNotIn('status', $closed_status_id);
 
-        return view('dashboard', [
+        return view('transfers.index', [
             'users' => $users->get(),
             'charities' => $charities->get(),
             'transfers' => $transfers->get(),

@@ -19,6 +19,7 @@
 <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @stack('css')
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 </head>
 <body>
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.0.1/dist/alpine.js" defer></script>
