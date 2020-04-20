@@ -43,7 +43,7 @@ class CreateFreshdeskTicket implements ShouldQueue
 
             "description" => "escrow linky",//will be $transfer->escrow_link
             "subject" => "Volunteer Escrow Transfer",
-            "email" => "beatt@netcompany.com", //this should be the same as the email associated with the charity freshdesk, or a standard email shared between the accounts.
+            "email" => "beatt@netcompany.com", //this should be the same as the email associated with freshdesk, for now this email exists in the test instance.
             "priority" => 1,
             "status" => 2,
             "unique_external_id" => "transfer-" . $this->id,
@@ -53,14 +53,12 @@ class CreateFreshdeskTicket implements ShouldQueue
         );
 
         $response = Http::withBasicAuth($charity->api_key, '')->post($url, $ticket_data);
-//        $response = Http::withBasicAuth('', $charity->api_key)->withHeader(["Content-type: application/json"])->post($url, $ticket_data);
 
         if ($response->successful()) {
             $decodedBody = json_decode($response->getBody());
             Transfer::find($this->id)->update(['freshdesk_id' => $decodedBody->id]);
         } else {
-            echo $response->getBody();
-            $response->throw();
+            $this->fail('HTTP Error ' . $response->getStatusCode() . ':' . $response->getReasonPhrase());
         }
     }
 }
