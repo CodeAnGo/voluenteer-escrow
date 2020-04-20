@@ -32,6 +32,8 @@ class CreateTransfersTable extends Migration
             $table->decimal('transfer_amount', 6, 2);
             $table->string('transfer_reason');
             $table->string('transfer_note')->nullable();
+            $table->decimal('actual_amount', 6, 2);
+            $table->string('approval_note');
             $table->tinyInteger('status');
             $table->string('stripe_id');
             $table->string('freshdesk_id');
