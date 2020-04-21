@@ -314,16 +314,16 @@
                                 <tr>
 
                                     <td>
-                                        <img class="h-12 w-36 mb-8" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
+                                        <img class="h-12 w-48 mb-8" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
 
                                         <p>Hi {{ $disputee }},</p>
                                         <br><br>
                                         <p>{{ $disputer[0] }} has raised a <b>dispute</b> on your transfer.</p>
                                             <br><br>
-                                        <p>Please click below to view this:</p>
+                                        <p>Please click below to resolve this:</p>
                                         <div class="mt-6">
                                             <span class="block w-32 rounded-md">
-                                                <button onclick="window.location.href = 'url.com/transfer/{{ $transfer_id }}';" class="w-full flex py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+                                                <button onclick="window.location.href = '{{env('APP_URL')}}/transfer/{{ $transfer_id }}';" class="w-full flex py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
                                                     View Dispute
                                                 </button>
                                             </span>

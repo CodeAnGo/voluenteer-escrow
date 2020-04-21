@@ -48,29 +48,27 @@
                     </div>
                 </div>
                 @auth
-                    <div x-data="{ open: false }" @keydown.escape="open = false" @click.away="open = false" class="relative inline-block text-left">
-                        <div>
-                            <button @click="open = !open" class="flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 px-8">
-
+                    <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                        <div @click.away="open = false" class="relative px-4" x-data="{ open: false }">
+                            <button @click="open = !open" class="inline-flex items-center px-2 pt-2 text-md font-medium focus:outline-none transition duration-150 ease-in-out">
                                 @if(count($notificationArr) > 0)
                                     <svg width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"  class="fill-current text-red-700 hover:text-red-600 " ><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
                                 @else
                                     <svg width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"  class="fill-current  text-gray-700 hover:text-gray-600" ><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
                                 @endif
                             </button>
-                        </div>
-                        <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
-                            <div class="rounded-md bg-white shadow-xs">
-                                <div class="py-1">
-                                    @forelse($notificationArr as $notification)
-                                        <a href="/notification/{{$notification['id']}}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">Transfer changed <b>{{ $notification->status }}</b>, click here to view</a>
-                                    @empty
-                                        <p class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 text-center">Nothing to see here!</p>
-                                    @endforelse
+                            <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 w-48 mt-2 origin-top-right z-50">
+                                <div class="rounded-md bg-white shadow-xs">
+                                    <div class="py-1">
+                                        @forelse($notificationArr as $notification)
+                                            <a href="{{route('notification.delete', $notification['transfer_id'])}}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">Transfer {{ $notification->status }}, click here to view</a>
+                                        @empty
+                                            <p class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">You're up to date</p>
+                                        @endforelse
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     <div class="flex items-center">
                         @isset($balance)
                             <div class="ml-2 sm:ml-6 flex items-center">
@@ -105,6 +103,7 @@
                         </div>
                     </div>
                 @endauth
+                    </div>
             </div>
         </div>
     </nav>

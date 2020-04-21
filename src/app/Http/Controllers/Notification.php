@@ -7,10 +7,8 @@ use Illuminate\Http\Request;
 
 class Notification extends Controller
 {
-    public function delete($notification_id) {
-        $notification = \App\Models\Notification::where('id', $notification_id)->first();
-        $transfer_id = $notification->transfer_id;
-        $notification->delete();
+    public function delete($transfer_id) {
+        \App\Models\Notification::where('transfer_id', $transfer_id)->delete();
         return redirect('/transfers/' . $transfer_id);
     }
 }

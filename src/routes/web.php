@@ -33,7 +33,7 @@ Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse
 Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middleware('auth');
 Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middleware('auth');
 
-Route::get('/notification/{notification}', 'Notification@delete');
+Route::get('/notification/{transfer_id}', 'Notification@delete')->name('notification.delete');
 
 Route::resource('transfers', 'TransfersController')->middleware('auth');
 
@@ -45,7 +45,7 @@ Route::get('/test', function() {
     return view('emails.transfer.generic')->with([
         'sending_party_name' => $transfer['delivery_first_name'],
         'transfer_id' => $transfer->id,
-        'transfer_status' => TransferStatusTemp::Rejected
+        'status' => 'Accepted'
     ]);
 });
 

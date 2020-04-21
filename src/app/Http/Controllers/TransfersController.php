@@ -83,7 +83,8 @@ class TransfersController extends Controller
             'charities'=>$charities,
             'transfers'=>$transfers,
             'cards'=>$cards,
-            'addresses' => $addresses
+            'addresses' => $addresses,
+            'notificationArr' => Notification::where('user_id', Auth::id())->get()
         ]);
     }
 
@@ -149,6 +150,8 @@ class TransfersController extends Controller
      */
     public function show($id)
     {
+        Notification::where('transfer_id', $id)->delete();
+
         $transfer = Transfer::where('id', $id)->first();
         $showDeliveryDetails =
             Auth::id() === $transfer->sending_party_id ||
@@ -174,7 +177,8 @@ class TransfersController extends Controller
             'is_sending_user' => $is_sending_user,
             'is_receiving_user' => $is_receiving_user,
             'closed_status' => $closed_status,
-            'status_map' => $status_map
+            'status_map' => $status_map,
+            'notificationArr' => Notification::where('user_id', Auth::id())->get()
         ]);
     }
 

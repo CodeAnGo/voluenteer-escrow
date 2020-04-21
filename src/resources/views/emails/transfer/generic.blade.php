@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Your transfer status has been changed to {{ $transfer_status }}</title>
+    <title>Your transfer status has been changed to {{ $status }}</title>
     <style>
         /* -------------------------------------
             GLOBAL RESETS
@@ -300,7 +300,7 @@
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
 <body class="">
-<span class="preheader">{{ $transfer_status }} transfer</span>
+<span class="preheader">{{ $status }} transfer</span>
 <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
     <tr>
         <td>&nbsp;</td>
@@ -316,16 +316,16 @@
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td>
-                                        <img class="h-12 w-36 mb-8" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
+                                        <img class="h-12 w-48 mb-8" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow" />
 
                                         <p>Hi {{ $sending_party_name }},</p>
                                         <br><br>
-                                        <p>The status of your transfer has been changed to <b>{{ $transfer_status }}</b>.</p>
+                                        <p>The status of your transfer has been changed to <b>{{ $status }}</b>.</p>
                                         <br><br>
                                         <p>You can view the transfer by clicking below:</p>
                                         <div class="mt-6">
                                             <span class="block w-32 rounded-md">
-                                                <button onclick="window.location.href = 'url.com/transfer/{{ $transfer_id }}';" class="text-center w-full flex py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+                                                <button onclick="window.location.href = '{{env('APP_URL')}}/transfer/{{ $transfer_id }}';" class="text-center w-full flex py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
                                                     View Transfer
                                                 </button>
                                             </span>
