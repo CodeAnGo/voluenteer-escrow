@@ -20,8 +20,6 @@ class CreateCharitiesTable extends Migration
             $table->string('domain');
             $table->string('api_key');
             $table->timestamps();
-            $table->string('domain');
-            $table->string('api_key');
         });
     }
 
