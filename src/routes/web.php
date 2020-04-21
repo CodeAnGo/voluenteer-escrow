@@ -29,6 +29,7 @@ Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middlewar
 Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middleware('auth');
 
 Route::resource('transfers', 'TransfersController')->middleware('auth');
+Route::post('transfers/{transfer}/status/{id}', 'TransfersController@statusUpdate')->name('transfers.update.status')->middleware('auth');
 
 Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
     'edit', 'update'

@@ -4,10 +4,10 @@ namespace App;
 
 abstract class TransferStatusId
 {
-    const AwaitingAcceptance = 1;
-    const Accepted = 2;
-    const Rejected = 3;
-    const Cancelled = 4;
+    const Cancelled = 1;
+    const Rejected = 2;
+    const AwaitingAcceptance = 3;
+    const Accepted = 4;
     const PendingApproval = 5;
     const Approved = 6;
     const InDispute = 7;
