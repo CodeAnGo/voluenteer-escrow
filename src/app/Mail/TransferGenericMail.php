@@ -41,7 +41,7 @@ class TransferGenericMail extends Mailable
             'status' => $this->status
         ]);
 
-        return $this->from('example@example.com')->view('emails.transfer.generic')
+        return $this->from(env('SENDING_EMAIL'))->view('emails.transfer.generic')
             ->with([
                 'sending_party_name' => $this->email_content['delivery_first_name'],
                 'transfer_id' => $this->email_content['id'],

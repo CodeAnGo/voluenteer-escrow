@@ -39,26 +39,6 @@ Route::resource('transfers', 'TransfersController')->middleware('auth');
 
 
 
-// TESTING ROUTES
-Route::get('/test', function() {
-    $transfer = Transfer::first();
-    return view('emails.transfer.generic')->with([
-        'sending_party_name' => $transfer['delivery_first_name'],
-        'transfer_id' => $transfer->id,
-        'status' => 'Accepted'
-    ]);
-});
-
-Route::get('/test1', function() {
-    $transfer = Transfer::first();
-    return view('emails.transfer.dispute')->with([
-            'disputer' => User::where('id', $transfer['receiving_party_id'])->pluck('first_name'),
-            'disputee' => $transfer['delivery_first_name'],
-            'transfer_id' => $transfer->id,
-    ]);
-});
-
-
 Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
     'edit', 'update'
 ])->middleware(['auth', 'canViewTransferEvidence']);

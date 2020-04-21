@@ -40,7 +40,7 @@ class TransferDisputeMail extends Mailable
 
             $this->createNotification($this->email_content['receiving_party_id'], $this->email_content['id']);
 
-            return $this->from('AWS_EMAIL')->view('emails.transfer.dispute')
+            return $this->from(env('SENDING_EMAIL'))->view('emails.transfer.dispute')
                 ->with([
                     'disputer' => $this->email_content['delivery_first_name'],
                     'disputee' => User::where('id', $this->email_content['receiving_party_id'])->pluck('first_name'),
@@ -50,7 +50,7 @@ class TransferDisputeMail extends Mailable
 
             $this->createNotification($this->email_content['sending_party_id'], $this->email_content['id']);
 
-            return $this->from('AWS_EMAIL')->view('emails.transfer.dispute')
+            return $this->from(env('SENDING_EMAIL'))->view('emails.transfer.dispute')
                 ->with([
                     'disputer' => User::where('id', $this->email_content['receiving_party_id'])->pluck('first_name'),
                     'disputee' => $this->email_content['delivery_first_name'],
@@ -64,7 +64,7 @@ class TransferDisputeMail extends Mailable
         Notification::create([
             'user_id' => $user_id,
             'transfer_id' => $transfer_id,
-            'status' => "To in dispute"
+            'status' => "In Dispute"
         ]);
     }
 }
