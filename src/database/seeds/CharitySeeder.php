@@ -16,7 +16,10 @@ class CharitySeeder extends Seeder
 
             \App\Models\Charity::create([
                 'name' => $faker->company,
-                'active' => true
+                'active' => true,
+                'domain' => 'jdsfksjfk',
+                'api_key' => 'sdaksad'
+
             ]);
         }
     }
