@@ -65,6 +65,9 @@ class TransfersController extends Controller
     public function create()
     {
 
+        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
+        $stripeuserid = Account::where('user_id', Auth::id())->value('stripe_user_id');
+
         $charities = Charity::all();
 
         $cards = [];

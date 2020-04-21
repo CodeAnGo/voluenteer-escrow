@@ -43,19 +43,7 @@
             @include('transfers.action_buttons.dispute')
         @endif
     @else
-        @if(Auth::user()->id === $transfer->receiving_party_id and $transfer->status == \App\TransferStatusId::Accepted)
-            <button type="submit" form="evidenceForm" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg border-b-2 border-green-500 hover:border-green-700 bg-white hover:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
-                <span class="mr-2">Submit for Approval</span>
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-            </button>
-            <form class="hidden" action="{{ route('transfers.evidence.create', $transfer->id) }}"
-                  method="GET"
-                  id="evidenceForm">
-                @csrf
-            </form>
-        @endif
+
         @if($transfer->status == \App\TransferStatusId::AwaitingAcceptance)
             @include('transfers.action_buttons.accept')
             @include('transfers.action_buttons.reject')
@@ -146,10 +134,12 @@
                                 </div>
                                 <div class="sm:col-span-1">
                                     <dt class="text-sm leading-5 font-medium text-gray-500">
+
                                         County
                                     </dt>
                                     <dd class="mt-1 text-sm leading-5 text-gray-900">
                                         {{ $transfer->delivery_county }}
+
                                     </dd>
                                 </div>
                                 <div class="sm:col-span-1">

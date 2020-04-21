@@ -19,6 +19,7 @@ class CharitySeeder extends Seeder
                 'active' => true,
                 'domain' => 'jdsfksjfk',
                 'api_key' => 'sdaksad'
+
             ]);
         }
     }
