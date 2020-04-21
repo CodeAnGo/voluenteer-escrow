@@ -41,8 +41,7 @@ class TransferGenericMail extends Mailable
             'status' => $this->status
         ]);
 
-        // NEEDS AWS EMAIL
-        return $this->from('AWS_EMAIL')->view('emails.transfer.accepted')
+        return $this->from('example@example.com')->view('emails.transfer.generic')
             ->with([
                 'sending_party_name' => $this->email_content['delivery_first_name'],
                 'transfer_id' => $this->email_content['id'],

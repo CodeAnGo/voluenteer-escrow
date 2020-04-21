@@ -150,7 +150,7 @@ class TransfersController extends Controller
      */
     public function show($id)
     {
-        Notification::where('transfer_id', $id)->delete();
+        Notification::where('transfer_id', $id)->where('user_id', Auth::id())->delete();
 
         $transfer = Transfer::where('id', $id)->first();
         $showDeliveryDetails =
@@ -220,17 +220,19 @@ class TransfersController extends Controller
             if ($statusTransition == TransferStatusTransitions::ToAccepted || $statusTransition == TransferStatusTransitions::ToRejected) {
                 $transfer->receiving_party_id = Auth::id();
             }
+            Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer,  $status_map[$statusTransition]));
+
             if ($transfer->transitionAllowed($statusTransition)) {
                 try {
-                    if ($statusTransition === TransferStatusTransitions::ToInDispute) {
-                        if($transfer->receiving_party_id == Auth::id()) {
-                            Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
-                        } else {
-                            Mail::to(Auth::user()->email)->send(new TransferDisputeMail($transfer, true));
-                        }
-                    } else {
-                        Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer,  $status_map[$statusTransition]));
-                    }
+    //                    if ($statusTransition === TransferStatusTransitions::ToInDispute) {
+    //                        if($transfer->receiving_party_id == Auth::id()) {
+    //                            Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
+    //                        } else {
+    //                            Mail::to(Auth::user()->email)->send(new TransferDisputeMail($transfer, true));
+    //                        }
+    //                    } else {
+    //
+    //                    }
                     $transfer->transition($statusTransition);
                     $transfer->save();
                 } catch (Exception $e) {
