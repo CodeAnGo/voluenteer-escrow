@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.dashing')
 
 @section('title', 'Create a Transfer')
-@section('page_title', 'Create a Transfer')
+@section('header_title', __('transfers.create.title'))
 
 @section('content')
     <script src="https://js.stripe.com/v3/"></script>
@@ -27,18 +27,18 @@
                                 <div class="grid grid-cols-6 gap-6">
                                     <div class="col-span-6 sm:col-span-3">
                                         <label for="first_name" class="block text-sm font-medium leading-5 text-gray-700">First name</label>
-                                        <input required name="first_name" value="@if(count($transfers) ==1)  {{$transfers[0]->delivery_first_name}} @endif" id="first_name" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        <input required name="first_name" value="{{Auth::user()->first_name}}" id="first_name" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
 
 
                                     <div class="col-span-6 sm:col-span-3">
                                         <label for="last_name" class="block text-sm font-medium leading-5 text-gray-700">Last name</label>
-                                        <input required name="last_name" value="@if(count($transfers) ==1)  {{$transfers[0]->delivery_last_name}} @endif" id="last_name" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        <input required name="last_name" value="{{Auth::user()->last_name}}" id="last_name" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-4">
                                         <label for="email_address" class="block text-sm font-medium leading-5 text-gray-700">Email address</label>
-                                        <input required value="@if(count($transfers) ==1)  {{$transfers[0]->delivery_email}} @endif" name="email_address"  class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        <input required value="{{Auth::user()->email}}" name="email_address"  class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-3">
@@ -48,25 +48,65 @@
                                         </select>
                                     </div>
 
+                                    @if (count($addresses) == 1)
                                     <div class="col-span-6">
                                         <label for="street_address" class="block text-sm font-medium leading-5 text-gray-700">Street address</label>
-                                        <input name="street_address" value="@if(count($transfers) ==1)  {{$transfers[0]->delivery_street}} @endif"   id="street_address" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        <input name="street_address" value="{{$addresses[0]->line1}}@if(isset($addresses[0]->line2)){{", " . $addresses[0]->line2}} @endif"  id="street_address" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-6 lg:col-span-2">
-                                        <label for="city" class="block text-sm font-medium leading-5 text-gray-700">City</label>
-                                        <input name="city"  id="city" value="@if(count($transfers) ==1)  {{$transfers[0]->delivery_city}} @endif"  class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        <label for="city" class="block text-sm font-medium leading-5 text-gray-700">City/Town</label>
+                                        <input name="city"  id="city" value="{{$addresses[0]->city}}"  class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                                        <label for="state" class="block text-sm font-medium leading-5 text-gray-700">Town / Province</label>
-                                        <input name="state"  id="state" value="@if(count($transfers) ==1)  {{$transfers[0]->delivery_town}} @endif"  class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        <label for="county" class="block text-sm font-medium leading-5 text-gray-700">County</label>
+                                        <input name="county"  id="county" value="@if(isset($addresses[0]->county)) @endif"  placeholder="Optional" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-3 lg:col-span-2">
                                         <label for="postal_code" class="block text-sm font-medium leading-5 text-gray-700">Post Code</label>
-                                        <input name="postal_code" value="@if(count($transfers) ==1)  {{$transfers[0]->delivery_postcode}} @endif"  id="postal_code" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        <input name="postal_code" value="{{$addresses[0]->postcode}}"  id="postal_code" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
+                                        @elseif (count($addresses) > 1)
+                                        <div class="col-span-6">
+                                            <label class="block text-sm font-medium leading-5 text-gray-700">Address:</label>
+                                            <select name="user_address_select" id="user_address_checkbox" class="mt-1 block form-select w-full py-2 px-3 py-0 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
+
+                                                @foreach($addresses as $address)
+                                                    <option value="{{$address->id}}">{{$address->line1}}@if(isset($address->line2)){{", " . $address->line2}}@endif{{", " . $address->city}}@if(isset($address->county)){{", " . $address->county}}@endif{{", " . $address->postcode}}</option>
+                                                @endforeach
+                                            </select>
+                                            <a href="{{ route('addresses.create') }}" class="mt-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg border-b-2 border-green-500 hover:border-green-700 bg-white hover:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
+                                                <span class="mr-2 hidden md:inline-flex">{{ __('addresses.create_address') }}</span>
+                                                <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.create') }}</span>
+                                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+                                                    <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    @else
+                                        <div class="col-span-6">
+                                            <label for="street_address" class="block text-sm font-medium leading-5 text-gray-700">Street address</label>
+                                            <input name="street_address" id="street_address" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        </div>
+
+                                        <div class="col-span-6 sm:col-span-6 lg:col-span-2">
+                                            <label for="city" class="block text-sm font-medium leading-5 text-gray-700">City/Town</label>
+                                            <input name="city"  id="city"  class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        </div>
+
+                                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                                            <label for="county" class="block text-sm font-medium leading-5 text-gray-700">County</label>
+                                            <input name="county" placeholder="Optional"  id="county" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        </div>
+
+                                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                                            <label for="postal_code" class="block text-sm font-medium leading-5 text-gray-700">Post Code</label>
+                                            <input name="postal_code"  id="postal_code" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        </div>
+
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -80,7 +120,6 @@
                     <div class="border-t border-gray-200"></div>
                 </div>
             </div>
-
             <div class="mt-10 sm:mt-0">
                 <div class="md:grid md:grid-cols-3 md:gap-6">
                     <div class="md:col-span-1">
@@ -102,7 +141,7 @@
 
                                     <div class="col-span-6 sm:col-span-3">
                                         <label for="charity_id" class="block text-sm font-medium leading-5 text-gray-700">Which charity is overseeing this transaction?</label>
-                                         <select name="charity"  class="mt-1 block form-select w-full py-2 px-3 py-0 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" style="width:250px">
+                                         <select name="charity" required class="required mt-1 block form-select w-full py-2 px-3 py-0 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" style="width:250px">
                                             <option value="">Select Charity</option>
                                             @foreach ( $charities  as $ch)
                                                 <option value="{{$ch->id}}">{{$ch->name}}</option>
@@ -132,10 +171,9 @@
                     <div class="border-t border-gray-200"></div>
                 </div>
             </div>
-            @if (count($cards['data'])==0)
+            @if (empty($cards))
 
-
-        @else
+            @else
 <!--Payment Details-->
 
         <div class="mt-10 sm:mt-0" >
@@ -224,11 +262,18 @@
                             </p>
                         </div>
                         <div class="mt-5 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center">
-        <span class="inline-flex rounded-md shadow-sm">
-          <button type="submit"  class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
-            Begin Escrow
-          </button>
-        </span>
+                        <span class="inline-flex rounded-md shadow-sm">
+                            <a href="{{ route('transfers.index') }}" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg bg-white hover:bg-red-500 text-md font-medium text-red-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
+                                <span class="inline-flex">{{ __('common.cancel') }}</span>
+                            </a>
+                            <button type="submit" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg border-b-2 border-green-500 hover:border-green-700 bg-white hover:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
+                                <span class="mr-2 hidden md:inline-flex">{{ __('transfers.save_transfer') }}</span>
+                                <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.save') }}</span>
+                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </button>
+                        </span>
                         </div>
                     </div>
                 </div>

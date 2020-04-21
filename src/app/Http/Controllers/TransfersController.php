@@ -6,9 +6,12 @@ namespace App\Http\Controllers;
 use App\Mail\TransferGenericMail;
 use App\Mail\TransferDisputeMail;
 use App\Models\Notification;
+use App\Models\Account;
+use App\Models\Address;
 use App\Models\Transfer;
 use App\TransferStatus;
 use App\TransferStatusId;
+use Exception;
 use Illuminate\Foundation\Auth\User;
 use App\TransferStatusTransitions;
 use Illuminate\Contracts\View\Factory;
@@ -49,7 +52,7 @@ class TransfersController extends Controller
         $active_transfers = clone $transfers;
         $active_transfers = $active_transfers->whereNotIn('status', $closed_status_id);
 
-        return view('dashboard', [
+        return view('transfers.index', [
             'users' => $users->get(),
             'charities' => $charities->get(),
             'transfers' => $transfers->get(),
@@ -64,99 +67,24 @@ class TransfersController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return Factory|View
      */
     public function create()
     {
-        \Stripe\Stripe::setApiKey('sk_test_CpMtZaazIi49jN69Efg6Nmfg00ZmtTLqVg');
-        $stripeuserid = DB::table('accounts')->where('user_id',1)->value('stripe_user_id');
 
+        $charities = Charity::all();
 
-        //storing a card
-        /* $customer = \Stripe\Customer::create([
-             'email' => 'madhu.pasumarthi@netcompany.com',
-             'source' => 'tok_mastercard',
-         ]);*/
-
-
-
-        //create a Payment Method
-        $paymentMethod= \Stripe\PaymentMethod::create([
-            'type' => 'card',
-            'card' => [
-                'number' => '4242424242424242',
-                'exp_month' => 5,
-                'exp_year' => 2022,
-                'cvc' => '314',
-            ],
-        ]);
-
-
-        //attach a payment method to customer
-        /* $paymentMethod->attach([
-             'customer' => 'cus_H6j2ch993HJ1V0',
-         ]);*/
-
-        //Get all payment methods
-        /*$test=\Stripe\PaymentMethod::all([
-               'customer' => 'cus_H6j2ch993HJ1V0',
-               'type' => 'card'
-           ]);*/
-
-
-
-        /*  $token = \Stripe\Token::create([
-               'customer' => 'cus_H6j2ch993HJ1V0'
-           ], [
-               'stripe_account' => 'acct_1GY8DHKRhsQ7vJ1Q',
-           ]);*/
-
-
-        // Create a PaymentIntent:
-//        $paymentIntent = \Stripe\PaymentIntent::create([
-//            'payment_method_types' => ['card'],
-//            'amount' => 1000,
-//            'currency' => 'gbp',
-//            'transfer_data' => [
-//                'destination' => 'acct_1GY8DHKRhsQ7vJ1Q'
-//            ]
-//        ]);
-//
-//         $paymentIntent->confirm([
-//            'payment_method' => 'pm_card_visa',
-//        ]);
-// Bal before £1343.66
-        /*  $transfer = \Stripe\Transfer::create([
-             'amount' => 1000,
-             'currency' => 'gbp',
-             'source_transaction' => 'ch_1GYYpBFr4BzKbeoHkGkkzUoL',
-             'destination' => 'acct_1GY8DHKRhsQ7vJ1Q'
-          ]);*/
-
-
-
-        // Create a Transfer to a connected account (later):
-//        $transfer = \Stripe\Transfer::create([
-//            'amount' => 100,
-//            'currency' => 'gbp',
-//            'destination' => 'acct_1GYYTCEc7FISZ7Zp',
-//            'transfer_group' => 'foo'
-//        ]);
-
-
-
-        $charities = Charities::all();
-
-        /*TODO: need to change the API Key*/
-
-        $cards=\Stripe\Customer::allSources(
-            $stripeuserid,
-            ['object' => 'card', 'limit' => 3]
-        );
+        $cards = [];
 
         $transfers = Transfer::where('sending_party_id',Auth::user()->id)->orderBy('id', 'desc')->get();
+        $addresses = Address::where('user_id', Auth::id())->get();
 
-        return view('pages.dashing.transfers.create',['charities'=>$charities,'transfers'=>$transfers,'cards'=>$cards]);
+        return view('transfers.create', [
+            'charities'=>$charities,
+            'transfers'=>$transfers,
+            'cards'=>$cards,
+            'addresses' => $addresses
+        ]);
     }
 
 
@@ -168,13 +96,49 @@ class TransfersController extends Controller
      */
     public function store(Request $request)
     {
-        $transfer = Transfer::create([
-            'sending_party_id' => Auth::id(),
-            'status' => TransferStatus::AwaitingAcceptance,
-        ]); // TODO: add attributes from transfer creation form in here
+        if ($request->get('user_address_select')) {
+            $address = Address::where('id', $request->get('user_address_select'))->first();
+            $addressline =  ($address->line2) ? $addressline = $address->line1 . ", " . $address->line2 : $address->line1;
+
+            $transfer = Transfer::create([
+                'sending_party_id' => Auth::id(),
+                'status' => TransferStatusId::AwaitingAcceptance,
+                'delivery_first_name' => $request->get('first_name'),
+                'delivery_last_name' => $request->get('last_name'),
+                'delivery_email' => $request->get('email_address'),
+                'delivery_street' => $addressline,
+                'delivery_city' => $address->city,
+                'delivery_county' => $address->county,
+                'delivery_postcode' => $address->postcode,
+                'delivery_country' => $address->country,
+                'transfer_amount' => $request->get('transfer_amount'),
+                'transfer_reason' => $request->get('transfer_reason'),
+                'transfer_note' => $request->get('transfer_note'),
+                'charity_id' => $request->get('charity'),
+                'stripe_id' => 1,
+            ]);
+        } else {
+            $transfer = Transfer::create([
+                'sending_party_id' => Auth::id(),
+                'status' => TransferStatusId::AwaitingAcceptance,
+                'delivery_first_name' => $request->get('first_name'),
+                'delivery_last_name' => $request->get('last_name'),
+                'delivery_email' => $request->get('email_address'),
+                'delivery_street' => $request->get('street_address'),
+                'delivery_city' => $request->get('city'),
+                'delivery_county' => $request->get('county'),
+                'delivery_postcode' => $request->get('postal_code'),
+                'delivery_country' => $request->get('country'),
+                'transfer_amount' => $request->get('transfer_amount'),
+                'transfer_reason' => $request->get('transfer_reason'),
+                'transfer_note' => $request->get('transfer_note'),
+                'charity_id' => $request->get('charity'),
+                'stripe_id' => 1,
+            ]);
+        }
         Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
 
-        return redirect()->route('transfer.show');
+        return redirect()->route('transfers.show', $transfer->id);
     }
 
     /**
@@ -190,6 +154,7 @@ class TransfersController extends Controller
             Auth::id() === $transfer->sending_party_id ||
             Auth::id() === $transfer->receiving_party_id;
         $is_sending_user = Auth::id() === $transfer->sending_party_id;
+        $is_receiving_user = Auth::id() === $transfer->receiving_party_id;
 
         $sending_user = User::where('id', $transfer->sending_party_id)->first();
         $receiving_user = User::where('id', $transfer->receiving_party_id)->first();
@@ -199,7 +164,7 @@ class TransfersController extends Controller
         $status_map = $this->getStatusMap();
         $closed_status = $this->getClosedStatus();
 
-        return view('pages.dashing.transfers.show', [
+        return view('transfers.show', [
             'balance' => 1,
             'transfer' => $transfer,
             'charity' => $charity->name,
@@ -207,6 +172,7 @@ class TransfersController extends Controller
             'receiving_user' => $receiving_user,
             'show_delivery_details' => $showDeliveryDetails,
             'is_sending_user' => $is_sending_user,
+            'is_receiving_user' => $is_receiving_user,
             'closed_status' => $closed_status,
             'status_map' => $status_map
         ]);
@@ -230,7 +196,7 @@ class TransfersController extends Controller
      *
      * @param Request $request
      * @param  uuid  $id
-     * @return Response
+     * @return RedirectResponse
      */
     public function update(Request $request, $id)
     {
@@ -244,31 +210,34 @@ class TransfersController extends Controller
                 //
             }
         } else {
-            if ($statusTransition == TransferStatusTransitions::ToAccepted) {
-                $transfer->receiving_party_id = Auth::id();
-            }
             if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
                 $transfer->receiving_party_id = null;
             }
-            try {
-                $transfer->statusStateMachine()->apply($statusTransition);
-                $transfer->save();
-
-                if ($request->input('statusTransition') === TransferStatusTransitions::ToInDispute) {
-                    if($transfer->receiving_party_id == Auth::id()) {
-                        Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
+            if ($statusTransition == TransferStatusTransitions::ToAccepted || $statusTransition == TransferStatusTransitions::ToRejected) {
+                $transfer->receiving_party_id = Auth::id();
+            }
+            if ($transfer->transitionAllowed($statusTransition)) {
+                try {
+                    if ($statusTransition === TransferStatusTransitions::ToInDispute) {
+                        if($transfer->receiving_party_id == Auth::id()) {
+                            Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
+                        } else {
+                            Mail::to(Auth::user()->email)->send(new TransferDisputeMail($transfer, true));
+                        }
                     } else {
-                        Mail::to(Auth::user()->email)->send(new TransferDisputeMail($transfer, true));
+                        Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer,  $status_map[$statusTransition]));
                     }
-                } else {
-                    Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer,  $status_map[$statusTransition]));
+                    $transfer->transition($statusTransition);
+                    $transfer->save();
+                } catch (Exception $e) {
+                    // unable to transition
                 }
-            } catch (SMException $e) {
-                // invalid status transition attempted
             }
         }
         return redirect()->route('transfers.show', [$id]);
-    }
+}
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -292,7 +261,7 @@ class TransfersController extends Controller
     }
 
     public function getStatusMap(){
-        $reflection = new \ReflectionClass('App\TransferStatus');
+        $reflection = new \ReflectionClass(TransferStatus::class);
         $status_map = array('Unable to get Status');
         foreach ($reflection->getConstants() as $value){
             array_push($status_map, $value);

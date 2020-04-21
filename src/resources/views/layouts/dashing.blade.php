@@ -19,6 +19,7 @@
 <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @stack('css')
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 </head>
 <body>
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.0.1/dist/alpine.js" defer></script>
@@ -29,7 +30,7 @@
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
-                        <img class="hidden lg:block h-8 w-auto" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow logo" />
+                        <img class="lg:block h-8 w-auto" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="Workflow logo" />
                     </div>
                     <div class="hidden sm:ml-6 sm:flex">
                         @auth
@@ -47,59 +48,61 @@
                     </div>
                 </div>
                 @auth
-                    <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <div x-data="{ open: false }" @keydown.escape="open = false" @click.away="open = false" class="relative inline-block text-left">
+                        <div>
+                            <button @click="open = !open" class="flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 px-8">
 
-                        <div x-data="{ open: false }" @keydown.escape="open = false" @click.away="open = false" class="relative inline-block text-left">
-                            <div>
-                                <button @click="open = !open" class="flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 px-8">
-
-                                    @if(count($notificationArr) > 0)
-                                        <svg width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"  class="fill-current text-red-700 hover:text-red-600 " ><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-                                    @else
-                                        <svg width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"  class="fill-current  text-gray-700 hover:text-gray-600" ><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                                @if(count($notificationArr) > 0)
+                                    <svg width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"  class="fill-current text-red-700 hover:text-red-600 " ><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                                @else
+                                    <svg width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"  class="fill-current  text-gray-700 hover:text-gray-600" ><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
                                 @endif
-                                </button>
-                            </div>
-                            <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
-                                <div class="rounded-md bg-white shadow-xs">
-                                    <div class="py-1">
-                                        @forelse($notificationArr as $notification)
-                                            <a href="/notification/{{$notification['id']}}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">Transfer changed <b>{{ $notification->status }}</b>, click here to view</a>
-                                        @empty
-                                            <p class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 text-center">Nothing to see here!</p>
-                                        @endforelse
-                                    </div>
-                                </div>
-                            </div>
+                            </button>
                         </div>
-                        <a href="" class="text-gray-700 pr-2">
-                            Account Balance £ {{ $balance ?? 'undefined' }}
-                        </a>
-                        <div @click.away="open = false" class="ml-3 relative border-b-2 @if(in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['profile.index', 'profile.edit', 'addresses.index', 'addresses.create', 'addresses.edit'])) border-indigo-500 text-gray-900 @else border-transparent @endif text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out" x-data="{ open: false }">
-                            <div>
-                                <button @click="open = !open" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out" id="user-menu" aria-label="User menu" aria-haspopup="true" x-bind:aria-expanded="open">
-                                    <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                                </button>
-                            </div>
-                            <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
-                                <div class="py-1 rounded-md bg-white shadow-xs">
-                                    <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">{{ __('navigation.your_profile') }}</a>
-                                    <a href="{{ route('addresses.index') }}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">{{ __('navigation.your_addresses') }}</a>
-                                    <a href="{{ route('logout') }}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __('navigation.logout') }}</a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-                                        {{ csrf_field() }}
-                                    </form>
+                        <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
+                            <div class="rounded-md bg-white shadow-xs">
+                                <div class="py-1">
+                                    @forelse($notificationArr as $notification)
+                                        <a href="/notification/{{$notification['id']}}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">Transfer changed <b>{{ $notification->status }}</b>, click here to view</a>
+                                    @empty
+                                        <p class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 text-center">Nothing to see here!</p>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="-mr-2 flex items-center sm:hidden">
-                        <button @click="open = !open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out" x-bind:aria-label="open ? 'Close main menu' : 'Main menu'" x-bind:aria-expanded="open">
-                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <path :class="{'hidden': open, 'inline-flex': !open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                <path :class="{'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
+                    <div class="flex items-center">
+                        @isset($balance)
+                            <div class="ml-2 sm:ml-6 flex items-center">
+                                <a href="#" class="text-gray-700 pr-2">
+                                    <span class="hidden sm:inline-flex">{{ __('common.balance') }} </span>
+                                    £ {{ $balance }}
+                                </a>
+                            </div>
+                        @endisset
+                        <div @click.away="open = false" class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="inline-flex items-center px-2 pt-2 text-md font-medium focus:outline-none transition duration-150 ease-in-out">
+                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" class="w-8 h-8 text-gray-500 hover:text-gray-600" viewBox="0 0 24 24">
+                                    <path d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                            </button>
+                            <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 w-48 mt-2 origin-top-right z-50">
+                                <div class="rounded-md bg-white shadow-xs">
+                                    <div class="py-1 sm:hidden border-b">
+                                        <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">{{ __('navigation.dashboard') }}</a>
+                                        <a href="{{ route('transfers.index') }}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">{{ __('navigation.transfers') }}</a>
+                                    </div>
+                                    <div class="py-1">
+                                        <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">{{ __('navigation.profile') }}</a>
+                                        <a href="{{ route('addresses.index') }}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">{{ __('navigation.addresses') }}</a>
+                                        <a href="{{ route('logout') }}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __('navigation.logout') }}</a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                                            {{ csrf_field() }}
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 @endauth
             </div>
@@ -121,8 +124,8 @@
                                 </div>
                             </div>
 
-                            <div class="ml-2 mr-4 rounded-md flex flex-row justify-end">
-                                    @yield('header_buttons')
+                            <div class="mx-2 mt-2 sm:mt-0 sm:mx-4 rounded-md flex flex-row justify-end">
+                                @yield('header_buttons')
                             </div>
                         </div>
                     </div>
@@ -132,6 +135,11 @@
         <main>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 @yield('content')
+                <div class="max-w-6xl mx-auto px-4 mt-4">
+                    <div class="rounded-md flex flex-row justify-end">
+                        @yield('footer_buttons')
+                    </div>
+                </div>
             </div>
         </main>
     </div>

@@ -57,6 +57,17 @@
                             </form>
                         @endif
                     @else
+                        @if(Auth::user()->id === $transfer->receiving_party_id and $transfer->status == \App\TransferStatusId::Accepted)
+                            <button type="submit" form="evidenceForm"
+                                    class="m-2 inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-black bg-green-300 hover:text-gray-800 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:text-gray-800 active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out">
+                                Submit for Approval
+                            </button>
+                            <form class="hidden" action="{{ route('transfers.evidence.create', $transfer->id) }}"
+                                  method="GET"
+                                  id="evidenceForm">
+                                @csrf
+                            </form>
+                        @endif
                         @if($transfer->status == \App\TransferStatusId::AwaitingAcceptance)
                             <button type="submit" form="acceptForm"
                                     class="m-2 inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-black bg-green-300 hover:bg-green-200 hover:text-gray-800 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:text-gray-800 active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out">

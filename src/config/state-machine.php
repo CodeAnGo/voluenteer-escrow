@@ -5,11 +5,9 @@ use App\TransferStatusId;
 use App\TransferStatusTransitions;
 
 return [
-    'transfer_status' => [
+    'transfer' => [
         'class' => Transfer::class,
-
         'property_path' => 'status',
-
         'states' => [
             TransferStatusId::AwaitingAcceptance,
             TransferStatusId::Accepted,
@@ -21,7 +19,6 @@ return [
             TransferStatusId::Closed,
             TransferStatusId::ClosedNonPayment,
         ],
-
         'transitions' => [
             TransferStatusTransitions::ToAwaitingAcceptance => [
                 'from' => [TransferStatusId::Rejected],
@@ -32,7 +29,7 @@ return [
                 'to' => TransferStatusId::Accepted,
             ],
             TransferStatusTransitions::ToRejected => [
-                'from' => [TransferStatusId::Accepted],
+                'from' => [TransferStatusId::AwaitingAcceptance, TransferStatusId::Accepted],
                 'to' => TransferStatusId::Rejected,
             ],
             TransferStatusTransitions::ToCancelled => [
@@ -44,7 +41,7 @@ return [
                 'to' => TransferStatusId::PendingApproval,
             ],
             TransferStatusTransitions::ToApproved => [
-                'from' => [TransferStatusId::PendingApproval],
+                'from' => [TransferStatusId::PendingApproval, TransferStatusId::InDispute],
                 'to' => TransferStatusId::Approved,
             ],
             TransferStatusTransitions::ToInDispute => [
