@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Charity;
+use App\Models\Transfer;
 use App\Models\TransferEvidence;
+use App\TransferStatusId;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\File;
 use Illuminate\Http\RedirectResponse;
@@ -12,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
+use App\Jobs\UpdateFreshdeskTicketTransferEvidence;
+use App\User;
 
 class TransferEvidencesController extends Controller
 {
@@ -35,7 +40,32 @@ class TransferEvidencesController extends Controller
      */
     public function create($transfer_id)
     {
-        return view('transfers.evidence.create', ['transfer_id' => $transfer_id]);
+        $transfer = Transfer::where('id', $transfer_id)->first();
+        $authorized = Auth::user()->id == $transfer->receiving_party_id;
+
+        if(!$authorized){
+            return app('App\Http\Controllers\TransfersController')->show($transfer_id);
+        }
+
+        $showDeliveryDetails =
+            Auth::id() === $transfer->sending_party_id ||
+            Auth::id() === $transfer->receiving_party_id;
+        $is_sending_user = Auth::id() === $transfer->sending_party_id;
+
+        $sending_user = User::where('id', $transfer->sending_party_id)->first();
+        $receiving_user = User::where('id', $transfer->receiving_party_id)->first();
+
+        $charity = Charity::where('id', $transfer->charity_id)->first();
+
+        return view('transfers.evidence.create', [
+            'balance' => 1,
+            'transfer' => $transfer,
+            'charity' => $charity->name,
+            'sending_user' => $sending_user,
+            'receiving_user' => $receiving_user,
+            'show_delivery_details' => $showDeliveryDetails,
+            'is_sending_user' => $is_sending_user
+        ]);
     }
 
     /**
@@ -50,11 +80,12 @@ class TransferEvidencesController extends Controller
         $validator = request()->validate([
             'evidence' => 'required',
             'evidence.*' => 'image',
+            'actual_amount' => 'required|numeric|min:0',
         ]);
 
         $paths = [];
         foreach ($request->files->get('evidence') as $file) {
-            $path = Storage::putFile('/evidence/' . $transfer_id . '/' . Auth::id(), new File($file));
+            $path = Storage::putFile('\\evidence\\' . $transfer_id . '\\' . Auth::id(), new File($file));
             array_push($paths, $path);
         }
 
@@ -66,7 +97,30 @@ class TransferEvidencesController extends Controller
             ]);
         }
 
-        return redirect()->route('transfers.evidence.index', $transfer_id);
+        $actual_amount = request('actual_amount');
+        $approval_note = request('transfer_note');
+
+        $transfer = Transfer::where('id', $transfer_id)->first();
+        $transfer->actual_amount = $actual_amount;
+        $transfer->approval_note = $approval_note;
+        $transfer->save();
+
+        $eol = "\r\n";
+        $user = Auth::user();
+
+        $message = $user->first_name . " " . $user->last_name . " has submitted the transfer for approval." . $eol;
+        $message .= "The actual amount for the service was £" . number_format($actual_amount, 2) . ".";
+        if ($approval_note) {
+            $message .= $eol."Additional Information: ".$eol;
+            $message .= $eol.$approval_note;
+        }
+
+        dispatch(new UpdateFreshdeskTicketTransferEvidence($transfer_id, $paths, $message));
+
+        $request['statusTransition'] = TransferStatusId::PendingApproval;
+        $request->setMethod('PUT');
+
+        return app('App\Http\Controllers\TransfersController')->update($request, $transfer_id);
     }
 
     /**

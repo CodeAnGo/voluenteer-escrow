@@ -5,8 +5,5 @@
         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
     </svg>
 </button>
-<form class="hidden" action="{{ route('transfers.update', $transfer->id) }}" method="POST" id="submitForm">
-    @csrf
-    @method('PUT')
-    <input type="hidden" name="statusTransition" value="{{\App\TransferStatusTransitions::ToPendingApproval}}"/>
+<form class="hidden" action="{{ route('transfers.evidence.create', $transfer->id) }}" method="GET" id="submitForm">
 </form>
