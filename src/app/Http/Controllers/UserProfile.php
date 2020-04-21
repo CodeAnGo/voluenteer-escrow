@@ -6,6 +6,7 @@ use App\Http\Requests\UserProfileUpdateRequest;
 use App\Models\Account;
 use App\Models\Address;
 use App\Models\Charity;
+use App\Models\Notification;
 use App\Models\UserCharity;
 use App\Models\StripeAccount;
 use App\User;
@@ -42,7 +43,8 @@ class UserProfile extends Controller
             'user' => $user,
             'charities' => $charities,
             'account' => $account,
-            'addresses' => $addresses
+            'addresses' => $addresses,
+            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
         ]);
     }
 
@@ -68,6 +70,7 @@ class UserProfile extends Controller
             'charities' => $charities,
             'user_charities' => $user_charities,
             'account' => $account,
+            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Charity;
+use App\Models\Notification;
 use App\Models\Transfer;
 use App\Models\TransferEvidence;
 use App\TransferStatusId;
@@ -29,7 +30,7 @@ class TransferEvidencesController extends Controller
     public function index($transfer_id)
     {
         $transfer_evidences = TransferEvidence::where('transfer_id', $transfer_id)->get();
-        return view('transfers.evidence.index', ['transfer_id' => $transfer_id, 'transfer_evidences' => $transfer_evidences]);
+        return view('transfers.evidence.index', ['transfer_id' => $transfer_id, 'transfer_evidences' => $transfer_evidences, 'notificationArr' => Notification::where('user_id', Auth::id())->get(),]);
     }
 
     /**
@@ -64,7 +65,8 @@ class TransferEvidencesController extends Controller
             'sending_user' => $sending_user,
             'receiving_user' => $receiving_user,
             'show_delivery_details' => $showDeliveryDetails,
-            'is_sending_user' => $is_sending_user
+            'is_sending_user' => $is_sending_user,
+            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
         ]);
     }
 
@@ -134,7 +136,7 @@ class TransferEvidencesController extends Controller
     {
         $transfer_evidence = TransferEvidence::where('id', $id)->first();
         $evidence = Storage::get(storage_path('app/' . $transfer_evidence->path));
-        return view('transfers.evidence.show', ['evidence' => $evidence]);
+        return view('transfers.evidence.show', ['evidence' => $evidence, 'notificationArr' => Notification::where('user_id', Auth::id())->get(),]);
     }
 
     /**

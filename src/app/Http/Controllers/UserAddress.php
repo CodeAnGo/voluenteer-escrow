@@ -6,6 +6,7 @@ use App\Http\Requests\UserAddressCreateRequest;
 use App\Http\Requests\UserAddressUpdateRequest;
 use App\Http\Requests\UserProfileUpdateRequest;
 use App\Models\Address;
+use App\Models\Notification;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,7 +26,8 @@ class UserAddress extends Controller
         $addresses = Address::where('user_id', Auth::id())->get();
 
         return view('addresses.index', [
-            'addresses' => $addresses
+            'addresses' => $addresses,
+            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
         ]);
     }
 
@@ -36,7 +38,7 @@ class UserAddress extends Controller
      */
     public function create()
     {
-        return view('addresses.create');
+        return view('addresses.create', ['notificationArr' => Notification::where('user_id', Auth::id())->get()]);
     }
 
     /**
@@ -78,7 +80,7 @@ class UserAddress extends Controller
             return redirect()->route('address.index');
         }
 
-        return view('addresses.edit', ['address' => $address]);
+        return view('addresses.edit', ['address' => $address, 'notificationArr' => Notification::where('user_id', Auth::id())->get()] );
     }
 
     /**
