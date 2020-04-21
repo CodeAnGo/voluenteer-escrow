@@ -34,6 +34,8 @@ class CreateTransfersTable extends Migration
             $table->string('transfer_note')->nullable();
             $table->tinyInteger('status');
             $table->string('stripe_id');
+            $table->string('stripe_payment_intent');
+            $table->
             $table->timestamps();
         });
     }

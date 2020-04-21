@@ -30,6 +30,7 @@ class Transfer extends Model implements Auditable
         'transfer_note',
         'status',
         'stripe_id',
+        'stripe_payment_intent'
     ];
 
     public function statusStateMachine()

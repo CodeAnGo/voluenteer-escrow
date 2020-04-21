@@ -18,5 +18,6 @@ class Account extends Model implements Auditable
         'stripe_publishable_key',
         'stripe_user_id',
         'scope',
+        'stripe_customer_id'
     ];
 }

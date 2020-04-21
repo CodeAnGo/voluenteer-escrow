@@ -11,6 +11,7 @@
             {{ config('app.name') }}
         @endif
     </title>
+@inject('stripeHelper', 'App\helpers\Stripe')
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -49,8 +50,9 @@
                 @auth
                     <div class="hidden sm:ml-6 sm:flex sm:items-center">
                         <a href="" class="text-gray-700 pr-2">
-                            Account Balance £ {{ $balance ?? 'undefined' }}
+                            Account Balance £ {{$stripeHelper->getBalance(Auth::id())}}
                         </a>
+
                         <div @click.away="open = false" class="ml-3 relative border-b-2 @if(in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['profile.index', 'profile.edit', 'addresses.index', 'addresses.create', 'addresses.edit'])) border-indigo-500 text-gray-900 @else border-transparent @endif text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out" x-data="{ open: false }">
                             <div>
                                 <button @click="open = !open" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out" id="user-menu" aria-label="User menu" aria-haspopup="true" x-bind:aria-expanded="open">
@@ -106,6 +108,7 @@
             </div>
         </header>
         <main>
+
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 @yield('content')
             </div>
