@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+
 use App\Mail\TransferGenericMail;
 use App\Mail\TransferDisputeMail;
 use App\Models\Notification;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use App\Models\Charity;
 use Illuminate\Support\Facades\Storage;
+use OwenIt\Auditing\Models\Audit;
 use Ramsey\Uuid\Uuid;
 use SM\SMException;
 
@@ -71,6 +73,9 @@ class TransfersController extends Controller
      */
     public function create()
     {
+
+        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
+        $stripeuserid = Account::where('user_id', Auth::id())->value('stripe_user_id');
 
         $charities = Charity::all();
 
@@ -166,6 +171,13 @@ class TransfersController extends Controller
 
         $status_map = $this->getStatusMap();
         $closed_status = $this->getClosedStatus();
+        $history = Audit::where('auditable_type', 'App\Models\Transfer')
+            ->where('auditable_id', $transfer->id)
+            ->orderBy('created_at', 'desc');
+
+
+        $user_ids = $history->get('user_id');
+        $change_users = User::whereIn('id', $user_ids)->get();
 
         return view('transfers.show', [
             'balance' => 1,
@@ -178,7 +190,10 @@ class TransfersController extends Controller
             'is_receiving_user' => $is_receiving_user,
             'closed_status' => $closed_status,
             'status_map' => $status_map,
-            'notificationArr' => Notification::where('user_id', Auth::id())->get()
+            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
+            'transfer_history' => $history->get(),
+            'change_users' => $change_users,
+            'status_map' => $status_map
         ]);
     }
 
@@ -220,19 +235,18 @@ class TransfersController extends Controller
             if ($statusTransition == TransferStatusTransitions::ToAccepted || $statusTransition == TransferStatusTransitions::ToRejected) {
                 $transfer->receiving_party_id = Auth::id();
             }
-            Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer,  $status_map[$statusTransition]));
 
             if ($transfer->transitionAllowed($statusTransition)) {
                 try {
-    //                    if ($statusTransition === TransferStatusTransitions::ToInDispute) {
-    //                        if($transfer->receiving_party_id == Auth::id()) {
-    //                            Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
-    //                        } else {
-    //                            Mail::to(Auth::user()->email)->send(new TransferDisputeMail($transfer, true));
-    //                        }
-    //                    } else {
-    //
-    //                    }
+                        if ($statusTransition === TransferStatusTransitions::ToInDispute) {
+                            if($transfer->receiving_party_id == Auth::id()) {
+                                Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
+                            } else {
+                                Mail::to(Auth::user()->email)->send(new TransferDisputeMail($transfer, true));
+                            }
+                        } else {
+                                Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer,  $status_map[$statusTransition]));
+                        }
                     $transfer->transition($statusTransition);
                     $transfer->save();
                 } catch (Exception $e) {

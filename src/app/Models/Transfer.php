@@ -34,19 +34,6 @@ class Transfer extends Model implements Auditable
         'freshdesk_id'
     ];
 
-
-    public function statusStateMachine()
-    {
-        $factory = new SMFactory(config('state_machine'));
-
-        return $factory->get($this, 'transfer_status');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo('App\User');
-    }
-
     const SM_CONFIG = 'transfer';
 
 }

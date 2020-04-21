@@ -6,9 +6,6 @@
         <!-- We've used 3xl here, but feel free to try other max-widths based on your needs -->
         <div class="max-w-6xl mx-auto">
 
-
-
-
                 <div class="flex flex-col pt-4">
                     <div class="flex flex-row justify-between items-center">
                         <h3 class="text-lg leading-6 font-medium text-gray-800 p-4">
@@ -22,6 +19,7 @@
                                 <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </a>
+
                         @endif
                     </div>
 

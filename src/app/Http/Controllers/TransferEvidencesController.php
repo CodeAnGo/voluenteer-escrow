@@ -67,6 +67,7 @@ class TransferEvidencesController extends Controller
             'show_delivery_details' => $showDeliveryDetails,
             'is_sending_user' => $is_sending_user,
             'notificationArr' => Notification::where('user_id', Auth::id())->get(),
+            'is_sending_user' => $is_sending_user
         ]);
     }
 
