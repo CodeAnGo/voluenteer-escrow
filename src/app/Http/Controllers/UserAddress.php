@@ -77,7 +77,7 @@ class UserAddress extends Controller
             return redirect()->route('address.index');
         }
 
-        return view('addresses.edit', ['address' => $address, 'notificationArr' => Notification::where('user_id', Auth::id())->get()] );
+        return view('addresses.edit', ['address' => $address, 'notificationArr' => Auth::user()->notifications] );
     }
 
     /**

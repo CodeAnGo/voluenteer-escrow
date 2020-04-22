@@ -45,7 +45,6 @@ class UserProfile extends Controller
             'charities' => $charities,
             'account' => $account,
             'addresses' => $addresses,
-            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
         ]);
     }
 
@@ -71,7 +70,6 @@ class UserProfile extends Controller
             'charities' => $charities,
             'user_charities' => $user_charities,
             'account' => $account,
-            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
         ]);
     }
 
