@@ -7,6 +7,7 @@ return [
     'full_name' => 'Full Name',
     'email_address' => 'Email Address',
     'phone_number' => 'Phone Number',
+    'address' => 'Address',
     'line1' => 'Street Address 1',
     'line2' => 'Street Address 2',
     'city' => 'City',

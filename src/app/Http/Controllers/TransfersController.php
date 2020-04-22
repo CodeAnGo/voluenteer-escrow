@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TransferCreateRequest;
+use App\Http\Requests\TransferUpdateRequest;
+use App\Http\Requests\TransferUpdateStatusRequest;
 use App\Models\Account;
 use App\Models\Address;
 use App\Models\Transfer;
@@ -12,15 +15,16 @@ use Illuminate\Foundation\Auth\User;
 use App\TransferStatusTransitions;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use OwenIt\Auditing\Models\Audit;
 use Ramsey\Uuid\Uuid;
-use SM\SMException;
 use App\Models\Charity;
+use Stripe\Exception\ApiErrorException;
+use Stripe\Stripe;
 
 class TransfersController extends Controller
 {
@@ -62,25 +66,24 @@ class TransfersController extends Controller
      * Show the form for creating a new resource.
      *
      * @return Factory|View
+     * @throws ApiErrorException
      */
     public function create()
     {
+        $account = Account::where('user_id', Auth::id())->first();
+        Stripe::setApiKey(Config::get('stripe.api_key'));
+        $stripe_account =  \Stripe\Account::retrieve($account->stripe_user_id);
 
-        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
-        $stripeuserid = Account::where('user_id', Auth::id())->value('stripe_user_id');
-
-        $charities = Charity::all();
-
+        $charities = Charity::where('active', true)->orderBy('name', 'asc')->get();
         $cards = [];
 
-        $transfers = Transfer::where('sending_party_id',Auth::user()->id)->orderBy('id', 'desc')->get();
         $addresses = Address::where('user_id', Auth::id())->get();
 
-        return view('transfers.create', [
-            'charities'=>$charities,
-            'transfers'=>$transfers,
-            'cards'=>$cards,
-            'addresses' => $addresses
+        return view('transfers.create',[
+            'charities' => $charities,
+            'cards' => $cards,
+            'addresses' => $addresses,
+            'phone' => $stripe_account->business_profile->support_phone ?? '',
         ]);
     }
 
@@ -88,51 +91,35 @@ class TransfersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param TransferCreateRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request)
+    public function store(TransferCreateRequest $request)
     {
-        if ($request->get('user_address_select')) {
-            $address = Address::where('id', $request->get('user_address_select'))->first();
-            $addressline =  ($address->line2) ? $addressline = $address->line1 . ", " . $address->line2 : $address->line1;
+        $request->validated();
 
-            $transfer = Transfer::create([
-                'sending_party_id' => Auth::id(),
-                'status' => TransferStatusId::AwaitingAcceptance,
-                'delivery_first_name' => $request->get('first_name'),
-                'delivery_last_name' => $request->get('last_name'),
-                'delivery_email' => $request->get('email_address'),
-                'delivery_street' => $addressline,
-                'delivery_city' => $address->city,
-                'delivery_county' => $address->county,
-                'delivery_postcode' => $address->postcode,
-                'delivery_country' => $address->country,
-                'transfer_amount' => $request->get('transfer_amount'),
-                'transfer_reason' => $request->get('transfer_reason'),
-                'transfer_note' => $request->get('transfer_note'),
-                'charity_id' => $request->get('charity'),
-                'stripe_id' => 1,
-            ]);
-        } else {
-            $transfer = Transfer::create([
-                'sending_party_id' => Auth::id(),
-                'status' => TransferStatusId::AwaitingAcceptance,
-                'delivery_first_name' => $request->get('first_name'),
-                'delivery_last_name' => $request->get('last_name'),
-                'delivery_email' => $request->get('email_address'),
-                'delivery_street' => $request->get('street_address'),
-                'delivery_city' => $request->get('city'),
-                'delivery_county' => $request->get('county'),
-                'delivery_postcode' => $request->get('postal_code'),
-                'delivery_country' => $request->get('country'),
-                'transfer_amount' => $request->get('transfer_amount'),
-                'transfer_reason' => $request->get('transfer_reason'),
-                'transfer_note' => $request->get('transfer_note'),
-                'charity_id' => $request->get('charity'),
-                'stripe_id' => 1,
-            ]);
-        }
+        $address = Address::where('id', $request->get('user_address_select'))->first();
+
+        $transfer = Transfer::create([
+            'sending_party_id' => Auth::id(),
+            'status' => TransferStatusId::AwaitingAcceptance,
+            'delivery_first_name' => $request->get('delivery_first_name'),
+            'delivery_last_name' => $request->get('delivery_last_name'),
+            'delivery_email' => $request->get('delivery_email'),
+            'delivery_phone' => $request->get('delivery_phone'),
+            'delivery_street_1' => $address->line1,
+            'delivery_street_2' => $address->line2,
+            'delivery_city' => $address->city,
+            'delivery_county' => $address->county,
+            'delivery_postcode' => $address->postcode,
+            'delivery_country' => $address->country,
+            'transfer_amount' => $request->get('transfer_amount'),
+            'transfer_reason' => $request->get('transfer_reason'),
+            'transfer_note' => $request->get('transfer_note'),
+            'charity_id' => $request->get('charity_id'),
+            'stripe_id' => 1,
+            'freshdesk_id' => 1,
+        ]);
         Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
 
         return redirect()->route('transfers.show', $transfer->id);
@@ -147,11 +134,6 @@ class TransfersController extends Controller
     public function show($id)
     {
         $transfer = Transfer::where('id', $id)->first();
-        $showDeliveryDetails =
-            Auth::id() === $transfer->sending_party_id ||
-            Auth::id() === $transfer->receiving_party_id;
-        $is_sending_user = Auth::id() === $transfer->sending_party_id;
-        $is_receiving_user = Auth::id() === $transfer->receiving_party_id;
 
         $sending_user = User::where('id', $transfer->sending_party_id)->first();
         $receiving_user = User::where('id', $transfer->receiving_party_id)->first();
@@ -160,7 +142,7 @@ class TransfersController extends Controller
 
         $status_map = $this->getStatusMap();
         $closed_status = $this->getClosedStatus();
-        $history = Audit::where('auditable_type', 'App\Models\Transfer')
+        $history = Audit::where('auditable_type', Transfer::class)
             ->where('auditable_id', $transfer->id)
             ->orderBy('created_at', 'desc');
 
@@ -168,14 +150,10 @@ class TransfersController extends Controller
         $change_users = User::whereIn('id', $user_ids)->get();
 
         return view('transfers.show', [
-            'balance' => 1,
             'transfer' => $transfer,
-            'charity' => $charity->name,
+            'charity' => $charity ? $charity->name : '-',
             'sending_user' => $sending_user,
             'receiving_user' => $receiving_user,
-            'show_delivery_details' => $showDeliveryDetails,
-            'is_sending_user' => $is_sending_user,
-            'is_receiving_user' => $is_receiving_user,
             'closed_status' => $closed_status,
             'transfer_history' => $history->get(),
             'change_users' => $change_users,
@@ -187,46 +165,83 @@ class TransfersController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  uuid  $id
-     * @return Response
+     * @return Factory|RedirectResponse|View
      */
     public function edit($id)
     {
-        //
+        $transfer = Transfer::where('id', $id)->first();
+
+        if (!isset($transfer) || $transfer->sending_party_id !== Auth::id()) {
+            return redirect()->route('transfers.index');
+        }
+
+        $charity = Charity::where('id', $transfer->charity_id)->first();
+
+        return view('transfers.edit', [
+            'transfer' => $transfer,
+            'charity' => $charity ? $charity->name : '-',
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param  uuid  $id
+     * @param TransferUpdateRequest $request
+     * @param uuid $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(TransferUpdateRequest $request, $id)
+    {
+        $request->validated();
+
+        $transfer = Transfer::where('id', $id)->first();
+        if ($transfer->status === TransferStatusId::AwaitingAcceptance || $transfer->status === TransferStatusId::Rejected) {
+            $transfer->delivery_first_name = $request->get('delivery_first_name');
+            $transfer->delivery_last_name = $request->get('delivery_last_name');
+            $transfer->delivery_email = $request->get('delivery_email');
+            $transfer->delivery_phone = $request->get('delivery_phone');
+            $transfer->delivery_street_1 = $request->get('delivery_street_1');
+            $transfer->delivery_street_2 = $request->get('delivery_street_2');
+            $transfer->delivery_city = $request->get('delivery_city');
+            $transfer->delivery_county = $request->get('delivery_county');
+            $transfer->delivery_postcode = $request->get('delivery_postcode');
+            $transfer->delivery_country = $request->get('delivery_country');
+            $transfer->transfer_reason = $request->get('transfer_reason');
+            $transfer->transfer_note = $request->get('transfer_note');
+            $transfer->save();
+        }
+
+        return redirect()->route('transfers.show', [$id]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param TransferUpdateStatusRequest $request
+     * @param uuid $id
+     * @param int $statusTransition
+     * @return RedirectResponse
+     */
+    public function statusUpdate(TransferUpdateStatusRequest $request, $id, $statusTransition)
     {
         $transfer = Transfer::where('id', $id)->first();
-        $statusTransition = $request->input('statusTransition');
-        $isEdit = is_null($statusTransition);
-        if ($isEdit) {
-            if (Auth::id() === $transfer->sending_party_id and $transfer->status === TransferStatusId::AwaitingAcceptance) {
-                //
-            }
-        } else {
-            if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
-                $transfer->receiving_party_id = null;
-            }
-            if ($statusTransition == TransferStatusTransitions::ToAccepted || $statusTransition == TransferStatusTransitions::ToRejected) {
-                $transfer->receiving_party_id = Auth::id();
-            }
-            if ($transfer->transitionAllowed($statusTransition)) {
-                try {
-                    $transfer->transition($statusTransition);
-                    $transfer->save();
-                } catch (Exception $e) {
-                    // unable to transition
-                }
+
+        if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
+            $transfer->receiving_party_id = null;
+        }
+        if ($statusTransition == TransferStatusTransitions::ToAccepted || $statusTransition == TransferStatusTransitions::ToRejected) {
+            $transfer->receiving_party_id = Auth::id();
+        }
+        if ($transfer->transitionAllowed($statusTransition)) {
+            try {
+                $transfer->transition($statusTransition);
+                $transfer->save();
+            } catch (Exception $e) {
+                // unable to transition
             }
         }
-        return redirect()->route('transfers.show', [$id]);
+
+        return redirect()->route('transfers.show', $id);
     }
 
     /**
