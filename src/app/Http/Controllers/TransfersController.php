@@ -65,7 +65,6 @@ class TransfersController extends Controller
             'active_transfers' => $active_transfers->get(),
             'closed_status' => $closed_status_id,
             'volunteer' => !(Auth::User()->volunteer === 0),
-            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
             'status_map' => $status_map
         ]);
     }
@@ -92,7 +91,6 @@ class TransfersController extends Controller
             'cards' => $cards,
             'addresses' => $addresses,
             'phone' => $stripe_account->business_profile->support_phone ?? '',
-          'notificationArr' => Notification::where('user_id', Auth::id())->get()
         ]);
     }
 
@@ -171,7 +169,6 @@ class TransfersController extends Controller
             'receiving_user' => $receiving_user,
             'closed_status' => $closed_status,
             'status_map' => $status_map,
-            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
             'transfer_history' => $history->get(),
             'change_users' => $change_users,
             'status_map' => $status_map

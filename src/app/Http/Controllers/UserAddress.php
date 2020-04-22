@@ -27,7 +27,6 @@ class UserAddress extends Controller
 
         return view('addresses.index', [
             'addresses' => $addresses,
-            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
         ]);
     }
 
@@ -38,7 +37,7 @@ class UserAddress extends Controller
      */
     public function create()
     {
-        return view('addresses.create', ['notificationArr' => Notification::where('user_id', Auth::id())->get()]);
+        return view('addresses.create', ['notificationArr' => Auth::user()->notifications]);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Concerns\UsesUUID;
+use App\Models\Notification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -38,4 +39,8 @@ class User extends Authenticatable implements Auditable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function notifications(){
+        return $this->hasMany(Notification::class);
+    }
 }

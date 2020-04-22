@@ -30,7 +30,7 @@ class TransferEvidencesController extends Controller
     public function index($transfer_id)
     {
         $transfer_evidences = TransferEvidence::where('transfer_id', $transfer_id)->get();
-        return view('transfers.evidence.index', ['transfer_id' => $transfer_id, 'transfer_evidences' => $transfer_evidences, 'notificationArr' => Notification::where('user_id', Auth::id())->get(),]);
+        return view('transfers.evidence.index', ['transfer_id' => $transfer_id, 'transfer_evidences' => $transfer_evidences,]);
     }
 
     /**
@@ -66,7 +66,6 @@ class TransferEvidencesController extends Controller
             'receiving_user' => $receiving_user,
             'show_delivery_details' => $showDeliveryDetails,
             'is_sending_user' => $is_sending_user,
-            'notificationArr' => Notification::where('user_id', Auth::id())->get(),
             'is_sending_user' => $is_sending_user
         ]);
     }
@@ -137,7 +136,7 @@ class TransferEvidencesController extends Controller
     {
         $transfer_evidence = TransferEvidence::where('id', $id)->first();
         $evidence = Storage::get(storage_path('app/' . $transfer_evidence->path));
-        return view('transfers.evidence.show', ['evidence' => $evidence, 'notificationArr' => Notification::where('user_id', Auth::id())->get(),]);
+        return view('transfers.evidence.show', ['evidence' => $evidence,]);
     }
 
     /**
