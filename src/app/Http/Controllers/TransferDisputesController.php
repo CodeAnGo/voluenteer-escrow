@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TransferUpdateRequest;
+use App\Http\Requests\TransferUpdateStatusRequest;
 use App\Jobs\UpdateFreshdeskTicketTransferDispute;
 use App\Models\Transfer;
 use App\Models\TransferDispute;
 use App\Models\TransferDisputeEvidence;
 use App\Models\TransferEvidence;
 use App\TransferStatusId;
+use App\TransferStatusTransitions;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\File;
 use Illuminate\Http\RedirectResponse;
@@ -98,10 +101,11 @@ class TransferDisputesController extends Controller
 
         dispatch(new UpdateFreshdeskTicketTransferDispute($transfer_id, $paths, $message));
 
-        $request['statusTransition'] = TransferStatusId::InDispute;
-        $request->setMethod('PUT');
+        $transfer_request = new TransferUpdateStatusRequest();
+        $transfer_request->setMethod('PUT');
 
-        return app('App\Http\Controllers\TransfersController')->update($request, $transfer_id);
+        return app('App\Http\Controllers\TransfersController')
+            ->statusUpdate($transfer_request, $transfer_id, TransferStatusTransitions::ToInDispute);
     }
 
     /**
