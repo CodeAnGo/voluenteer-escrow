@@ -66,8 +66,10 @@
 </script>
 
 @section('content')
-    <!-- @include('transfers.status') -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+    @if(Auth::id() === $transfer->sending_party_id || Auth::id() === $transfer->receiving_party_id)
+        @include('transfers.status')
+    @endif
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col pt-4">
                 <div class="bg-white shadow overflow-hidden  sm:rounded-lg">

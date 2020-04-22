@@ -127,10 +127,10 @@
     <footer class="bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col justify-center text-center text-base leading-6 text-gray-500">
-                <div class="flex flex-row justify-center mt-4">
-                    <a href="#" class="mx-4 text-blue-600 hover:text-blue-800">Accessibility</a>
-                    <a href="#" class="mx-4 text-blue-600 hover:text-blue-800">Cookie Policy</a>
-                    <a href="#" class="mx-4 text-blue-600 hover:text-blue-800">Privacy Policy</a>
+                <div class="flex flex-col sm:flex-row justify-center mt-4">
+                    <a href="#" class="mx-4 my-1 text-blue-600 hover:text-blue-800">Accessibility</a>
+                    <a href="#" class="mx-4 my-1 text-blue-600 hover:text-blue-800">Cookie Policy</a>
+                    <a href="#" class="mx-4 my-1 text-blue-600 hover:text-blue-800">Privacy Policy</a>
                 </div>
                 <span class="mt-2 mb-4">
                     &copy; 2020 Netcompany, A/S. All rights reserved.

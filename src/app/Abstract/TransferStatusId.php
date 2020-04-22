@@ -9,8 +9,8 @@ abstract class TransferStatusId
     const AwaitingAcceptance = 3;
     const Accepted = 4;
     const PendingApproval = 5;
-    const Approved = 6;
-    const InDispute = 7;
+    const InDispute = 6;
+    const Approved = 7;
     const Closed = 8;
     const ClosedNonPayment = 9;
 }
