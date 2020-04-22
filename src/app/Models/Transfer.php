@@ -31,7 +31,9 @@ class Transfer extends Model implements Auditable
         'actual_amount',
         'status',
         'stripe_id',
-        'freshdesk_id'
+        'stripe_payment_intent',
+        'freshdesk_id',
+      'transfer_group'
     ];
 
     const SM_CONFIG = 'transfer';

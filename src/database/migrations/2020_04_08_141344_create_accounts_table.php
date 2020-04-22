@@ -23,6 +23,7 @@ class CreateAccountsTable extends Migration
             $table->string('stripe_publishable_key');
             $table->string('stripe_user_id');
             $table->string('scope');
+            $table->sring(column: 'stripe_customer_id');
             $table->timestamps();
         });
     }
