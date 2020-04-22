@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Transfer;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class UserAddressCreateRequest extends FormRequest
+class TransferUpdateStatusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +15,8 @@ class UserAddressCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        $transfer = Transfer::find($this->route('transfer'));
+        return isset($transfer);
     }
 
     /**
@@ -23,13 +26,6 @@ class UserAddressCreateRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'line1' => 'required|max:255',
-            'line2' => 'max:255',
-            'city' => 'required|max:255',
-            'county' => 'max:255',
-            'postcode' => 'required|max:255',
-            'country' => 'required|max:255',
-        ];
+        return [];
     }
 }

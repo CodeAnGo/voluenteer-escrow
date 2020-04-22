@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
 
 class UpdateFreshdeskTicketTransferEvidence implements ShouldQueue
 {
@@ -44,60 +45,38 @@ class UpdateFreshdeskTicketTransferEvidence implements ShouldQueue
         $ticket_id = $transfer->freshdesk_id;
         $url = "https://$charity->domain.freshdesk.com/api/v2/tickets/$ticket_id/notes";
 
-        $eol = "\r\n";
+        //attach image to create Multi-part request
+        $first_path = storage_path('app'.$this->evidence[0]);
+        $first_photo = fopen($first_path, 'r');
+        $file_name = explode('/', $first_path, 2)[1];
+        $request = Http::attach('attachments[]', $first_photo, $file_name);
+        $request = $request->withBasicAuth($charity->api_key, '');
 
-        $mime_boundary = md5(time());
+        $ticket_data = array(
+            'body'=>[
+                'contents'=>$this->body,
+                'name'=>"body"
+            ],
+        );
 
-        $data = '--' . $mime_boundary . $eol;
-        $data .= 'Content-Disposition: form-data; name="body"' . $eol . $eol;
-        $data .= "$this->body" . $eol;
-
-        foreach($this->evidence as $file) {
-            $path = storage_path('app'.$file);
-            $content_type = mime_content_type($path);
-            $file_name = explode('/', $file, 2)[1];
-
-            $data .= '--' . $mime_boundary . $eol;
-            $data .= 'Content-Disposition: form-data; name="attachments[]"; filename="' . $file_name. '"' . $eol;
-            $data .= "Content-Type: $content_type" . $eol . $eol;
-            $data .= file_get_contents($path) . $eol;
+        //include additional images
+        $i = 1;
+        while($i < count($this->evidence)){
+            $path = storage_path('app'.$this->evidence[$i]);
+            $photo = fopen($path, 'r');
+            $ticket_data['attachment'.$i] = [
+                'contents'=>$photo,
+                'name'=>"attachments[]"
+            ];
+            $i++;
         }
 
-        $data .= "--" . $mime_boundary . "--" . $eol . $eol;
-
-        $header[] = "Content-type: multipart/form-data; boundary=" . $mime_boundary;
-
-        $ch = curl_init($url);
-
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS,$data);
-        curl_setopt($ch, CURLOPT_USERPWD, "$charity->api_key");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $server_output = curl_exec($ch);
-        $info = curl_getinfo($ch);
-        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        $headers = substr($server_output, 0, $header_size);
-        $response = substr($server_output, $header_size);
-
-        if($info['http_code'] == 201) {
-            echo "Note added to the ticket, the response is given below \n";
-            echo "Response Headers are \n";
-            echo $headers."\n";
-            echo "Response Body \n";
-            echo "$response \n";
+        $response = $request->post($url, $ticket_data);
+        if ($response->successful()) {
+            $decodedBody = json_decode($response->getBody());
+            //
         } else {
-            if($info['http_code'] == 404) {
-                echo "Error, Please check the end point \n";
-            } else {
-                echo "Error, HTTP Status Code : " . $info['http_code'] . "\n";
-                echo "Headers are ".$headers."\n";
-                echo "Response is ".$response;
-            }
+            $this->fail('HTTP Error ' . $response->getStatusCode() . ':' . $response->getReasonPhrase());
         }
-
-        curl_close($ch);
     }
 }

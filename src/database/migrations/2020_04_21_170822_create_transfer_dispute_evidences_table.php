@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAddressTable extends Migration
+class CreateTransferDisputeEvidencesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,15 @@ class CreateAddressTable extends Migration
      */
     public function up()
     {
-        Schema::create('addresses', function (Blueprint $table) {
+        Schema::create('transfer_dispute_evidences', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('transfer_id');
+            $table->foreign('transfer_id')->references('id')->on('transfers');
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->string('line1');
-            $table->string('line2')->nullable();
-            $table->string('city');
-            $table->string('county')->nullable();
-            $table->string('postcode');
-            $table->string('country');
+            $table->uuid('transfer_dispute_id');
+            $table->foreign('transfer_dispute_id')->references('id')->on('transfer_disputes');
+            $table->string('path');
             $table->timestamps();
         });
     }
@@ -34,6 +33,6 @@ class CreateAddressTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('addresses');
+        Schema::dropIfExists('transfer_dispute_evidences');
     }
 }

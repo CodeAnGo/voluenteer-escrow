@@ -18,11 +18,13 @@ class Transfer extends Model implements Auditable
         'delivery_first_name',
         'delivery_last_name',
         'delivery_email',
-        'delivery_country',
-        'delivery_street',
+        'delivery_phone',
+        'delivery_street_1',
+        'delivery_street_2',
         'delivery_city',
         'delivery_county',
         'delivery_postcode',
+        'delivery_country',
         'charity_id',
         'transfer_amount',
         'transfer_reason',
@@ -31,7 +33,9 @@ class Transfer extends Model implements Auditable
         'actual_amount',
         'status',
         'stripe_id',
-        'freshdesk_id'
+        'stripe_payment_intent',
+        'freshdesk_id',
+      'transfer_group'
     ];
 
     const SM_CONFIG = 'transfer';

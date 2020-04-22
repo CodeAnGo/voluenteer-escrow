@@ -1,5 +1,5 @@
 <div @click.away="open = false" class="relative" x-data="{ open: false }">
-    <button value="copy" @click="open = !open" onclick="copyToClipboard('{{ env('APP_URL') . '/transfers/'. $transfer->id }}')" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg border-b-2 border-indigo-500 hover:border-indigo-700 bg-white hover:bg-indigo-500 text-md font-medium text-indigo-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
+    <button value="copy" @click="open = !open" onclick="copyToClipboard('{{ env('APP_URL') . '/transfers/'. $transfer->id }}')" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md border-b-2 border-indigo-500 hover:border-indigo-700 focus:border-indigo-700 bg-white hover:bg-indigo-500 focus:bg-indigo-500 text-md font-medium text-indigo-500 hover:text-white focus:text-white transition duration-150 ease-in-out">
         <span class="mr-2 hidden md:inline-flex">{{ __('transfers.copy_link') }}</span>
         <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.copy') }}</span>
         <svg fill="currentColor" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
@@ -7,9 +7,9 @@
         </svg>
     </button>
     <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 origin-top-right">
-        <div class="rounded-md bg-white shadow-2xl py-1 border border-gray-200">
-            <p class="block px-4 py-2 text-sm leading-5 font-medium text-gray-500">The following link has been copied to your clipboard:</p>
-            <p class="block px-4 py-2 text-sm leading-5 text-gray-700">{{ env('APP_URL') . '/transfers/'. $transfer->id }}</p>
+        <div class="rounded-md bg-white shadow-2xl py-1 border border-gray-200 w-64 sm:w-96">
+            <p class="block px-4 py-2 text-sm leading-5 font-medium text-gray-500">{{ __('transfers.copy_link_text') }}</p>
+            <p class="block px-4 py-2 text-sm leading-5 text-gray-700 select-all">{{ env('APP_URL') . '/transfers/'. $transfer->id }}</p>
         </div>
     </div>
 </div>
