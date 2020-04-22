@@ -27,11 +27,9 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use App\Models\Charity;
-use Illuminate\Support\Facades\Storage;
 use OwenIt\Auditing\Models\Audit;
 use Ramsey\Uuid\Uuid;
 use SM\SMException;
-use App\Models\Charity;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Stripe;
 
@@ -249,8 +247,8 @@ class TransfersController extends Controller
      */
     public function statusUpdate(TransferUpdateStatusRequest $request, $id, $statusTransition)
     {
-        $transfer = Transfer::where('id', $id)->first(); 
-      
+        $transfer = Transfer::where('id', $id)->first();
+
         $status_map = $this->getStatusMap();
 
         if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
@@ -261,14 +259,14 @@ class TransfersController extends Controller
         }
         if ($transfer->transitionAllowed($statusTransition)) {
             try {
-             
+
                 $transfer->transition($statusTransition);
                 $transfer->save();
             } catch (Exception $e) {
                 // unable to transition
             }
         }
-      
+
       if ($statusTransition === TransferStatusTransitions::ToInDispute) {
                 if($transfer->receiving_party_id == Auth::id()) {
                           Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
