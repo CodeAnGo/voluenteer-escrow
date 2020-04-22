@@ -62,6 +62,9 @@
                                         'value' => $address->country,
                                         'input_id' => 'country',
                                         'required' => true,
+                                        'input_type' => 'select_names',
+                                        'input_items' => [['name'=>'United Kingdom']],
+                                        'input_default_value' => 'United Kingdom',
                                     ])
                                 </div>
                             </dl>

@@ -175,11 +175,11 @@ class TransfersController extends Controller
             return redirect()->route('transfers.index');
         }
 
-        $charities = Charity::where('active', true)->orderBy('name', 'asc')->get();
+        $charity = Charity::where('id', $transfer->charity_id)->first();
 
         return view('transfers.edit', [
             'transfer' => $transfer,
-            'charities' => $charities,
+            'charity' => $charity ? $charity->name : '-',
         ]);
     }
 
@@ -206,10 +206,8 @@ class TransfersController extends Controller
             $transfer->delivery_county = $request->get('delivery_county');
             $transfer->delivery_postcode = $request->get('delivery_postcode');
             $transfer->delivery_country = $request->get('delivery_country');
-            $transfer->transfer_amount = $request->get('transfer_amount');
             $transfer->transfer_reason = $request->get('transfer_reason');
             $transfer->transfer_note = $request->get('transfer_note');
-            $transfer->charity_id = $request->get('charity_id');
             $transfer->save();
         }
 

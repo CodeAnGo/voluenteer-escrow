@@ -135,17 +135,16 @@
                                         'value' => $transfer->transfer_amount,
                                         'input_id' => 'transfer_amount',
                                         'required' => true,
+                                        'readonly' => true
                                     ])
                                 </div>
                                 <div class="sm:col-span-1">
                                     @include('layouts.input_with_label', [
                                         'label' => __('transfers.transfer_information.charity'),
-                                        'value' => $transfer->charity_id,
+                                        'value' => $charity,
                                         'input_id' => 'charity_id',
-                                        'input_type' => 'select',
-                                        'input_items' => $charities,
-                                        'input_default_value' => '-',
                                         'required' => true,
+                                        'readonly' => true
                                     ])
                                 </div>
                                 <div class="hidden sm:inline-flex col-span-1 lg:hidden"></div>
