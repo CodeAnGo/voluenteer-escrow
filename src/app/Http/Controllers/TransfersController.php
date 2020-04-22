@@ -121,6 +121,7 @@ class TransfersController extends Controller
             'freshdesk_id' => 1,
         ]);
         Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
+        Storage::makeDirectory('/dispute/' . $transfer->id . '/' . Auth::id());
 
         return redirect()->route('transfers.show', $transfer->id);
     }

@@ -26,4 +26,5 @@ return [
     'volunteering_information' => 'Volunteer Information',
     'copy_link' => 'Copy Link',
     'copy_link_text' => 'The following link has been copied to your clipboard:',
+    'submit_dispute' => 'Submit Dispute'
 ];
