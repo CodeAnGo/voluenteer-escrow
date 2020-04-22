@@ -35,7 +35,12 @@ class CreateTransfersTable extends Migration
             $table->tinyInteger('status');
             $table->string('stripe_id');
             $table->string('stripe_payment_intent');
-            $table->
+            $table->decimal('actual_amount', 6, 2)->nullable();
+            $table->string('approval_note')->nullable();
+            $table->tinyInteger('status')->nullable();
+            $table->string('stripe_id')->nullable();
+            $table->string('freshdesk_id')->nullable();
+            $table->string('transfer_group')->nullable();
             $table->timestamps();
         });
     }
