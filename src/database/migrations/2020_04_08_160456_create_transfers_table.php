@@ -26,14 +26,12 @@ class CreateTransfersTable extends Migration
             $table->string('delivery_email');
             $table->string('delivery_street');
             $table->string('delivery_city');
-            $table->string('delivery_town');
+            $table->string('delivery_county')->nullable();
             $table->string('delivery_postcode');
             $table->string('delivery_country');
             $table->decimal('transfer_amount', 6, 2);
             $table->string('transfer_reason');
             $table->string('transfer_note')->nullable();
-            $table->tinyInteger('status');
-            $table->string('stripe_id');
             $table->string('stripe_payment_intent');
             $table->decimal('actual_amount', 6, 2)->nullable();
             $table->string('approval_note')->nullable();

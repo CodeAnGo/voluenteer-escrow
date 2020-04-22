@@ -17,6 +17,8 @@ class CreateCharitiesTable extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->boolean('active');
+            $table->string('domain');
+            $table->string('api_key');
             $table->timestamps();
         });
     }

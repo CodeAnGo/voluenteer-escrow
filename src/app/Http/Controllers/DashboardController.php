@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transfer;
-use App\TransferStatus;
 use App\TransferStatusId;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use App\User;
 use App\Models\Charity;
 use ReflectionException;
 
@@ -28,7 +27,7 @@ class DashboardController extends Controller
         $transfers = Transfer::where($transfer_identifier, Auth::id());
 
         $user_ids = $transfers->get($other_identifier);
-        $users = \Illuminate\Foundation\Auth\User::whereIn('id', $user_ids);
+        $users = User::whereIn('id', $user_ids);
 
         $charity_ids = $transfers->get('charity_id');
         $charities = Charity::whereIn('id', $charity_ids);
