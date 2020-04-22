@@ -1,0 +1,9 @@
+diff a/src/app/Http/Controllers/TransfersController.php b/src/app/Http/Controllers/TransfersController.php	(rejected hunks)
+@@ -83,7 +83,6 @@
+             'status' => TransferStatus::AwaitingAcceptance,
+         ]); // TODO: add attributes from transfer creation form in here
+ 
+-        return redirect()->route('transfer.show');
+     }
+ 
+     /**
