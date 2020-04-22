@@ -4,281 +4,150 @@
 @section('header_title', __('transfers.create.title'))
 
 @section('content')
-    <script src="https://js.stripe.com/v3/"></script>
-    <form action="{{ route('transfers.store') }}" method="Post">
+    <form action="{{ route('transfers.store') }}" method="POST" id="createTransfer">
         @csrf
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-        <div class="max-w-6xl mx-auto">
-
-            <div class="mt-10 sm:mt-0">
-                <div class="md:grid md:grid-cols-3 md:gap-6">
-                    <div class="md:col-span-1">
-                        <div class="px-4 sm:px-0">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">Delivery Information</h3>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 col-gap-4 row-gap-4 sm:grid-cols-1">
+                <div class="flex flex-col">
+                    <div class="bg-white shadow overflow-hidden sm:rounded-lg h-full">
+                        <div class="px-4 py-3 border-b border-gray-200 sm:px-6">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                {{ __('transfers.delivery_information') }}
+                            </h3>
                             <p class="mt-1 text-sm leading-5 text-gray-500">
-                                This should be the recipient of the volunteers actions, eg who they will deliver some groceries too.
+                                {{ __('transfers.delivery_information_sub_title') }}
                             </p>
                         </div>
-                    </div>
-
-                    <div class="mt-5 md:mt-0 md:col-span-2">
-                        <div class="shadow overflow-hidden sm:rounded-md">
-                            <div class="px-4 py-5 bg-white sm:p-6">
-                                <div class="grid grid-cols-6 gap-6">
-                                    <div class="col-span-6 sm:col-span-3">
-                                        <label for="first_name" class="block text-sm font-medium leading-5 text-gray-700">First name</label>
-                                        <input required name="first_name" value="{{Auth::user()->first_name}}" id="first_name" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                    </div>
-
-
-                                    <div class="col-span-6 sm:col-span-3">
-                                        <label for="last_name" class="block text-sm font-medium leading-5 text-gray-700">Last name</label>
-                                        <input required name="last_name" value="{{Auth::user()->last_name}}" id="last_name" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                    </div>
-
-                                    <div class="col-span-6 sm:col-span-4">
-                                        <label for="email_address" class="block text-sm font-medium leading-5 text-gray-700">Email address</label>
-                                        <input required value="{{Auth::user()->email}}" name="email_address"  class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                    </div>
-
-                                    <div class="col-span-6 sm:col-span-3">
-                                        <label for="country" class="block text-sm font-medium leading-5 text-gray-700">Country / Region</label>
-                                        <select name="country" id="country" class="mt-1 block form-select w-full py-2 px-3 py-0 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
-                                            <option>United Kingdom</option>
-                                        </select>
-                                    </div>
-
-                                    @if (count($addresses) == 1)
-                                    <div class="col-span-6">
-                                        <label for="street_address" class="block text-sm font-medium leading-5 text-gray-700">Street address</label>
-                                        <input name="street_address" value="{{$addresses[0]->line1}}@if(isset($addresses[0]->line2)){{", " . $addresses[0]->line2}} @endif"  id="street_address" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                    </div>
-
-                                    <div class="col-span-6 sm:col-span-6 lg:col-span-2">
-                                        <label for="city" class="block text-sm font-medium leading-5 text-gray-700">City/Town</label>
-                                        <input name="city"  id="city" value="{{$addresses[0]->city}}"  class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                    </div>
-
-                                    <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                                        <label for="county" class="block text-sm font-medium leading-5 text-gray-700">County</label>
-                                        <input name="county"  id="county" value="@if(isset($addresses[0]->county)) @endif"  placeholder="Optional" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                    </div>
-
-                                    <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                                        <label for="postal_code" class="block text-sm font-medium leading-5 text-gray-700">Post Code</label>
-                                        <input name="postal_code" value="{{$addresses[0]->postcode}}"  id="postal_code" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                    </div>
-                                        @elseif (count($addresses) > 1)
-                                        <div class="col-span-6">
-                                            <label class="block text-sm font-medium leading-5 text-gray-700">Address:</label>
-                                            <select name="user_address_select" id="user_address_checkbox" class="mt-1 block form-select w-full py-2 px-3 py-0 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
-
-                                                @foreach($addresses as $address)
-                                                    <option value="{{$address->id}}">{{$address->line1}}@if(isset($address->line2)){{", " . $address->line2}}@endif{{", " . $address->city}}@if(isset($address->county)){{", " . $address->county}}@endif{{", " . $address->postcode}}</option>
-                                                @endforeach
-                                            </select>
-                                            <a href="{{ route('addresses.create') }}" class="mt-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg border-b-2 border-green-500 hover:border-green-700 bg-white hover:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
-                                                <span class="mr-2 hidden md:inline-flex">{{ __('addresses.create_address') }}</span>
-                                                <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.create') }}</span>
-                                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
-                                                    <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                    @else
-                                        <div class="col-span-6">
-                                            <label for="street_address" class="block text-sm font-medium leading-5 text-gray-700">Street address</label>
-                                            <input name="street_address" id="street_address" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                        </div>
-
-                                        <div class="col-span-6 sm:col-span-6 lg:col-span-2">
-                                            <label for="city" class="block text-sm font-medium leading-5 text-gray-700">City/Town</label>
-                                            <input name="city"  id="city"  class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                        </div>
-
-                                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                                            <label for="county" class="block text-sm font-medium leading-5 text-gray-700">County</label>
-                                            <input name="county" placeholder="Optional"  id="county" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                        </div>
-
-                                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                                            <label for="postal_code" class="block text-sm font-medium leading-5 text-gray-700">Post Code</label>
-                                            <input name="postal_code"  id="postal_code" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                        </div>
-
-                                    @endif
+                        <div class="px-4 py-3 sm:px-6">
+                            <dl class="grid grid-cols-1 col-gap-4 row-gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                <div class="sm:col-span-1">
+                                    @include('layouts.input_with_label', [
+                                        'label' => __('common.first_name'),
+                                        'value' => Auth::user()->first_name,
+                                        'input_id' => 'delivery_first_name',
+                                        'required' => true,
+                                    ])
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="hidden sm:block">
-                <div class="py-5">
-                    <div class="border-t border-gray-200"></div>
-                </div>
-            </div>
-            <div class="mt-10 sm:mt-0">
-                <div class="md:grid md:grid-cols-3 md:gap-6">
-                    <div class="md:col-span-1">
-                        <div class="px-4 sm:px-0">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">Transfer Information</h3>
-                            <p class="mt-1 text-sm leading-5 text-gray-500">
-                                This helps us combat fraudulent use of the system, and helps the chosen charity enforce their respective rules.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-5 md:mt-0 md:col-span-2">
-                        <div class="shadow overflow-hidden sm:rounded-md">
-                            <div class="px-4 py-5 bg-white sm:p-6">
-                                <div class="grid grid-cols-6 gap-6">
-                                    <div class="col-span-6 sm:col-span-3">
-                                        <label for="transfer_reason" class="block text-sm font-medium leading-5 text-gray-700">What is the transfer for?</label>
-                                        <input name="transfer_reason"  class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                    </div>
-
-                                    <div class="col-span-6 sm:col-span-3">
-                                        <label for="charity_id" class="block text-sm font-medium leading-5 text-gray-700">Which charity is overseeing this transaction?</label>
-                                         <select name="charity" required class="required mt-1 block form-select w-full py-2 px-3 py-0 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" style="width:250px">
-                                            <option value="">Select Charity</option>
-                                            @foreach ( $charities  as $ch)
-                                                <option value="{{$ch->id}}">{{$ch->name}}</option>
+                                <div class="sm:col-span-1">
+                                    @include('layouts.input_with_label', [
+                                        'label' => __('common.last_name'),
+                                        'value' => Auth::user()->last_name,
+                                        'input_id' => 'delivery_last_name',
+                                        'required' => true,
+                                    ])
+                                </div>
+                                <div class="sm:col-span-1">
+                                    @include('layouts.input_with_label', [
+                                        'label' => __('common.email_address'),
+                                        'value' => Auth::user()->email,
+                                        'input_id' => 'delivery_email',
+                                        'required' => true,
+                                    ])
+                                </div>
+                                <div class="sm:col-span-1">
+                                    @include('layouts.input_with_label', [
+                                        'label' => __('common.phone_number'),
+                                        'value' => Auth::user()->phone,
+                                        'input_id' => 'delivery_phone',
+                                        'required' => true,
+                                    ])
+                                </div>
+                                <div class="col-span-1 sm:col-span-2 lg:col-span-4">
+                                    <div>
+                                        <label class="block text-sm font-medium leading-5 text-gray-500">Address:</label>
+                                        <select name="user_address_select" id="user_address_checkbox" class="mt-1 block form-select w-full py-2 px-3 py-0 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
+                                            @if(isset($addresses) && $addresses->count() === 0)
+                                                <option value="">{{ __('addresses.no_saved_addresses') }}</option>
+                                            @endif
+                                            @foreach($addresses as $address)
+                                                <option value="{{$address->id}}">{{$address->line1}}@if(isset($address->line2)){{", " . $address->line2}}@endif{{", " . $address->city}}@if(isset($address->county)){{", " . $address->county}}@endif{{", " . $address->postcode}}</option>
                                             @endforeach
                                         </select>
                                     </div>
-
-                                    <div class="col-span-6 sm:col-span-3">
-                                        <label for="transfer_amount" class="block text-sm font-medium leading-5 text-gray-700">How much is this transfer for?</label>
-                                        <input name="transfer_amount" required id="transfer_amount" class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                    </div>
-
-                                    <div class="col-span-6 sm:col-span-6">
-                                        <label for="transfer_note" class="block text-sm font-medium leading-5 text-gray-700">Please attach some context around this transfer</label>
-                                        <textarea  name="transfer_note"  required class="mt-1 form-input block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"></textarea>
+                                    <div class="flex flex-row justify-end">
+                                        <a href="{{ route('addresses.create') }}" class="mt-2 inline-flex items-center justify-center py-2 px-4 text-md font-medium text-indigo-500 hover:text-indigo-700 focus:text-indigo-700 transition duration-150 ease-in-out">
+                                            <span class="mr-2 hidden md:inline-flex">{{ __('addresses.create_address') }}</span>
+                                            <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.create') }}</span>
+                                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+                                                <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                        </a>
                                     </div>
                                 </div>
-                            </div>
+                            </dl>
                         </div>
                     </div>
                 </div>
-            </div>
 
 
-            <div class="hidden sm:block">
-                <div class="py-5">
-                    <div class="border-t border-gray-200"></div>
-                </div>
-            </div>
-            @if (empty($cards))
 
-            @else
-<!--Payment Details-->
-
-        <div class="mt-10 sm:mt-0" >
-                <div class="md:grid md:grid-cols-3 md:gap-6">
-                    <div class="md:col-span-1">
-                        <div class="px-4 sm:px-0">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">Payment Information</h3>
+                <div class="flex flex-col">
+                    <div class="bg-white shadow overflow-hidden sm:rounded-lg h-full">
+                        <div class="px-4 py-3 border-b border-gray-200 sm:px-6">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                {{ __('transfers.transfer_information') }}
+                            </h3>
                             <p class="mt-1 text-sm leading-5 text-gray-500">
-                                This will be used to take payment from you for this transaction.
+                                {{ __('transfers.transfer_information_sub_title') }}
                             </p>
                         </div>
-                    </div>
-
-                    <div class="mt-5 md:mt-0 md:col-span-2">
-                        @foreach($cards['data'] as $value)
-                        <div class="shadow overflow-hidden sm:rounded-md">
-
-                            <div class="px-4 py-5 bg-white sm:p-6">
-                                <div class="grid grid-cols-6 gap-6">
-                                    <div class="col-span-6 sm:col-span-6">
-                                        <div class="rounded-md bg-gray-50 px-6 py-5 sm:flex sm:items-start sm:justify-between">
-                                            <div class="sm:flex sm:items-start">
-                                                <svg class="h-8 w-auto sm:flex-shrink-0 sm:h-6" fill="none" viewBox="0 0 36 24" role="img" aria-labelledby="svg-{{ $value['brand'] }}">
-                                                    <title id="svg-{{ $value['brand'] }}">{{ $value['brand'] }}</title>
-                                                    <rect width="36" height="24" fill="#224DBA" rx="4" />
-                                                    <path fill="#fff" fill-rule="evenodd" d="M10.925 15.673H8.874l-1.538-6c-.073-.276-.228-.52-.456-.635A6.575 6.575 0 005 8.403v-.231h3.304c.456 0 .798.347.855.75l.798 4.328 2.05-5.078h1.994l-3.076 7.5zm4.216 0h-1.937L14.8 8.172h1.937l-1.595 7.5zm4.101-5.422c.057-.404.399-.635.798-.635a3.54 3.54 0 011.88.346l.342-1.615A4.808 4.808 0 0020.496 8c-1.88 0-3.248 1.039-3.248 2.481 0 1.097.969 1.673 1.653 2.02.74.346 1.025.577.968.923 0 .519-.57.75-1.139.75a4.795 4.795 0 01-1.994-.462l-.342 1.616a5.48 5.48 0 002.108.404c2.108.057 3.418-.981 3.418-2.539 0-1.962-2.678-2.077-2.678-2.942zm9.457 5.422L27.16 8.172h-1.652a.858.858 0 00-.798.577l-2.848 6.924h1.994l.398-1.096h2.45l.228 1.096h1.766zm-2.905-5.482l.57 2.827h-1.596l1.026-2.827z" clip-rule="evenodd" />
-                                                </svg>
-                                                <div class="mt-3 sm:mt-0 sm:ml-4">
-                                                    <div class="text-sm leading-5 font-medium text-gray-900">
-                                                        Ending with {{ $value['last4'] }}
-                                                    </div>
-                                                    <div class="mt-1 text-sm leading-5 text-gray-600 sm:flex sm:items-center">
-                                                        <div>
-                                                            Expires year {{ $value['exp_year'] }}
-                                                        </div>
-                                                        <span class="hidden sm:mx-2 sm:inline" aria-hidden="true">
-
-              </span>
-                                                       <!-- <div class="mt-1 sm:mt-0">
-                                                            Last updated on 22 Aug 2017  *******
-                                                        </div>-->
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-4 sm:mt-0 sm:ml-6 sm:flex-shrink-0">
-          <span class="inline-flex rounded-md shadow-sm">
-         <input type="radio" id="card" name="card" value="{{ $value['id'] }}" required>
-
-            <!--<button type="button" url="$url" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
-              Edit
-            </button>-->
-          </span>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <div class="px-4 py-5 sm:px-6">
+                            <dl class="grid grid-cols-1 col-gap-4 row-gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                <div class="sm:col-span-1">
+                                    @include('layouts.input_with_label', [
+                                        'label' => __('transfers.transfer_information.reason'),
+                                        'value' => old('transfer_reason') ??  '',
+                                        'input_id' => 'transfer_reason',
+                                        'required' => true,
+                                    ])
                                 </div>
-                            </div>
-
-                        </div>
-                            <br/>
-                        @endforeach
-                    </div>
-
-                </div>
-                <div class="hidden sm:block">
-                    <div class="py-5">
-                        <div class="border-t border-gray-200"></div>
-                    </div>
-                </div>
-
-
-            </div>
-
-
-        @endif
-            <!--End Payment Details-->
-            <div class="bg-white shadow sm:rounded-lg mt-5">
-                <div class="px-4 py-5 sm:p-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        Are you sure?
-                    </h3>
-                    <div class="mt-2 sm:flex sm:items-start sm:justify-between">
-                        <div class="max-w-xl text-sm leading-5 text-gray-500">
-                            <p>
-                                This will take money from the payment method chosen above, and hold the money in escrow until a volunteer completes your task, or you cancel the job.
-                            </p>
-                        </div>
-                        <div class="mt-5 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center">
-                        <span class="inline-flex rounded-md shadow-sm">
-                            <a href="{{ route('transfers.index') }}" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg bg-white hover:bg-red-500 text-md font-medium text-red-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
-                                <span class="inline-flex">{{ __('common.cancel') }}</span>
-                            </a>
-                            <button type="submit" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md hover:shadow-lg border-b-2 border-green-500 hover:border-green-700 bg-white hover:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:outline-none transition duration-150 ease-in-out">
-                                <span class="mr-2 hidden md:inline-flex">{{ __('transfers.save_transfer') }}</span>
-                                <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.save') }}</span>
-                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
-                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </button>
-                        </span>
+                                <div class="sm:col-span-1">
+                                    @include('layouts.input_with_label', [
+                                        'label' => __('transfers.transfer_information.amount'),
+                                        'value' => old('transfer_amount') ??  '',
+                                        'input_id' => 'transfer_amount',
+                                        'required' => true,
+                                    ])
+                                </div>
+                                <div class="sm:col-span-1">
+                                    @include('layouts.input_with_label', [
+                                        'label' => __('transfers.transfer_information.charity'),
+                                        'value' => old('charity_id') ??  '',
+                                        'input_id' => 'charity_id',
+                                        'input_type' => 'select',
+                                        'input_items' => $charities,
+                                        'input_default_value' => '-',
+                                        'required' => true,
+                                    ])
+                                </div>
+                                <div class="hidden sm:inline-flex col-span-1 lg:hidden"></div>
+                                <div class="sm:col-span-3">
+                                    @include('layouts.input_with_label', [
+                                        'label' => __('transfers.transfer_information.context'),
+                                        'value' => old('transfer_note') ??  '',
+                                        'input_id' => 'transfer_note',
+                                        'input_type' => 'textarea',
+                                        'required' => true,
+                                    ])
+                                </div>
+                            </dl>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </form>
+@endsection
+
+@section('footer_buttons')
+    <a href="{{ route('transfers.index') }}" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md bg-white hover:bg-red-500 focus:bg-red-500 text-md font-medium text-red-500 hover:text-white focus:text-white transition duration-150 ease-in-out">
+        <span class="inline-flex">{{ __('common.cancel') }}</span>
+    </a>
+    <button type="submit" form="createTransfer" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md border-b-2 border-green-500 hover:border-green-700 focus:border-green-700 bg-white hover:bg-green-500 focus:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:text-white transition duration-150 ease-in-out">
+        <span class="mr-2 hidden md:inline-flex">{{ __('transfers.create_transfer') }}</span>
+        <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.create') }}</span>
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+    </button>
 @endsection

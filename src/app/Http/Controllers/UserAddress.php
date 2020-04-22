@@ -53,8 +53,10 @@ class UserAddress extends Controller
 
         Address::create([
             'user_id' => Auth::id(),
-            'name' => $request->get('name'),
+            'first_name' => $request->get('first_name'),
+            'last_name' => $request->get('last_name'),
             'email' => $request->get('email'),
+            'phone' => $request->get('phone'),
             'line1' => $request->get('line1'),
             'line2' => $request->get('line2'),
             'city' => $request->get('city'),
@@ -76,7 +78,7 @@ class UserAddress extends Controller
     {
         $address = Address::where('id', $id)->first();
 
-        if ($address->user_id !== Auth::id()) {
+        if (!isset($address) || $address->user_id !== Auth::id()) {
             return redirect()->route('address.index');
         }
 
@@ -95,8 +97,10 @@ class UserAddress extends Controller
         $request->validated();
 
         $address = Address::where('id', $id)->first();
-        $address->name = $request->get('name');
+        $address->first_name = $request->get('first_name');
+        $address->last_name = $request->get('last_name');
         $address->email = $request->get('email');
+        $address->phone = $request->get('phone');
         $address->line1 = $request->get('line1');
         $address->line2 = $request->get('line2');
         $address->city = $request->get('city');

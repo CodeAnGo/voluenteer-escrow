@@ -36,12 +36,17 @@ Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middle
 Route::get('/notification/{transfer_id}', 'Notification@delete')->name('notification.delete');
 
 Route::resource('transfers', 'TransfersController')->middleware('auth');
+Route::post('transfers/{transfer}/status/{id}', 'TransfersController@statusUpdate')->name('transfers.update.status')->middleware('auth');
 
 
 
 Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
     'edit', 'update'
 ])->middleware(['auth', 'canViewTransferEvidence']);
+
+Route::resource('transfers.dispute', 'TransferDisputesController')->except([
+    'edit', 'update'
+])->middleware(['auth']);
 
 Route::get('/profile', 'UserProfile@index')->name('profile.index')->middleware('auth');
 Route::get('/profile/edit', 'UserProfile@edit')->name('profile.edit')->middleware('auth');

@@ -33,6 +33,7 @@ class UserProfile extends Controller
             ->select('charities.name')
             ->where('user_charities.user_id', Auth::id())
             ->where('charities.active','=',true)
+            ->orderBy('name', 'asc')
             ->get();
 
         $account = $this->getStripeAccountDetails(Auth::id());
@@ -57,7 +58,7 @@ class UserProfile extends Controller
     {
         $user = User::where('id', Auth::id())->first();
         $user_charities = UserCharity::where('user_id', Auth::id())->get();
-        $charities = Charity::all();
+        $charities = Charity::orderBy('name', 'asc')->get();
 
         foreach ($charities as $charity) {
             $charity->checked = $user_charities->where('charity_id', $charity->id)->count() > 0;
@@ -77,7 +78,7 @@ class UserProfile extends Controller
     /**
      * Update the resource in storage.
      *
-     * @param Request $request
+     * @param UserProfileUpdateRequest $request
      * @return RedirectResponse
      */
     public function update(UserProfileUpdateRequest $request)

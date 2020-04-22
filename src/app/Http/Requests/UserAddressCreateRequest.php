@@ -24,14 +24,12 @@ class UserAddressCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|between:1,255',
-            'email' => 'required|between:1,255|email',
-            'line1' => 'required|between:1,255',
+            'line1' => 'required|max:255',
             'line2' => 'max:255',
-            'city' => 'required|between:1,255',
+            'city' => 'required|max:255',
             'county' => 'max:255',
-            'postcode' => 'required|between:1,255',
-            'country' => 'required|between:1,255',
+            'postcode' => 'required|max:255',
+            'country' => 'required|max:255',
         ];
     }
 }
