@@ -14,8 +14,10 @@ class TransferGenericMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $email_content;
     protected $status;
+    protected  $user_id;
+    protected $transfer_id;
+    protected $name;
 
     /**
      * Create a new message instance.
@@ -23,10 +25,12 @@ class TransferGenericMail extends Mailable
      * @param $email_content
      * @param $status
      */
-    public function __construct($email_content, $status)
+    public function __construct($user_id, $transfer_id, $status, $name)
     {
-        $this->email_content = $email_content;
         $this->status = $status;
+        $this->user_id = $user_id;
+        $this->transfer_id = $transfer_id;
+        $this->name = $name;
     }
     /**
      * Build the message.
@@ -36,15 +40,15 @@ class TransferGenericMail extends Mailable
     public function build()
     {
         Notification::create([
-           'user_id' => $this->email_content['sending_party_id'],
-            'transfer_id' => $this->email_content['id'],
+            'user_id' => $this->user_id,
+            'transfer_id' => $this->transfer_id,
             'status' => $this->status
         ]);
 
         return $this->from(env('SENDING_EMAIL'))->view('emails.transfer.generic')
             ->with([
-                'sending_party_name' => $this->email_content['delivery_first_name'],
-                'transfer_id' => $this->email_content['id'],
+                'sending_party_name' => $this->name,
+                'transfer_id' => $this->transfer_id,
                 'status' => $this->status
             ]);
     }
