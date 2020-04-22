@@ -126,7 +126,7 @@ class TransfersController extends Controller
 
         $this->dispatch(new CreateFreshdeskTicket($transfer->id));
 
-        return redirect()->route('transfer.show');
+        return redirect()->route('transfers.show', ['transfer' => $transfer->id]);
     }
 
     /**
