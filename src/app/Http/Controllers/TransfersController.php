@@ -9,6 +9,7 @@ use App\Models\Account;
 use App\Models\Address;
 use App\Models\Transfer;
 use App\Jobs\CreateFreshdeskTicket;
+use App\Models\TransferEvidence;
 use App\TransferStatus;
 use App\TransferStatusId;
 use Exception;
@@ -163,6 +164,8 @@ class TransfersController extends Controller
         $user_ids = $history->get('user_id');
         $change_users = User::whereIn('id', $user_ids)->get();
 
+
+
         return view('transfers.show', [
             'transfer' => $transfer,
             'charity' => $charity ? $charity->name : '-',
@@ -171,7 +174,8 @@ class TransfersController extends Controller
             'closed_status' => $closed_status,
             'transfer_history' => $history->get(),
             'change_users' => $change_users,
-            'status_map' => $status_map
+            'status_map' => $status_map,
+            'transferEvidence' => TransferEvidence::where('transfer_id', $transfer->id)->get(),
         ]);
     }
 
@@ -246,7 +250,7 @@ class TransfersController extends Controller
         if ($statusTransition == TransferStatusTransitions::ToAccepted ) {
             $transfer->receiving_party_id = Auth::id();
             //Transfer amount from Senders stripe account to Platform account
-           // StripeHelper::createTransfertoPlatform(round($transfer->actual_amount)*100,$sending_user,$transfer->transfer_group);
+            StripeHelper::createTransfertoPlatform(round($transfer->transfer_amount)*100,$sending_user,$transfer->transfer_group);
         }
 
         if ( $statusTransition == TransferStatusTransitions::ToRejected) {
@@ -255,7 +259,7 @@ class TransfersController extends Controller
 
         if ( $statusTransition == TransferStatusTransitions::ToApproved) {
             //Transfer amount from platform account to Volunteers stripe account.
-            StripeHelper::createTransfer(round($transfer->actual_amount)*100, $transfer->receiving_party_id,$transfer->transfer_group);
+           // StripeHelper::createTransfer(round($transfer->actual_amount)*100, $transfer->receiving_party_id,$transfer->transfer_group);
         }
 
         if ($transfer->transitionAllowed($statusTransition)) {

@@ -88,7 +88,7 @@ class TransferEvidencesController extends Controller
 
         $paths = [];
         foreach ($request->files->get('evidence') as $file) {
-            $path = Storage::putFile('\\evidence\\' . $transfer_id . '\\' . Auth::id(), new File($file));
+            $path = Storage::disk('public')->putFile('transfer_evidence', new File($file));
             array_push($paths, $path);
         }
 
@@ -137,7 +137,7 @@ class TransferEvidencesController extends Controller
     public function show($transfer_id, $id)
     {
         $transfer_evidence = TransferEvidence::where('id', $id)->first();
-        $evidence = Storage::get(storage_path('app/' . $transfer_evidence->path));
+        $evidence = Storage::disk('public')->url($transfer_evidence->path);
         return view('transfers.evidence.show', ['evidence' => $evidence]);
     }
 

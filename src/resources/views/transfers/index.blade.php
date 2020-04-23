@@ -6,7 +6,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col pt-4">
-                <div class="flex flex-row justify-between items-center">
+                <div class="flex flex-row justify-between items-center mb-2">
                     <h3 class="text-lg leading-6 font-medium text-gray-800 p-4">
                         Active transfers
                     </h3>
