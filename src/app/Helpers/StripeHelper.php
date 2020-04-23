@@ -20,7 +20,7 @@ class StripeHelper
       return head($balance->toArray()['available'])['amount'];
   }
 
-  Public function createStripeCustomer($userid,string $stripeId, $email)
+  Public function createStripeCustomer($userid, $stripeId, $email)
   {
       \Stripe\Stripe::setApiKey(config('stripe.api_key'));
       $customer = \Stripe\Customer::create([
