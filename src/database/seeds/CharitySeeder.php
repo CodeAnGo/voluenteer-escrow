@@ -18,8 +18,8 @@ class CharitySeeder extends Seeder
             Charity::create([
                 'name' => $faker->company,
                 'active' => true,
-                'domain' => $faker->ipv4,
-                'api_key' => $faker->ipv6,
+                'domain' => 'netcompanyaid',
+                'api_key' => 'Zw9SNcS2Oyr9JxnCrp6',
             ]);
         }
     }

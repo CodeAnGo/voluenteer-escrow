@@ -37,7 +37,7 @@ class UserAddress extends Controller
     public function create()
     {
         $previous_url = session()->previousUrl();
-        return view('addresses.create', ['previous_url'=>$previous_url]);
+        return view('addresses.create', ['notificationArr' => Auth::user()->notifications, 'previous_url'=>$previous_url]);
     }
 
     /**
@@ -78,7 +78,7 @@ class UserAddress extends Controller
             return redirect()->route('address.index');
         }
 
-        return view('addresses.edit', ['address' => $address]);
+        return view('addresses.edit', ['address' => $address, 'notificationArr' => Auth::user()->notifications] );
     }
 
     /**

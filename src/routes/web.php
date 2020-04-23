@@ -44,3 +44,5 @@ Route::get('/profile/edit', 'UserProfile@edit')->name('profile.edit')->middlewar
 Route::put('/profile/edit', 'UserProfile@update')->name('profile.update')->middleware('auth');
 
 Route::resource('addresses', 'UserAddress')->middleware('auth');
+
+Route::get('/notification/{transfer_id}', 'Notification@delete')->name('notification.delete');
