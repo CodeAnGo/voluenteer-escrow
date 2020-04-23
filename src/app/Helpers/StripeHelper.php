@@ -8,7 +8,7 @@ use App\Models\Transfer;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 
-trait Stripe
+class StripeHelper
 {
   public function getBalance(string $userid)
   {
@@ -44,7 +44,7 @@ trait Stripe
                ],
            ]);
 
-        $stripe_id=Account::where('user_id', $userid)->pluck('stripe_customer_id');
+        $stripe_id=Account::where('user_id', $userid)->value('stripe_customer_id');
         $customer= \Stripe\Customer::retrieve($stripe_id);
 
         //Attach the payment method to the stripe customer
@@ -56,56 +56,51 @@ trait Stripe
    //Create PaymentIntent
     Public static function createPaymentIntent(int $tranferamount,string $userid)
     {
-        $sending_user = Account::where('User_id',  $userid)->pluck('stripe_user_id');
-        $transfergroup=$sending_user;
+        $sending_user = Account::where('User_id',  $userid)->value('stripe_user_id');
+
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
          $paymentIntent = \Stripe\PaymentIntent::create([
             'payment_method_types' => ['card'],
             'amount' => ($tranferamount),
             'currency' => 'gbp',
-            'transfer_group'=> $transfergroup,
             'transfer_data' => [
                 'destination' => $sending_user
-            ]
-        ]);
-
+            ],
+             'application_fee_amount'=>'10'
+         ]);
         $paymentIntent->confirm([
             'payment_method' => 'pm_card_visa',
         ]);
+
         return $paymentIntent->id;
     }
     //Raise the transfer
-    public static function createTransfer(int $amount,string $userid)
+    public static function createTransfer(int $amount,string $receivingUserid,string $TransferGroup)
     {
-        $stripe_user_id = Account::where('User_id',  $userid)->pluck('stripe_user_id');
-        $transfergroup = $stripe_user_id;
+        $stripe_user_id = Account::where('User_id',  $receivingUserid)->value('stripe_user_id');
 
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
         $transfer = \Stripe\Transfer::create([
-            'amount' => 1,
+            'amount' => $amount,
             'currency' => 'gbp',
             'destination' => $stripe_user_id,
-            'transfer_group' => $transfergroup
+            'transfer_group' => $TransferGroup
         ]);
-
        }
 
     //Tansfers the amount to platform account
-    public static function createTransfertoPlatform(int $amount,string $userid)
+    public static function createTransfertoPlatform(int $amount,string $senderUserid,string $TransferGroup)
     {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
-        $sending_user = Account::where('User_id',  $userid)->pluck('stripe_user_id');
-        $transfergroup=$sending_user;
+        $sending_user = Account::where('User_id',  $senderUserid)->value('stripe_user_id');
 
         $platformaccount = \Stripe\Account::retrieve();
-
-        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
 
         \Stripe\Transfer::create([
             'amount' => $amount,
             'currency' => 'gbp',
-            'transfer_group' => $transfergroup,
-            'destination' => 'acct_1GUtkWFr4BzKbeoH',
+            'destination' => $platformaccount,
+            'transfer_group' => $TransferGroup
         ],
             ['stripe_account' => $sending_user]
             );
@@ -116,7 +111,7 @@ trait Stripe
     {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
 
-        $stripe_user_id =  Account::where('User_id',$userid)->pluck('stripe_customer_id');
+        $stripe_user_id =  Account::where('User_id',$userid)->value('stripe_customer_id');
 
         //List all the customers cards stored in Stripe
         $cards=\Stripe\Customer::allSources(
@@ -129,7 +124,7 @@ trait Stripe
     public static function cancelPaymentIntent(string $tranferId)
     {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
-        $stripe_payment_intent=Transfer::where('id', $tranferId)->pluck('stripe_payment_intent');
+        $stripe_payment_intent=Transfer::where('id', $tranferId)->value('stripe_payment_intent');
 
         $payment_intent = \Stripe\PaymentIntent::retrieve(
             $stripe_payment_intent

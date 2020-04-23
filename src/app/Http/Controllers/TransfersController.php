@@ -26,6 +26,7 @@ use Ramsey\Uuid\Uuid;
 use App\Models\Charity;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Stripe;
+use App\Helpers\StripeHelper;
 
 class TransfersController extends Controller
 {
@@ -71,14 +72,21 @@ class TransfersController extends Controller
      */
     public function create()
     {
+
+       
+
         $account = Account::where('user_id', Auth::id())->first();
-        Stripe::setApiKey(Config::get('stripe.api_key'));
+
         $stripe_account =  \Stripe\Account::retrieve($account->stripe_user_id);
 
         $charities = Charity::where('active', true)->orderBy('name', 'asc')->get();
         $cards = [];
 
         $addresses = Address::where('user_id', Auth::id())->get();
+
+        //Lists all existing cards stored in Stripe
+        //$cards= StripeHelper::listAllCards(Auth::user()->id);
+
 
         return view('transfers.create',[
             'charities' => $charities,
@@ -87,7 +95,6 @@ class TransfersController extends Controller
             'phone' => $stripe_account->business_profile->support_phone ?? '',
         ]);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -100,6 +107,11 @@ class TransfersController extends Controller
         $request->validated();
 
         $address = Address::where('id', $request->get('user_address_select'))->first();
+
+        //Stripe accepts the amount in integer
+        $amount=($request->input('transfer_amount'))*100;
+        // Creates a Payment Intent to transfer amount from Senders Card to Senders Stripe Account
+        $paymentIntent=StripeHelper::createPaymentIntent($amount,Auth::id());
 
         $transfer = Transfer::create([
             'sending_party_id' => Auth::id(),
@@ -120,12 +132,13 @@ class TransfersController extends Controller
             'charity_id' => $request->get('charity_id'),
             'stripe_id' => 1,
             'freshdesk_id' => 1,
+            'stripe_payment_intent'=>$paymentIntent,
+            'transfer_group'=>now()->format('Ymd His')
         ]);
         Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
         Storage::makeDirectory('/dispute/' . $transfer->id . '/' . Auth::id());
 
         $this->dispatch(new CreateFreshdeskTicket($transfer->id));
-
         return redirect()->route('transfers.show', ['transfer' => $transfer->id]);
     }
 
@@ -214,7 +227,6 @@ class TransfersController extends Controller
             $transfer->transfer_note = $request->get('transfer_note');
             $transfer->save();
         }
-
         return redirect()->route('transfers.show', [$id]);
     }
 
@@ -229,13 +241,26 @@ class TransfersController extends Controller
     public function statusUpdate(TransferUpdateStatusRequest $request, $id, $statusTransition)
     {
         $transfer = Transfer::where('id', $id)->first();
+        $sending_user =  $transfer->sending_party_id;
 
         if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
             $transfer->receiving_party_id = null;
         }
-        if ($statusTransition == TransferStatusTransitions::ToAccepted || $statusTransition == TransferStatusTransitions::ToRejected) {
+        if ($statusTransition == TransferStatusTransitions::ToAccepted ) {
+            $transfer->receiving_party_id = Auth::id();
+            //Transfer amount from Senders stripe account to Platform account
+            StripeHelper::createTransfertoPlatform(round($transfer->actual_amount)*100,$sending_user,$transfer->transfer_group);
+        }
+
+        if ( $statusTransition == TransferStatusTransitions::ToRejected) {
             $transfer->receiving_party_id = Auth::id();
         }
+
+        if ( $statusTransition == TransferStatusTransitions::ToApproved) {
+            //Transfer amount from platform account to Volunteers stripe account.
+            StripeHelper::createTransfer(round($transfer->actual_amount)*100, $transfer->receiving_party_id,$transfer->transfer_group);
+        }
+
         if ($transfer->transitionAllowed($statusTransition)) {
             try {
                 $transfer->transition($statusTransition);
