@@ -73,7 +73,7 @@ class TransfersController extends Controller
     public function create()
     {
         Stripe::setApiKey(Config::get('stripe.api_key'));
-    
+
         $account = Account::where('user_id', Auth::id())->first();
 
         $stripe_account =  \Stripe\Account::retrieve($account->stripe_user_id);
@@ -248,7 +248,7 @@ class TransfersController extends Controller
         if ($statusTransition == TransferStatusTransitions::ToAccepted ) {
             $transfer->receiving_party_id = Auth::id();
             //Transfer amount from Senders stripe account to Platform account
-            StripeHelper::createTransfertoPlatform(round($transfer->actual_amount)*100,$sending_user,$transfer->transfer_group);
+            StripeHelper::createTransfertoPlatform(round($transfer->transfer_amount)*100,$sending_user,$transfer->transfer_group);
         }
 
         if ( $statusTransition == TransferStatusTransitions::ToRejected) {
