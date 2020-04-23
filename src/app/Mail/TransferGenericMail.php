@@ -15,15 +15,17 @@ class TransferGenericMail extends Mailable
     use Queueable, SerializesModels;
 
     protected $status;
-    protected  $user_id;
+    protected $user_id;
     protected $transfer_id;
     protected $name;
 
     /**
      * Create a new message instance.
      *
-     * @param $email_content
+     * @param $user_id
+     * @param $transfer_id
      * @param $status
+     * @param $name
      */
     public function __construct($user_id, $transfer_id, $status, $name)
     {
