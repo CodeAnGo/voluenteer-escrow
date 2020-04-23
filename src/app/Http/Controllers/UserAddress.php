@@ -36,7 +36,8 @@ class UserAddress extends Controller
      */
     public function create()
     {
-        return view('addresses.create');
+        $previous_url = session()->previousUrl();
+        return view('addresses.create', ['previous_url'=>$previous_url]);
     }
 
     /**
@@ -59,7 +60,8 @@ class UserAddress extends Controller
             'country' => $request->get('country'),
         ]);
 
-        return redirect()->route('addresses.index');
+        $previous_url = $request->get('previous_url');
+        return redirect()->to($previous_url);
     }
 
     /**
