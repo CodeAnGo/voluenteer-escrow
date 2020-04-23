@@ -49,16 +49,13 @@
                 </div>
                 @auth
                     <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                        @isset($balance)
                         <a href="" class="text-gray-700 pr-2">
                             Account Balance £ 
                         </a>
-
+                        @endisset
                         <div @click.away="open = false" class="ml-3 relative border-b-2 @if(in_array(\Illuminate\Support\Facades\Route::currentRouteName(), ['profile.index', 'profile.edit', 'addresses.index', 'addresses.create', 'addresses.edit'])) border-indigo-500 text-gray-900 @else border-transparent @endif text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out" x-data="{ open: false }">
                             <div>
-                                <button @click="open = !open" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out" id="user-menu" aria-label="User menu" aria-haspopup="true" x-bind:aria-expanded="open">
-                                    <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                                </button>
-
                     <div class="flex items-center">
                         @isset($balance)
                             <div class="ml-2 sm:ml-6 flex items-center">

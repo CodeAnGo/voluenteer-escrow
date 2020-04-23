@@ -6,6 +6,7 @@
 @section('content')
     <form action="{{ route('addresses.store') }}" method="POST" id="createAddress">
         @csrf
+        <input type="hidden" name="previous_url" value="{{$previous_url}}">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
             <div class="max-w-6xl mx-auto grid grid-cols-1 col-gap-4 row-gap-4 sm:grid-cols-1">
                 <div class="flex flex-col sm:col-span-3">
