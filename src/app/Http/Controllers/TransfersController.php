@@ -72,9 +72,8 @@ class TransfersController extends Controller
      */
     public function create()
     {
-
-       
-
+        Stripe::setApiKey(Config::get('stripe.api_key'));
+    
         $account = Account::where('user_id', Auth::id())->first();
 
         $stripe_account =  \Stripe\Account::retrieve($account->stripe_user_id);

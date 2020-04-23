@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class StripeHelper
 {
-  public function getBalance(string $userid)
+  public function getBalance($userid)
   {
       \Stripe\Stripe::setApiKey(config('stripe.api_key'));
       $stripe_id=Account::where('user_id', $userid)->value('stripe_user_id');
@@ -20,7 +20,7 @@ class StripeHelper
       return head($balance->toArray()['available'])['amount'];
   }
 
-  Public function createStripeCustomer(string $userid,string $stripeId,string $email)
+  Public function createStripeCustomer($userid,string $stripeId, $email)
   {
       \Stripe\Stripe::setApiKey(config('stripe.api_key'));
       $customer = \Stripe\Customer::create([
@@ -31,7 +31,7 @@ class StripeHelper
   }
 
   //need to be called when user adds a new card
-    Public function createPaymentMethod(string $userid,string $cardNumber, string $exp_month, string $exp_year, string $cvc)
+    Public function createPaymentMethod( $userid, $cardNumber,  $exp_month,  $exp_year,  $cvc)
     {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
         $paymentMethod= \Stripe\PaymentMethod::create([
@@ -54,7 +54,7 @@ class StripeHelper
     }
 
    //Create PaymentIntent
-    Public static function createPaymentIntent(int $tranferamount,string $userid)
+    Public static function createPaymentIntent( $tranferamount, $userid)
     {
         $sending_user = Account::where('User_id',  $userid)->value('stripe_user_id');
 
@@ -65,8 +65,7 @@ class StripeHelper
             'currency' => 'gbp',
             'transfer_data' => [
                 'destination' => $sending_user
-            ],
-             'application_fee_amount'=>'10'
+            ]
          ]);
         $paymentIntent->confirm([
             'payment_method' => 'pm_card_visa',
@@ -75,7 +74,7 @@ class StripeHelper
         return $paymentIntent->id;
     }
     //Raise the transfer
-    public static function createTransfer(int $amount,string $receivingUserid,string $TransferGroup)
+    public static function createTransfer( $amount, $receivingUserid, $TransferGroup)
     {
         $stripe_user_id = Account::where('User_id',  $receivingUserid)->value('stripe_user_id');
 
@@ -89,7 +88,7 @@ class StripeHelper
        }
 
     //Tansfers the amount to platform account
-    public static function createTransfertoPlatform(int $amount,string $senderUserid,string $TransferGroup)
+    public static function createTransfertoPlatform( $amount, $senderUserid, $TransferGroup)
     {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
         $sending_user = Account::where('User_id',  $senderUserid)->value('stripe_user_id');
@@ -107,7 +106,7 @@ class StripeHelper
     }
 
 
-    public static function listAllCards(string $userid)
+    public static function listAllCards( $userid)
     {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
 
@@ -121,7 +120,7 @@ class StripeHelper
     return $cards;
     }
 
-    public static function cancelPaymentIntent(string $tranferId)
+    public static function cancelPaymentIntent( $tranferId)
     {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
         $stripe_payment_intent=Transfer::where('id', $tranferId)->value('stripe_payment_intent');
