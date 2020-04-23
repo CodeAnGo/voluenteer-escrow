@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
+Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth','hasStripeId');
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
 
