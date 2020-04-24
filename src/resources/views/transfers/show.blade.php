@@ -267,6 +267,7 @@
                                         {{ $transfer->actual_amount }}
                                     </dd>
                                 </div>
+                                @if ($transfer->approval_note)
                                 <div class="sm:col-span-1">
                                     <dt class="text-sm leading-5 font-medium text-gray-500">
                                         Additional Notes
@@ -275,15 +276,16 @@
                                         {{ $transfer->approval_note }}
                                     </dd>
                                 </div>
+                                @endif
                                 <div class="sm:col-span-4">
                                     <dt class="text-sm leading-5 font-medium text-gray-500 mb-2">
                                         Proof of Purchase
                                     </dt>
                                     <dd class="mt-1 text-sm leading-5 text-gray-900 flex">
                                     @foreach($transferEvidence as $transferPhoto)
-                                    <div class="flex-auto mb-2">
+                                    <div class="flex-auto mb-2  h-56">
                                         <a href="{{Storage::disk('public')->url($transferPhoto->path)}}" target="_blank">
-                                        <img class="px-2" src="{{Storage::disk('public')->url($transferPhoto->path)}}" alt="">
+                                        <img class="mr-4 object-contain h-56 w-auto" src="{{Storage::disk('public')->url($transferPhoto->path)}}" alt="">
                                         </a>
                                     </div>
                                     @endforeach
