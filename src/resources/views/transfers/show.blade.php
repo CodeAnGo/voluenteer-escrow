@@ -14,19 +14,16 @@
         @if($transfer->status == \App\TransferStatusId::Rejected || $transfer->status == \App\TransferStatusId::AwaitingAcceptance)
             @include('transfers.action_buttons.edit')
         @endif
-        @if($transfer->status == \App\TransferStatusId::PendingApproval || $transfer->status == \App\TransferStatusId::InDispute)
-            @include('transfers.action_buttons.approve')
-        @endif
         @if($transfer->status == \App\TransferStatusId::PendingApproval)
+            @include('transfers.action_buttons.approve')
             @include('transfers.action_buttons.dispute')
         @endif
-        @if($transfer->status == \App\TransferStatusId::AwaitingAcceptance || $transfer->status == \App\TransferStatusId::Accepted || $transfer->status == \App\TransferStatusId::Rejected)
+        @if($transfer->status == \App\TransferStatusId::AwaitingAcceptance || $transfer->status == \App\TransferStatusId::Rejected)
             @include('transfers.action_buttons.cancel')
         @endif
     @elseif(Auth::id() === $transfer->receiving_party_id)
         @if($transfer->status == \App\TransferStatusId::Accepted)
             @include('transfers.action_buttons.evidence')
-            @include('transfers.action_buttons.reject')
         @endif
         @if($transfer->status == \App\TransferStatusId::PendingApproval)
             @include('transfers.action_buttons.dispute')

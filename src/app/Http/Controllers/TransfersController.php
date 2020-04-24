@@ -28,6 +28,7 @@ use App\Models\Charity;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Stripe;
 use App\Helpers\StripeHelper;
+use App\Models\Notification;
 
 class TransfersController extends Controller
 {
@@ -145,11 +146,13 @@ class TransfersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param Transfer $transfer
      * @return Factory|View
      */
     public function show(Transfer $transfer)
     {
+        Notification::where('transfer_id', $transfer->id)->where('user_id', Auth::id())->delete();
+
         $sending_user = User::where('id', $transfer->sending_party_id)->first();
         $receiving_user = User::where('id', $transfer->receiving_party_id)->first();
 
@@ -244,22 +247,24 @@ class TransfersController extends Controller
         $transfer = Transfer::where('id', $id)->first();
         $sending_user =  $transfer->sending_party_id;
 
+        $status_map = $this->getStatusMap();
+
         if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
             $transfer->receiving_party_id = null;
         }
-        if ($statusTransition == TransferStatusTransitions::ToAccepted ) {
+        if ($statusTransition == TransferStatusTransitions::ToAccepted) {
             $transfer->receiving_party_id = Auth::id();
             //Transfer amount from Senders stripe account to Platform account
             StripeHelper::createTransfertoPlatform(round($transfer->transfer_amount)*100,$sending_user,$transfer->transfer_group);
         }
 
-        if ( $statusTransition == TransferStatusTransitions::ToRejected) {
+        if ($statusTransition == TransferStatusTransitions::ToRejected) {
             $transfer->receiving_party_id = Auth::id();
         }
 
-        if ( $statusTransition == TransferStatusTransitions::ToApproved) {
+        if ($statusTransition == TransferStatusTransitions::ToApproved) {
             //Transfer amount from platform account to Volunteers stripe account.
-           // StripeHelper::createTransfer(round($transfer->actual_amount)*100, $transfer->receiving_party_id,$transfer->transfer_group);
+            StripeHelper::createTransfer(round($transfer->actual_amount) * 100, $transfer->receiving_party_id, $transfer->transfer_group);
         }
 
         if ($transfer->transitionAllowed($statusTransition)) {
@@ -268,6 +273,19 @@ class TransfersController extends Controller
                 $transfer->save();
             } catch (Exception $e) {
                 // unable to transition
+            }
+            if ($statusTransition === TransferStatusTransitions::ToInDispute) {
+                if ($transfer->receiving_party_id == Auth::id()) {
+                    Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
+                } else {
+                    Mail::to(\App\User::where('id', $transfer->receiving_party_id)->value('email'))->send(new TransferDisputeMail($transfer, true));
+                }
+            } else {
+                if ($transfer->receiving_party_id == Auth::id()) {
+                    Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer->sending_party_id, $transfer->id, $status_map[$statusTransition], $transfer->delivery_first_name));
+                } else {
+                    Mail::to(\App\User::where('id', $transfer->receiving_party_id)->value('email'))->send(new TransferGenericMail($transfer->receiving_party_id, $transfer->id, $status_map[$statusTransition], Auth::user()->first_name));
+                }
             }
         }
 
