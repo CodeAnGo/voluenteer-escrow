@@ -50,5 +50,7 @@ class UserSeeder extends Seeder
             'stripe_user_id' => 'acct_1GajczAYVdl4P1A7',
             'scope' => 'express'
         ]);
+
     }
+
 }

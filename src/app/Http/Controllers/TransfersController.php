@@ -9,6 +9,7 @@ use App\Models\Account;
 use App\Models\Address;
 use App\Models\Transfer;
 use App\Jobs\CreateFreshdeskTicket;
+use App\Models\TransferEvidence;
 use App\TransferStatus;
 use App\TransferStatusId;
 use Exception;
@@ -168,6 +169,8 @@ class TransfersController extends Controller
         $user_ids = $history->get('user_id');
         $change_users = User::whereIn('id', $user_ids)->get();
 
+
+
         return view('transfers.show', [
             'transfer' => $transfer,
             'charity' => $charity ? $charity->name : '-',
@@ -176,7 +179,8 @@ class TransfersController extends Controller
             'closed_status' => $closed_status,
             'transfer_history' => $history->get(),
             'change_users' => $change_users,
-            'status_map' => $status_map
+            'status_map' => $status_map,
+            'transferEvidence' => TransferEvidence::where('transfer_id', $transfer->id)->get(),
         ]);
     }
 
