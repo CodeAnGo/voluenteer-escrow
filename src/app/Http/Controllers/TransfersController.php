@@ -28,6 +28,8 @@ use Stripe\Exception\ApiErrorException;
 use Stripe\Stripe;
 use App\Helpers\StripeHelper;
 use App\Models\Notification;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TransferGenericMail;
 
 class TransfersController extends Controller
 {
