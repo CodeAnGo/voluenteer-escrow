@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
         $indiv = User::create([
             'first_name' => 'Indiv',
             'last_name' => 'Idual',
-            'email' => 'test@test.com',
+            'email' => 'jackclark.work@hotmail.co.uk',
             'password' => '$2y$10$Nq8jXmAkT/He0YRSwoiVxuehHKDhl5ro4EcwdUy6mRlLZT4xkfijG',
             'volunteer' => false
         ]);
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
         $volun = User::create([
             'first_name' => 'Volun',
             'last_name' => 'Teer',
-            'email' => 'volun@test.com',
+            'email' => 'jackclark4561@gmail.com',
             'password' => '$2y$10$Nq8jXmAkT/He0YRSwoiVxuehHKDhl5ro4EcwdUy6mRlLZT4xkfijG',
             'volunteer' => true
         ]);
