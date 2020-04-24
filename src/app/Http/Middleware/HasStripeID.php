@@ -19,10 +19,10 @@ class HasStripeID
      */
     public function handle($request, Closure $next)
     {
-        $User = User::where('id', Auth::id())->first();
-        $Account = Account::where('user_id', Auth::id())->first();
-        if ($Account === null) {
-            return Redirect::intended('https://connect.stripe.com/express/oauth/authorize?client_id=ca_H1XhDNnf1jkjAcXOBHhEqNpPLtUwuVwI&state='. csrf_token() .'&stripe_user[email]='.$User->email);
+        $user = User::where('id', Auth::id())->first();
+        $account = Account::where('user_id', Auth::id())->first();
+        if ($account === null) {
+            return redirect('stripe_continue');
         }
         return $next($request);
     }

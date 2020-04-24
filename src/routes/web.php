@@ -28,14 +28,18 @@ Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse
 Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middleware('auth');
 Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middleware('auth');
 
-Route::resource('transfers', 'TransfersController')->middleware('auth');
+Route::resource('transfers', 'TransfersController')->middleware('auth','hasStripeId');
 
 Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
     'edit', 'update'
 ])->middleware(['auth', 'canViewTransferEvidence']);
 
-Route::get('/profile', 'UserProfile@index')->name('profile.index')->middleware('auth');
+Route::get('/profile', 'UserProfile@index')->name('profile.index')->middleware('auth','hasStripeId');
 Route::get('/profile/edit', 'UserProfile@edit')->name('profile.edit')->middleware('auth');
 Route::put('/profile/edit', 'UserProfile@update')->name('profile.update')->middleware('auth');
 
 Route::resource('addresses', 'UserAddress')->middleware('auth');
+
+Route::get('stripe_continue', function() {
+    return view('auth.stripe_continue');
+});

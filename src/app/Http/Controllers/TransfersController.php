@@ -23,6 +23,15 @@ use App\Models\Charity;
 class TransfersController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('hasStripeId');
+    }
+    /**
      * Display a listing of the resource.
      *
      * @return Factory|View
