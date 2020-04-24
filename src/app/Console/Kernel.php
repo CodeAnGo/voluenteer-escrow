@@ -26,9 +26,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
+        // $schedule->command('inspire')->hourly();
+        $schedule->command('transfer:autorefund')->dailyAt('03:00');
+
         $schedule->call(function () {
             DeleteOldNotifications::dispatch();
         })->daily();
+
     }
 
     /**
