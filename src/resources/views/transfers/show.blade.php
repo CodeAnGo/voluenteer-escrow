@@ -267,6 +267,7 @@
                                         {{ $transfer->actual_amount }}
                                     </dd>
                                 </div>
+                                @if ($transfer->approval_note)
                                 <div class="sm:col-span-1">
                                     <dt class="text-sm leading-5 font-medium text-gray-500">
                                         Additional Notes
@@ -275,6 +276,7 @@
                                         {{ $transfer->approval_note }}
                                     </dd>
                                 </div>
+                                @endif
                                 <div class="sm:col-span-4">
                                     <dt class="text-sm leading-5 font-medium text-gray-500 mb-2">
                                         Proof of Purchase
