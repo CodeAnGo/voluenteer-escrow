@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class UpdateFreshdeskTicketTransferEvidence implements ShouldQueue
 {
@@ -46,7 +47,9 @@ class UpdateFreshdeskTicketTransferEvidence implements ShouldQueue
         $url = "https://$charity->domain.freshdesk.com/api/v2/tickets/$ticket_id/notes";
 
         //attach image to create Multi-part request
-        $first_path = storage_path('app'.$this->evidence[0]);
+
+        $first_path = Storage::disk('public')->url($this->evidence[0]);
+
         $first_photo = fopen($first_path, 'r');
         $file_name = explode('/', $first_path, 2)[1];
         $request = Http::attach('attachments[]', $first_photo, $file_name);
