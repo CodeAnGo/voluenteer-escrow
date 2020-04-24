@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Jobs\DeleteOldNotifications;
+use App\Models\Notification;
 
 class Kernel extends ConsoleKernel
 {
@@ -13,7 +15,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        'App\Console\Commands\AutoApproveTransfers',
     ];
 
     /**
@@ -24,8 +26,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
         // $schedule->command('inspire')->hourly();
         $schedule->command('transfer:autorefund')->dailyAt('03:00');
+
+        $schedule->call(function () {
+            DeleteOldNotifications::dispatch();
+        })->daily();
+
     }
 
     /**

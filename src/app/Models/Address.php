@@ -12,8 +12,6 @@ class Address extends Model implements Auditable
 
     protected $fillable = [
         'user_id',
-        'name',
-        'email',
         'line1',
         'line2',
         'city',

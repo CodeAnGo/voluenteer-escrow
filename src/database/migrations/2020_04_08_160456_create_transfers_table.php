@@ -24,17 +24,23 @@ class CreateTransfersTable extends Migration
             $table->string('delivery_first_name');
             $table->string('delivery_last_name');
             $table->string('delivery_email');
-            $table->string('delivery_street');
+            $table->string('delivery_phone');
+            $table->string('delivery_street_1');
+            $table->string('delivery_street_2')->nullable();
             $table->string('delivery_city');
-            $table->string('delivery_town');
+            $table->string('delivery_county')->nullable();
             $table->string('delivery_postcode');
             $table->string('delivery_country');
             $table->decimal('transfer_amount', 6, 2);
             $table->string('transfer_reason');
             $table->string('transfer_note')->nullable();
+            $table->string('stripe_payment_intent')->nullable();
+            $table->decimal('actual_amount', 6, 2)->nullable();
+            $table->string('approval_note')->nullable();
             $table->tinyInteger('status');
-            $table->string('stripe_id');
-            $table->string('freshdesk_id');
+            $table->string('stripe_id')->nullable();
+            $table->string('freshdesk_id')->nullable();
+            $table->string('transfer_group')->nullable();
             $table->timestamps();
         });
     }
