@@ -31,6 +31,8 @@ use App\Helpers\StripeHelper;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TransferGenericMail;
+use App\Mail\TransferDisputeMail;
+
 
 class TransfersController extends Controller
 {
