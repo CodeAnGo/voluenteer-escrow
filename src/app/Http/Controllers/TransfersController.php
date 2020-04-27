@@ -279,7 +279,7 @@ class TransfersController extends Controller
 
         if ($statusTransition == TransferStatusTransitions::ToApproved) {
             //Transfer amount from platform account to Volunteers stripe account.
-            StripeHelper::createTransfer(round($transfer->actual_amount) * 100, $transfer->receiving_party_id, $transfer->transfer_group);
+            StripeHelper::createTransfer(($transfer->actual_amount) * 100, $transfer->receiving_party_id, $transfer->transfer_group);
         }
 
         if ($transfer->transitionAllowed($statusTransition)) {
