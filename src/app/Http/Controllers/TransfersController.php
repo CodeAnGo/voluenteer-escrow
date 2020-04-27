@@ -116,7 +116,8 @@ class TransfersController extends Controller
         //Stripe accepts the amount in integer
         $amount=($request->input('transfer_amount'))*100;
         // Creates a Payment Intent to transfer amount from Senders Card to Senders Stripe Account
-        $paymentIntent=StripeHelper::createPaymentIntent($amount,Auth::id());
+           $paymentintentid=StripeHelper::createPaymentIntentToPlatfromAcount($amount,Auth::id());
+
 
         $transfer = Transfer::create([
             'sending_party_id' => Auth::id(),
@@ -137,7 +138,7 @@ class TransfersController extends Controller
             'charity_id' => $request->get('charity_id'),
             'stripe_id' => 1,
             'freshdesk_id' => 1,
-            'stripe_payment_intent'=>$paymentIntent,
+            'stripe_payment_intent'=>$paymentintentid,
             'transfer_group'=>now()->format('Ymd His')
         ]);
         Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
@@ -255,11 +256,13 @@ class TransfersController extends Controller
 
         if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
             $transfer->receiving_party_id = null;
+
+
         }
         if ($statusTransition == TransferStatusTransitions::ToAccepted) {
             $transfer->receiving_party_id = Auth::id();
             //Transfer amount from Senders stripe account to Platform account
-            StripeHelper::createTransfertoPlatform(round($transfer->transfer_amount)*100,$sending_user,$transfer->transfer_group);
+            StripeHelper::confirmPaymentIntent($transfer->stripe_payment_intent);
         }
 
         if ($statusTransition == TransferStatusTransitions::ToRejected) {
