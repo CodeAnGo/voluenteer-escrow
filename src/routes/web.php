@@ -21,6 +21,8 @@ Auth::routes();
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
 Route::middleware(['auth', 'striped'])->group(function (){
+
+  
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 
     Route::get('/home', 'HomeController@index')->name('home');
