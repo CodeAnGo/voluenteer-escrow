@@ -41,7 +41,6 @@ class GetFreshdeskResolution implements ShouldQueue
         $response = Http::withBasicAuth($charity->api_key, '')->get($url);
         if ($response->successful()) {
             $decodedBody = json_decode($response->getBody());
-            print_r($decodedBody);
             if($decodedBody->status == '3'){
                 $transfer->actual_amount = $decodedBody->custom_fields->cf_actual_amount;
                 $transfer->save();
