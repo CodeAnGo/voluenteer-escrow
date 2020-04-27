@@ -19,7 +19,6 @@ class HasStripeID
      */
     public function handle($request, Closure $next)
     {
-        $user = User::where('id', Auth::id())->first();
         $account = Account::where('user_id', Auth::id())->first();
         if ($account === null) {
             return redirect('stripe_continue');
