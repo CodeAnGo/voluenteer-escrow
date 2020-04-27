@@ -36,7 +36,8 @@ class UserAddress extends Controller
      */
     public function create()
     {
-        return view('addresses.create');
+        $previous_url = session()->previousUrl();
+        return view('addresses.create', ['notificationArr' => Auth::user()->notifications, 'previous_url'=>$previous_url]);
     }
 
     /**
@@ -51,8 +52,6 @@ class UserAddress extends Controller
 
         Address::create([
             'user_id' => Auth::id(),
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
             'line1' => $request->get('line1'),
             'line2' => $request->get('line2'),
             'city' => $request->get('city'),
@@ -61,7 +60,8 @@ class UserAddress extends Controller
             'country' => $request->get('country'),
         ]);
 
-        return redirect()->route('addresses.index');
+        $previous_url = $request->get('previous_url');
+        return redirect()->to($previous_url);
     }
 
     /**
@@ -74,11 +74,11 @@ class UserAddress extends Controller
     {
         $address = Address::where('id', $id)->first();
 
-        if ($address->user_id !== Auth::id()) {
+        if (!isset($address) || $address->user_id !== Auth::id()) {
             return redirect()->route('address.index');
         }
 
-        return view('addresses.edit', ['address' => $address]);
+        return view('addresses.edit', ['address' => $address, 'notificationArr' => Auth::user()->notifications] );
     }
 
     /**
@@ -93,8 +93,6 @@ class UserAddress extends Controller
         $request->validated();
 
         $address = Address::where('id', $id)->first();
-        $address->name = $request->get('name');
-        $address->email = $request->get('email');
         $address->line1 = $request->get('line1');
         $address->line2 = $request->get('line2');
         $address->city = $request->get('city');

@@ -11,7 +11,7 @@ class OnBoarding extends Controller
 {
     public function edit() {
         return view('auth.onboarding', [
-            'charities_list' => Charity::where('active', true)->get()
+            'charities_list' => Charity::where('active', true)->orderBy('name', 'asc')->get()
         ]);
     }
 

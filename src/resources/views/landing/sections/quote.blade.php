@@ -30,7 +30,7 @@
                 <blockquote>
                     <div class="text-2xl leading-9 font-medium text-gray-900">
                         <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo expedita voluptas culpa sapiente alias molestiae. Numquam corrupti in laborum sed rerum et corporis.
+                            Now is the time to show that we are also at the forefront when it comes to trust and genuine unity. With volunteerism, data security and trust as pillars, we will destroy this terrible virus with knowledge and information.
                         </p>
                     </div>
                     <footer class="mt-8">
