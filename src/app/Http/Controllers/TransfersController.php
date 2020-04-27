@@ -265,19 +265,20 @@ class TransfersController extends Controller
                     $transfer->receiving_party_id = null;
                     if ($transfer->status == TransferStatusId::Declined) {
                         //Previous Intent had a transfer to platform which is reversed, so create a new intent.
-                        $payment_intent = StripeHelper::createPaymentIntent($transfer->transfer_amount * 100, Auth::id());
+                        $payment_intent = StripeHelper::createPaymentIntentToPlatfromAcount($transfer->transfer_amount * 100, Auth::id());
                         $transfer->stripe_payment_intent = $payment_intent;
                     }
                 }
                 if ($statusTransition == TransferStatusTransitions::ToAccepted) {
                     $transfer->receiving_party_id = Auth::id();
                     //Transfer amount from Senders stripe account to Platform account
-                    $stripe_platform_transfer = StripeHelper::createTransfertoPlatform($transfer->transfer_amount * 100, $sending_user, $transfer->transfer_group);
-                    $transfer->stripe_platform_transfer = $stripe_platform_transfer;
+                    StripeHelper::confirmPaymentIntent($transfer->stripe_payment_intent);
                 }
 
                 if ($statusTransition == TransferStatusTransitions::ToRejected) {
                     $transfer->receiving_party_id = Auth::id();
+                    //Cancel the payment Intent.
+                    StripeHelper::cancelPaymentIntent( $transfer->stripe_payment_intent);
                 }
 
                 if ($statusTransition == TransferStatusTransitions::ToDeclined) {
@@ -287,6 +288,7 @@ class TransfersController extends Controller
                 if ($statusTransition == TransferStatusTransitions::ToApproved) {
                     //Transfer amount from platform account to Volunteers stripe account.
                     StripeHelper::createTransfer(($transfer->actual_amount) * 100, $transfer->receiving_party_id, $transfer->transfer_group);
+                    //Partially refund the sender
                     $refund_amount = ($transfer->transfer_amount - $transfer->actual_amount) * 100;
                     if ($refund_amount > 0) {
                         StripeHelper::refundCustomer($transfer->stripe_payment_intent, $refund_amount, true);

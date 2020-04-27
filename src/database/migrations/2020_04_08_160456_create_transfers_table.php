@@ -35,7 +35,6 @@ class CreateTransfersTable extends Migration
             $table->string('transfer_reason');
             $table->string('transfer_note')->nullable();
             $table->string('stripe_payment_intent')->nullable();
-            $table->string('stripe_platform_transfer')->nullable();
             $table->decimal('actual_amount', 6, 2)->nullable();
             $table->string('approval_note')->nullable();
             $table->tinyInteger('status');
