@@ -32,6 +32,7 @@ use App\Models\Notification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TransferGenericMail;
 use App\Mail\TransferDisputeMail;
+use App\Models\TransferFile;
 
 
 class TransfersController extends Controller
@@ -145,6 +146,9 @@ class TransfersController extends Controller
         Storage::makeDirectory('/dispute/' . $transfer->id . '/' . Auth::id());
 
         $this->dispatch(new CreateFreshdeskTicket($transfer->id));
+
+        app('App\Http\Controllers\TransferFilesController')->store($request, $transfer->id);
+
         return redirect()->route('transfers.show', ['transfer' => $transfer->id]);
     }
 
@@ -183,6 +187,7 @@ class TransfersController extends Controller
             'transfer_history' => $history->get(),
             'change_users' => $change_users,
             'status_map' => $status_map,
+            'transfer_files' => TransferFile::where('transfer_id', $transfer->id)->get(),
             'transferEvidence' => TransferEvidence::where('transfer_id', $transfer->id)->get(),
         ]);
     }
