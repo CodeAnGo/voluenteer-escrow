@@ -23,7 +23,7 @@ class Freshdesk
                 'body'=>$body
             );
         } else {
-            $first_path = storage_path('app'.$attachments[0]);
+            $first_path = storage_path('app/public/' .$attachments[0]);
             $first_photo = fopen($first_path, 'r');
             $file_name = explode('/', $first_path, 2)[1];
             $request = Http::attach('attachments[]', $first_photo, $file_name);
@@ -39,7 +39,7 @@ class Freshdesk
             //include additional images
             $i = 1;
             while($i < count($attachments)){
-                $path = storage_path('app'.$attachments[$i]);
+                $path = storage_path('app/public/' .$attachments[$i]);
                 $photo = fopen($path, 'r');
                 $ticket_data['attachment'.$i] = [
                     'contents'=>$photo,

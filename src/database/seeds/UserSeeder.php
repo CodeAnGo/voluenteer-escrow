@@ -16,9 +16,9 @@ class UserSeeder extends Seeder
     {
 
         $indiv = User::create([
-            'first_name' => 'Indiv',
-            'last_name' => 'Idual',
-            'email' => 'test@test.com',
+            'first_name' => 'Invididual',
+            'last_name' => 'Jack',
+            'email' => 'indiv@test.com',
             'password' => '$2y$10$Nq8jXmAkT/He0YRSwoiVxuehHKDhl5ro4EcwdUy6mRlLZT4xkfijG',
             'volunteer' => false
         ]);
@@ -34,8 +34,8 @@ class UserSeeder extends Seeder
         ]);
 
         $volun = User::create([
-            'first_name' => 'Volun',
-            'last_name' => 'Teer',
+            'first_name' => 'Volunteer',
+            'last_name' => 'Jack',
             'email' => 'volun@test.com',
             'password' => '$2y$10$Nq8jXmAkT/He0YRSwoiVxuehHKDhl5ro4EcwdUy6mRlLZT4xkfijG',
             'volunteer' => true
@@ -50,7 +50,6 @@ class UserSeeder extends Seeder
             'stripe_user_id' => 'acct_1GajczAYVdl4P1A7',
             'scope' => 'express'
         ]);
-
     }
 
 }

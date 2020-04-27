@@ -79,7 +79,7 @@ class TransferDisputesController extends Controller
         $paths = [];
         $evidence = (array) $request->files->get('evidence');
         foreach ($evidence as $file) {
-            $path = Storage::putFile('\\dispute\\' . $transfer_id . '\\' . Auth::id(), new File($file));
+            $path = Storage::disk('public')->putFile('transfer_dispute_evidence', new File($file));
             array_push($paths, $path);
         }
 
@@ -111,12 +111,20 @@ class TransferDisputesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param $transfer_id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Transfer $transfer, TransferDispute $dispute)
     {
-        //
+        return view('transfers.dispute.show', [
+            'transferDispute' => $dispute,
+            'transfer' => $transfer
+        ]);
+    }
+
+    public function update(Request $request, Transfer $transfer, TransferDispute $dispute)
+    {
+        dd($request->input());
     }
 
     /**

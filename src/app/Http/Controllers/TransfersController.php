@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TransferCreateRequest;
 use App\Http\Requests\TransferUpdateRequest;
 use App\Http\Requests\TransferUpdateStatusRequest;
+use App\Mail\TransferDisputeMail;
 use App\Models\Account;
 use App\Models\Address;
 use App\Models\Transfer;
 use App\Jobs\CreateFreshdeskTicket;
+use App\Models\TransferDispute;
+use App\Models\TransferDisputeEvidence;
 use App\Models\TransferEvidence;
 use App\TransferStatus;
 use App\TransferStatusId;
@@ -181,6 +184,7 @@ class TransfersController extends Controller
             'change_users' => $change_users,
             'status_map' => $status_map,
             'transferEvidence' => TransferEvidence::where('transfer_id', $transfer->id)->get(),
+            'transferDispute' => TransferDispute::where('transfer_id', $transfer->id)->first()
         ]);
     }
 
@@ -257,7 +261,7 @@ class TransfersController extends Controller
         if ($statusTransition == TransferStatusTransitions::ToAccepted) {
             $transfer->receiving_party_id = Auth::id();
             //Transfer amount from Senders stripe account to Platform account
-            StripeHelper::createTransfertoPlatform(round($transfer->transfer_amount)*100,$sending_user,$transfer->transfer_group);
+            //StripeHelper::createTransfertoPlatform(round($transfer->transfer_amount)*100,$sending_user,$transfer->transfer_group);
         }
 
         if ($statusTransition == TransferStatusTransitions::ToRejected) {
@@ -266,7 +270,7 @@ class TransfersController extends Controller
 
         if ($statusTransition == TransferStatusTransitions::ToApproved) {
             //Transfer amount from platform account to Volunteers stripe account.
-            StripeHelper::createTransfer(round($transfer->actual_amount) * 100, $transfer->receiving_party_id, $transfer->transfer_group);
+            //StripeHelper::createTransfer(round($transfer->actual_amount) * 100, $transfer->receiving_party_id, $transfer->transfer_group);
         }
 
         if ($transfer->transitionAllowed($statusTransition)) {
@@ -277,17 +281,17 @@ class TransfersController extends Controller
                 // unable to transition
             }
             if ($statusTransition === TransferStatusTransitions::ToInDispute) {
-                if ($transfer->receiving_party_id == Auth::id()) {
-                    Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
-                } else {
-                    Mail::to(\App\User::where('id', $transfer->receiving_party_id)->value('email'))->send(new TransferDisputeMail($transfer, true));
-                }
-            } else {
-                if ($transfer->receiving_party_id == Auth::id()) {
-                    Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer->sending_party_id, $transfer->id, $status_map[$statusTransition], $transfer->delivery_first_name));
-                } else {
-                    Mail::to(\App\User::where('id', $transfer->receiving_party_id)->value('email'))->send(new TransferGenericMail($transfer->receiving_party_id, $transfer->id, $status_map[$statusTransition], Auth::user()->first_name));
-                }
+//                if ($transfer->receiving_party_id == Auth::id()) {
+//                    Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
+//                } else {
+//                    Mail::to(\App\User::where('id', $transfer->receiving_party_id)->value('email'))->send(new TransferDisputeMail($transfer, true));
+//                }
+//            } else {
+//                if ($transfer->receiving_party_id == Auth::id()) {
+//                    Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer->sending_party_id, $transfer->id, $status_map[$statusTransition], $transfer->delivery_first_name));
+//                } else {
+//                    Mail::to(\App\User::where('id', $transfer->receiving_party_id)->value('email'))->send(new TransferGenericMail($transfer->receiving_party_id, $transfer->id, $status_map[$statusTransition], Auth::user()->first_name));
+//                }
             }
         }
 

@@ -36,7 +36,7 @@ Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
 ])->middleware(['auth', 'canViewTransferEvidence']);
 
 Route::resource('transfers.dispute', 'TransferDisputesController')->except([
-    'edit', 'update'
+    'edit'
 ])->middleware(['auth']);
 
 Route::get('/profile', 'UserProfile@index')->name('profile.index')->middleware('auth');

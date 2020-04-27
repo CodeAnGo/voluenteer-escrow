@@ -66,11 +66,43 @@
     @if(Auth::id() === $transfer->sending_party_id || Auth::id() === $transfer->receiving_party_id)
         @include('transfers.status')
     @endif
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl mx-auto">
+
             <div class="flex flex-col pt-4">
-                <div class="bg-white shadow overflow-hidden  sm:rounded-lg">
-                    <div class="px-4 py-3 border-b border-gray-200 sm:px-6">
+                @if ($transferDispute)
+
+                    <div class="bg-white shadow overflow-hidden  sm:rounded-lg">
+                            <div class="px-4 py-5 border-b border-gray-200 sm:px-6 text-center">
+
+                                <h3 class="text-lg leading-6 font-medium text-red-500">
+                                    @if($transferDispute->user_id !== Auth::id())
+                                    <a href="{{route('transfers.dispute.show', ['transfer' => $transfer->id, 'dispute' => $transferDispute])}}" class="text-red-500 hover:text-red-300">
+                                        A dispute has been raised on this transfer. Please resolve this as soon as possible, by clicking here.
+                                    </a>
+                                    @else
+
+                                        <a href="{{route('transfers.dispute.show', ['transfer' => $transfer->id, 'dispute' => $transferDispute])}}" class="text-red-500 hover:text-red-300">
+                                            You have raised a dispute on this transfer. You can view this by clicking here.
+                                        </a>
+
+                                    @endif
+                                </h3>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    @endif
+
+                <div class="bg-white shadow overflow-hidden  sm:rounded-lg mt-4">
+
+
+                <div class="px-4 py-3 border-b border-gray-200 sm:px-6">
+
                         <div class="flex flex-col">
                             <div class="text-lg leading-6 font-medium text-gray-900">
                                 {{ __('transfers.delivery_information') }}
