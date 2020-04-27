@@ -120,10 +120,10 @@ class StripeHelper
     return $cards;
     }
 
-    public static function cancelPaymentIntent( $tranferId)
+    public static function cancelPaymentIntent( $stripe_payment_intent )
     {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
-        $stripe_payment_intent=Transfer::where('id', $tranferId)->value('stripe_payment_intent');
+
 
         $payment_intent = \Stripe\PaymentIntent::retrieve(
             $stripe_payment_intent
