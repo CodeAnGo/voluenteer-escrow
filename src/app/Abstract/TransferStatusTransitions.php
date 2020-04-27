@@ -8,9 +8,10 @@ abstract class TransferStatusTransitions
     const ToRejected = 2;
     const ToAwaitingAcceptance = 3;
     const ToAccepted = 4;
-    const ToPendingApproval = 5;
-    const ToInDispute = 6;
-    const ToApproved = 7;
-    const ToClosed = 8;
-    const ToClosedNonPayment = 9;
+    const ToDeclined = 5;
+    const ToPendingApproval = 6;
+    const ToInDispute = 7;
+    const ToApproved = 8;
+    const ToClosed = 9;
+    const ToClosedNonPayment = 10;
 }

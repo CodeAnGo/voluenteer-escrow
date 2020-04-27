@@ -18,10 +18,11 @@ return [
             TransferStatusId::InDispute,
             TransferStatusId::Closed,
             TransferStatusId::ClosedNonPayment,
+            TransferStatusId::Declined,
         ],
         'transitions' => [
             TransferStatusTransitions::ToAwaitingAcceptance => [
-                'from' => [TransferStatusId::Rejected],
+                'from' => [TransferStatusId::Rejected, TransferStatusId::Declined],
                 'to' => TransferStatusId::AwaitingAcceptance,
             ],
             TransferStatusTransitions::ToAccepted => [
@@ -29,7 +30,7 @@ return [
                 'to' => TransferStatusId::Accepted,
             ],
             TransferStatusTransitions::ToRejected => [
-                'from' => [TransferStatusId::AwaitingAcceptance, TransferStatusId::Accepted],
+                'from' => [TransferStatusId::AwaitingAcceptance],
                 'to' => TransferStatusId::Rejected,
             ],
             TransferStatusTransitions::ToCancelled => [
@@ -55,6 +56,10 @@ return [
             TransferStatusTransitions::ToClosedNonPayment => [
                 'from' => [TransferStatusId::InDispute],
                 'to' => TransferStatusId::ClosedNonPayment,
+            ],
+            TransferStatusTransitions::ToDeclined => [
+                'from' => [TransferStatusId::Accepted],
+                'to' => TransferStatusId::Declined,
             ],
         ],
     ],

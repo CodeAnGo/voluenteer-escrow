@@ -13,6 +13,7 @@ return [
     'approve_transfer' => 'Approve Transfer',
     'accept_transfer' => 'Accept Transfer',
     'reject_transfer' => 'Reject Transfer',
+    'decline_transfer' => 'Decline Transfer',
     'submit_evidence' => 'Submit Evidence',
     'dispute_transfer' => 'Dispute Transfer',
     'delivery_information' => 'Delivery Information',
