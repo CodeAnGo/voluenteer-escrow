@@ -54,24 +54,50 @@ class StripeHelper
     }
 
    //Create PaymentIntent
-    Public static function createPaymentIntent( $tranferamount, $userid)
+    Public static function createPaymentIntentToPlatfromAcount( $tranferamount, $userid)
     {
-        $sending_user = Account::where('User_id',  $userid)->value('stripe_user_id');
-
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
+
+        $sending_user = Account::where('User_id',  $userid)->value('stripe_user_id');
+        $stripe_customer_id = Account::where('User_id',  $userid)->value('stripe_customer_id');
+        $platformaccount = \Stripe\Account::retrieve();
+
+        //Need to remove after the add cards is done
+        $paymentMethod= \Stripe\PaymentMethod::create([
+            'type' => 'card',
+            'card' => [
+                'number' => '4242424242424242',
+                'exp_month' => 5,
+                'exp_year' => 2021,
+                'cvc' => '314',
+            ],
+        ]);
+        //Need to remove after the add cards is done
+        $paymentMethod->attach([
+            'customer' => $stripe_customer_id
+        ]);
+
          $paymentIntent = \Stripe\PaymentIntent::create([
+             'customer'=> $stripe_customer_id,
+            'payment_method'=>$paymentMethod->id,
             'payment_method_types' => ['card'],
             'amount' => ($tranferamount),
             'currency' => 'gbp',
-            'transfer_data' => [
-                'destination' => $sending_user
-            ]
+
          ]);
-        $paymentIntent->confirm([
+         return $paymentIntent->id;
+    }
+
+    Public static function confirmPaymentIntent($stripe_payment_intent)
+    {
+        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
+        $payment_intent = \Stripe\PaymentIntent::retrieve(
+            $stripe_payment_intent
+        );
+
+        $payment_intent->confirm([
             'payment_method' => 'pm_card_visa',
         ]);
-
-        return $paymentIntent->id;
     }
     //Raise the transfer
     public static function createTransfer( $amount, $receivingUserid, $TransferGroup)
