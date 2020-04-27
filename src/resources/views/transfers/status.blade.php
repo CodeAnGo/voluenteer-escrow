@@ -40,10 +40,35 @@
             @include('transfers.status.negative', [
                 'status_id' => \App\TransferStatusId::InDispute,
                 'status_title' => 'In Dispute',
-                'status_message' => 'Disagreement between parties which the overseeing charity will solve',
+                'status_message' => 'Dispute between parties which the overseeing charity will solve',
                 'status_final' => false,
             ])
-        @endif
+             <span class="mx-2 sm:mx-0 sm:my-2 border-b sm:border-b-0 sm:border-l border-gray-200"></span>
+                @include('transfers.status.positive', [
+                    'status_id' => \App\TransferStatusId::Closed,
+                    'status_title' => 'Closed',
+                    'status_message' => 'Dispute has been resolved and funds released based on outcome of dispute',
+                ])
+
+
+        @elseif($transfer->status === \App\TransferStatusId::ClosedNonPayment)
+            <span class="mx-2 sm:mx-0 sm:my-2 border-b sm:border-b-0 sm:border-l border-gray-200"></span>
+            @include('transfers.status.positive', [
+                'status_id' => \App\TransferStatusId::InDispute,
+                'status_title' => 'In Dispute',
+                'status_message' => 'Disagreement has been reviewed and accepted by the volunteer',
+                'status_final' => true,
+            ])
+                <span class="mx-2 sm:mx-0 sm:my-2 border-b sm:border-b-0 sm:border-l border-gray-200"></span>
+
+                @include('transfers.status.positive', [
+                    'status_id' => \App\TransferStatusId::ClosedNonPayment,
+                    'status_title' => 'Closed (Non-Payment)',
+                    'status_message' => 'Transfer has been closed following a dispute, and funds returned to transfer creator',
+                    'status_final' => true,
+                ])
+
+        @else
         <span class="mx-2 sm:mx-0 sm:my-2 border-b sm:border-b-0 sm:border-l border-gray-200"></span>
         @include('transfers.status.positive', [
             'status_id' => \App\TransferStatusId::Approved,
@@ -58,13 +83,7 @@
                 'status_message' => 'Transfer has been completed successfully and the Volunteer has been paid',
             ])
         @endif
-        @if($transfer->status === \App\TransferStatusId::ClosedNonPayment)
-            @include('transfers.status.negative', [
-                'status_id' => \App\TransferStatusId::ClosedNonPayment,
-                'status_title' => 'Closed (Non-Payment)',
-                'status_message' => 'Transfer has been closed following a dispute',
-                'status_final' => true,
-            ])
-        @endif
+            @endif
+
     </div>
 </div>

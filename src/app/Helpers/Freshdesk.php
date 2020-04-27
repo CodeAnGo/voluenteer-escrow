@@ -62,4 +62,5 @@ class Freshdesk
         $request = Http::withBasicAuth($charity->api_key, '');
         return $request->put($url, $data);
     }
+
 }

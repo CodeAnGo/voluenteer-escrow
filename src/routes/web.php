@@ -19,30 +19,38 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
-
-Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
-
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
-Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middleware('auth');
-Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middleware('auth');
+Route::middleware(['auth', 'striped'])->group(function (){
 
-Route::resource('transfers', 'TransfersController')->middleware('auth');
-Route::post('transfers/{transfer}/status/{id}', 'TransfersController@statusUpdate')->name('transfers.update.status')->middleware('auth');
 
-Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
-    'edit', 'update'
-])->middleware(['auth', 'canViewTransferEvidence']);
+    Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 
-Route::resource('transfers.dispute', 'TransferDisputesController')->except([
-    'edit'
-])->middleware(['auth']);
+    Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/profile', 'UserProfile@index')->name('profile.index')->middleware('auth');
-Route::get('/profile/edit', 'UserProfile@edit')->name('profile.edit')->middleware('auth');
-Route::put('/profile/edit', 'UserProfile@update')->name('profile.update')->middleware('auth');
 
-Route::resource('addresses', 'UserAddress')->middleware('auth');
+    Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit');
+    Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store');
 
-Route::get('/notification/{transfer_id}', 'Notification@delete')->name('notification.delete');
+    Route::resource('transfers', 'TransfersController')->middleware('auth');
+    Route::post('transfers/{transfer}/status/{id}', 'TransfersController@statusUpdate')->name('transfers.update.status');
+
+    Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
+        'edit', 'update'
+    ])->middleware(['canViewTransferEvidence']);
+
+    Route::resource('transfers.dispute', 'TransferDisputesController')->except([
+        'edit'
+    ]);
+
+    Route::get('/profile', 'UserProfile@index')->name('profile.index');
+    Route::get('/profile/edit', 'UserProfile@edit')->name('profile.edit');
+    Route::put('/profile/edit', 'UserProfile@update')->name('profile.update');
+
+
+    Route::resource('addresses', 'UserAddress');
+
+    Route::get('/notification/{transfer_id}', 'Notification@delete')->name('notification.delete');
+});
+
+

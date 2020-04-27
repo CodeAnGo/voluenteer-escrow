@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TransferUpdateRequest;
 use App\Http\Requests\TransferUpdateStatusRequest;
+use App\Jobs\UpdateFreshDeskTicketDisputeRejected;
+use App\Jobs\UpdateFreshDeskTicketDisputeResolved;
 use App\Jobs\UpdateFreshdeskTicketTransferDispute;
 use App\Models\Transfer;
 use App\Models\TransferDispute;
@@ -124,8 +126,18 @@ class TransferDisputesController extends Controller
 
     public function update(Request $request, Transfer $transfer, TransferDispute $dispute)
     {
-        dd($request->input());
-    }
+        $dispute->resolved = true;
+        $dispute->save();
+
+        if ($request->get('buttonPressed') === 'accept') {
+            // Stripe Payout to individual bank account
+            dispatch(new UpdateFreshDeskTicketDisputeResolved($transfer->id));
+            $transfer->transition(9);
+            $transfer->save();
+        } else {
+            dispatch(new UpdateFreshDeskTicketDisputeRejected($transfer->id));
+        }
+}
 
     /**
      * Remove the specified resource from storage.

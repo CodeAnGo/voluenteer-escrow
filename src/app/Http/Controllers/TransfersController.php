@@ -35,6 +35,7 @@ use App\Models\Notification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TransferGenericMail;
 
+
 class TransfersController extends Controller
 {
     /**
@@ -250,6 +251,7 @@ class TransfersController extends Controller
      */
     public function statusUpdate(TransferUpdateStatusRequest $request, $id, $statusTransition)
     {
+
         $transfer = Transfer::where('id', $id)->first();
         $sending_user =  $transfer->sending_party_id;
 

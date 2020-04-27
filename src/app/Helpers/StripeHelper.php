@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\Transfer;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Stripe\Stripe;
 
 class StripeHelper
 {
@@ -105,7 +106,6 @@ class StripeHelper
             );
     }
 
-
     public static function listAllCards( $userid)
     {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
@@ -130,6 +130,16 @@ class StripeHelper
         );
         $payment_intent->cancel();
         return $payment_intent->status;
+    }
+
+    public static function payoutClosedNonPayment($transfer) {
+
+        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
+
+        \Stripe\Payout::create([
+            'amount' => $transfer->transfer_amount * 100,
+            'currency' => 'gbp'
+        ]);
     }
 
     //Refund
