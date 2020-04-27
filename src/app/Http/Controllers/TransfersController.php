@@ -267,6 +267,9 @@ class TransfersController extends Controller
 
         if ($statusTransition == TransferStatusTransitions::ToRejected) {
             $transfer->receiving_party_id = Auth::id();
+
+               //Cancel the payment Intent.
+            StripeHelper::cancelPaymentIntent( $transfer->stripe_payment_intent);
         }
 
         if ($statusTransition == TransferStatusTransitions::ToApproved) {
