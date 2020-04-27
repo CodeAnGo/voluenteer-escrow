@@ -12,6 +12,7 @@
                     name="{{ $input_id }}"
                     type="{{ $input_type ?? 'text' }}"
                     @isset($readonly) readonly @endif
+                    @isset($multiple) multiple @endif
                     @isset($value) value="{{ $value }}" @endif
                     @if($required ?? false) required @endif
                     class="@error($input_id) border-red-500 @enderror @isset($readonly) bg-gray-100 @endif

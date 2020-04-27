@@ -23,6 +23,8 @@ return [
     'transfer_information.charity' => 'Which charity is overseeing this transaction',
     'transfer_information.amount' => 'How much is this transfer for',
     'transfer_information.context' => 'Additional context around this transfer',
+    'transfer_information.images' => 'Related Images (optional)',
+    'transfer_information.images_sub_text' => 'E.g., a shopping list.',
     'volunteering_information' => 'Volunteer Information',
     'copy_link' => 'Copy Link',
     'copy_link_text' => 'The following link has been copied to your clipboard:',

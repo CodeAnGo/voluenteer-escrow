@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\{Charity, Transfer};
 use Illuminate\Support\Facades\Http;
+use App\Helpers\Freshdesk;
 
 
 class CreateFreshdeskTicket implements ShouldQueue
@@ -35,25 +36,13 @@ class CreateFreshdeskTicket implements ShouldQueue
      */
     public function handle()
     {
-        $transfer = Transfer::where('id', $this->id)->first();
-        $charity = Charity::where('id', $transfer->charity_id)->first();
-        $url = "https://$charity->domain.freshdesk.com/api/v2/tickets";
+        $freshdesk = new Freshdesk();
+        $update_response = $freshdesk->createTicket($this->id);
+        $this->handleResponse($update_response);
+    }
 
-        $ticket_data = array(
-
-            "description" => "escrow linky",//will be $transfer->escrow_link
-            "subject" => "Volunteer Escrow Transfer",
-            "email" => "beatt@netcompany.com", //this should be the same as the email associated with freshdesk, for now this email exists in the test instance.
-            "priority" => 1,
-            "status" => 2,
-            "unique_external_id" => "transfer-" . $this->id,
-            "custom_fields" => array(
-                "cf_charity" => $charity->name,
-                "cf_transfer_amount" => $transfer->transfer_amount),
-        );
-
-        $response = Http::withBasicAuth($charity->api_key, '')->post($url, $ticket_data);
-
+    public function handleResponse($response)
+    {
         if ($response->successful()) {
             $decodedBody = json_decode($response->getBody());
             Transfer::find($this->id)->update(['freshdesk_id' => $decodedBody->id]);
