@@ -137,6 +137,10 @@
             </div>
         </div>
     </form>
+
+    <label class="text-sm text-gray-800 font-thin text-center block">
+        You will be charged a fee of £0.50 + 2.7% of the transfer amount.
+    </label>
 @endsection
 
 @section('footer_buttons')

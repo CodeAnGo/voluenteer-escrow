@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Account;
 use App\Models\Concerns\UsesUUID;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -42,5 +43,13 @@ class User extends Authenticatable implements Auditable
 
     public function notifications(){
         return $this->hasMany(Notification::class);
+    }
+
+    public function account(){
+        return $this->hasOne(Account::class);
+    }
+
+    public function getName(){
+        return $this->first_name . " " . $this->last_name;
     }
 }

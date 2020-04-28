@@ -23,13 +23,10 @@ Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse
 Route::middleware(['auth', 'striped'])->group(function (){
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 
-    Route::get('/home', 'HomeController@index')->name('home');
-
-
     Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit');
     Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store');
 
-    Route::resource('transfers', 'TransfersController')->middleware('auth');
+    Route::resource('transfers', 'TransfersController');
     Route::post('transfers/{transfer}/status/{id}', 'TransfersController@statusUpdate')->name('transfers.update.status');
 
     Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
@@ -50,3 +47,7 @@ Route::middleware(['auth', 'striped'])->group(function (){
 });
 
 
+Route::get('logout', function() {
+    Auth::logout();
+    return redirect()->route('home');
+});
