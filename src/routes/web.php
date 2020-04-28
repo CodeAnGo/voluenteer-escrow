@@ -22,10 +22,9 @@ Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse
 
 Route::middleware(['auth', 'striped'])->group(function (){
 
-  
-    Route::get('dashboard', 'DashboardController@index')->name('dashboard');
+Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
-    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 
 
     Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit');
