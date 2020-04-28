@@ -21,8 +21,6 @@ Auth::routes();
 
 Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
 
-Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
-
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
 Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middleware('auth');
