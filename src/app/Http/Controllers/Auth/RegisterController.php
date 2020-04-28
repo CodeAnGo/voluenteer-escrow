@@ -65,7 +65,15 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $this->redirectTo = 'https://connect.stripe.com/express/oauth/authorize?client_id=ca_H1XhDNnf1jkjAcXOBHhEqNpPLtUwuVwI&state='. csrf_token() .'&stripe_user[email]='.$data['email'];
+        $url = 'https://connect.stripe.com/express/oauth/authorize?client_id=ca_H1XhDNnf1jkjAcXOBHhEqNpPLtUwuVwI&state='. csrf_token()
+        ."&stripe_user[email]=${data['email']}"
+        ."&stripe_user[first_name]=${data['fname']}"
+        ."&stripe_user[last_name]=${data['lname']}"
+        ."&stripe_user[url]=netcompany.com"
+        ."&stripe_user[country]=GB"
+        ."&stripe_user[business_type]=individual";
+
+        $this->redirectTo = $url;
 
         return User::create([
             'first_name' => $data['fname'],
