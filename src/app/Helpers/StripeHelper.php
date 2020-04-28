@@ -20,8 +20,9 @@ class StripeHelper
       return head($balance->toArray()['available'])['amount'];
   }
 
-  Public function createStripeCustomer($userid, $stripeId, $email)
+  Public static function createStripeCustomer( $email)
   {
+
       \Stripe\Stripe::setApiKey(config('stripe.api_key'));
       $customer = \Stripe\Customer::create([
           'email' => $email,
@@ -62,24 +63,9 @@ class StripeHelper
         $stripe_customer_id = Account::where('User_id',  $userid)->value('stripe_customer_id');
         $platformaccount = \Stripe\Account::retrieve();
 
-        //Need to remove after the add cards is done
-        $paymentMethod= \Stripe\PaymentMethod::create([
-            'type' => 'card',
-            'card' => [
-                'number' => '4242424242424242',
-                'exp_month' => 5,
-                'exp_year' => 2021,
-                'cvc' => '314',
-            ],
-        ]);
-        //Need to remove after the add cards is done
-        $paymentMethod->attach([
-            'customer' => $stripe_customer_id
-        ]);
-
          $paymentIntent = \Stripe\PaymentIntent::create([
-             'customer'=> $stripe_customer_id,
-            'payment_method'=>$paymentMethod->id,
+            'customer'=> $stripe_customer_id,
+            //'payment_method'=>$paymentMethod->id,
             'payment_method_types' => ['card'],
             'amount' => ($tranferamount),
             'currency' => 'gbp',
@@ -88,6 +74,18 @@ class StripeHelper
          return $paymentIntent->id;
     }
 
+    public static function payoutVolunteer($amount,$stripe_customer_id)
+    {
+        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
+        $payout = \Stripe\Payout::create([
+            'amount' => 1000,
+            'currency' => 'gbp',
+        ]
+          /*  [
+            'stripe_account' => 'acct_1GcZFdB7P393bdVq'
+             ]*/
+        );
+    }
     Public static function confirmPaymentIntent($stripe_payment_intent)
     {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
@@ -157,9 +155,7 @@ class StripeHelper
         $payment_intent->cancel();
         return $payment_intent->status;
     }
-
-    //Refund
-
+    
 
 
 }
