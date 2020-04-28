@@ -28,9 +28,9 @@ class UserAddressUpdateRequest extends FormRequest
     {
         return [
             'line1' => 'required|max:255',
-            'line2' => 'max:255',
+            'line2' => 'max:255|nullable',
             'city' => 'required|max:255|alpha',
-            'county' => 'max:255',
+            'county' => 'alpha_dash|max:255|nullable',
             'postcode' => 'required|alpha_num|max:10',
             'country' => 'required|max:255',
         ];

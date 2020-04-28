@@ -34,9 +34,9 @@ class TransferUpdateRequest extends FormRequest
             'transfer_reason' => 'required|max:255',
             'transfer_amount' => 'required|numeric|between:0.01,9999.99',
             'delivery_street_1' => 'required|max:255',
-            'delivery_street_2' => 'max:255',
+            'delivery_street_2' => 'max:255|nullable',
             'delivery_city' => 'required|max:255|alpha',
-            'delivery_county' => 'max:30',
+            'delivery_county' => 'alpha_dash|max:30|nullable',
             'delivery_country' => 'required',
             'transfer_note' => 'required|max:255|alpha_dash'
         ];

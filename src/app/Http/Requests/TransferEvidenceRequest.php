@@ -27,7 +27,7 @@ class TransferEvidenceRequest extends FormRequest
             'evidence' => 'required',
             'evidence.*' => 'image|max:2048|mimes:jpeg,png,jpg',
             'actual_amount' => 'required|numeric|min:0',
-            'transfer_note' => 'max:255'
+            'transfer_note' => 'alpha_dash|max:255|nullable'
         ];
     }
 
