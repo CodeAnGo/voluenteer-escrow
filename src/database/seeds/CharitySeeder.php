@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Charity;
 use Illuminate\Database\Seeder;
 
 class CharitySeeder extends Seeder
@@ -14,9 +15,11 @@ class CharitySeeder extends Seeder
         foreach ([1,2,3,4,5,6,7,8,9] as $i){
             $faker = Faker\Factory::create();
 
-            \App\Models\Charity::create([
+            Charity::create([
                 'name' => $faker->company,
-                'active' => true
+                'active' => true,
+                'domain' => 'netcompanyaid',
+                'api_key' => 'Zw9SNcS2Oyr9JxnCrp6',
             ]);
         }
     }

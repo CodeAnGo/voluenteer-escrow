@@ -18,22 +18,36 @@ Route::get('/', function () {
 })->name('home');
 
 Auth::routes();
+Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
-Route::get('dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
+Route::middleware(['auth', 'striped'])->group(function (){
 
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
-Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit')->middleware('auth');
-Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store')->middleware('auth');
+    Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 
-Route::resource('transfers', 'TransfersController')->middleware('auth');
 
-Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
-    'edit', 'update'
-])->middleware(['auth', 'canViewTransferEvidence']);
+    Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit');
+    Route::post('/onboarding', 'OnBoarding@store')->name('onboarding.store');
 
-Route::get('/profile', 'UserProfile@index')->name('profile.index')->middleware('auth');
-Route::get('/profile/edit', 'UserProfile@edit')->name('profile.edit')->middleware('auth');
-Route::put('/profile/edit', 'UserProfile@update')->name('profile.update')->middleware('auth');
+    Route::resource('transfers', 'TransfersController')->middleware('auth');
+    Route::post('transfers/{transfer}/status/{id}', 'TransfersController@statusUpdate')->name('transfers.update.status');
 
-Route::resource('addresses', 'UserAddress')->middleware('auth');
+    Route::resource('transfers.evidence', 'TransferEvidencesController')->except([
+        'edit', 'update'
+    ])->middleware(['canViewTransferEvidence']);
+
+    Route::resource('transfers.dispute', 'TransferDisputesController')->except([
+        'edit', 'update'
+    ]);
+
+    Route::get('/profile', 'UserProfile@index')->name('profile.index');
+    Route::get('/profile/edit', 'UserProfile@edit')->name('profile.edit');
+    Route::put('/profile/edit', 'UserProfile@update')->name('profile.update');
+
+    Route::resource('addresses', 'UserAddress');
+
+    Route::get('/notification/{transfer_id}', 'Notification@delete')->name('notification.delete');
+});
+
+
