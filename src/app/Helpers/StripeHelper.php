@@ -157,5 +157,22 @@ class StripeHelper
     }
     
 
+    public static function refundCustomer($stripe_payment_intent, $transfer_amount, $partial = false)
+    {
+        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
+
+        $payment_intent = \Stripe\PaymentIntent::retrieve(
+            $stripe_payment_intent
+        );
+
+        if ($payment_intent->status == 'succeeded' || $partial) {
+            $refund = \Stripe\Refund::create([
+                'payment_intent' => $stripe_payment_intent,
+                'amount' => $transfer_amount
+            ]);
+        } else {
+            self::cancelPaymentIntent($stripe_payment_intent);
+        }
+    }
 
 }

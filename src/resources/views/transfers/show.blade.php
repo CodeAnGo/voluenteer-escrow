@@ -8,7 +8,7 @@
 
 @section('header_buttons')
     @if(Auth::id() === $transfer->sending_party_id)
-        @if($transfer->status == \App\TransferStatusId::Rejected)
+        @if($transfer->status == \App\TransferStatusId::Rejected || $transfer->status == \App\TransferStatusId::Declined)
             @include('transfers.action_buttons.restart')
         @endif
         @if($transfer->status == \App\TransferStatusId::Rejected || $transfer->status == \App\TransferStatusId::AwaitingAcceptance)
@@ -24,6 +24,7 @@
     @elseif(Auth::id() === $transfer->receiving_party_id)
         @if($transfer->status == \App\TransferStatusId::Accepted)
             @include('transfers.action_buttons.evidence')
+            @include('transfers.action_buttons.decline')
         @endif
         @if($transfer->status == \App\TransferStatusId::PendingApproval)
             @include('transfers.action_buttons.dispute')

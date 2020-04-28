@@ -255,35 +255,46 @@ class TransfersController extends Controller
     public function statusUpdate(TransferUpdateStatusRequest $request, $id, $statusTransition)
     {
         $transfer = Transfer::where('id', $id)->first();
-        $sending_user =  $transfer->sending_party_id;
+        $sending_user = $transfer->sending_party_id;
 
         $status_map = $this->getStatusMap();
 
-        if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
-            $transfer->receiving_party_id = null;
-
-
-        }
-        if ($statusTransition == TransferStatusTransitions::ToAccepted) {
-            $transfer->receiving_party_id = Auth::id();
-            //Transfer amount from Senders stripe account to Platform account
-            StripeHelper::confirmPaymentIntent($transfer->stripe_payment_intent);
-        }
-
-        if ($statusTransition == TransferStatusTransitions::ToRejected) {
-            $transfer->receiving_party_id = Auth::id();
-
-               //Cancel the payment Intent.
-            StripeHelper::cancelPaymentIntent( $transfer->stripe_payment_intent);
-        }
-
-        if ($statusTransition == TransferStatusTransitions::ToApproved) {
-            //Transfer amount from platform account to Volunteers stripe account.
-            StripeHelper::createTransfer(($transfer->actual_amount) * 100, $transfer->receiving_party_id, $transfer->transfer_group);
-        }
-
         if ($transfer->transitionAllowed($statusTransition)) {
             try {
+                if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
+                    $transfer->receiving_party_id = null;
+                    if ($transfer->status == TransferStatusId::Declined) {
+                        //Previous Intent had a transfer to platform which is reversed, so create a new intent.
+                        $payment_intent = StripeHelper::createPaymentIntentToPlatfromAcount($transfer->transfer_amount * 100, Auth::id());
+                        $transfer->stripe_payment_intent = $payment_intent;
+                    }
+                }
+                if ($statusTransition == TransferStatusTransitions::ToAccepted) {
+                    $transfer->receiving_party_id = Auth::id();
+                    //Transfer amount from Senders stripe account to Platform account
+                    StripeHelper::confirmPaymentIntent($transfer->stripe_payment_intent);
+                }
+
+                if ($statusTransition == TransferStatusTransitions::ToRejected) {
+                    $transfer->receiving_party_id = Auth::id();
+                    //Cancel the payment Intent.
+                    StripeHelper::cancelPaymentIntent( $transfer->stripe_payment_intent);
+                }
+
+                if ($statusTransition == TransferStatusTransitions::ToDeclined) {
+                    StripeHelper::refundCustomer($transfer->stripe_payment_intent, $transfer->transfer_amount * 100);
+                }
+
+                if ($statusTransition == TransferStatusTransitions::ToApproved) {
+                    //Transfer amount from platform account to Volunteers stripe account.
+                    StripeHelper::createTransfer(($transfer->actual_amount) * 100, $transfer->receiving_party_id, $transfer->transfer_group);
+                    //Partially refund the sender
+                    $refund_amount = ($transfer->transfer_amount - $transfer->actual_amount) * 100;
+                    if ($refund_amount > 0) {
+                        StripeHelper::refundCustomer($transfer->stripe_payment_intent, $refund_amount, true);
+                    }
+                }
+
                 $transfer->transition($statusTransition);
                 $transfer->save();
             } catch (Exception $e) {
@@ -324,7 +335,8 @@ class TransfersController extends Controller
             TransferStatusId::Closed,
             TransferStatusId::ClosedNonPayment,
             TransferStatusId::Rejected,
-            TransferStatusId::InDispute
+            TransferStatusId::InDispute,
+            TransferStatusId::Declined
         ];
     }
 
