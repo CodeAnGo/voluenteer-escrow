@@ -268,7 +268,9 @@ class TransfersController extends Controller
                 if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
                     $transfer->receiving_party_id = null;
                     if ($transfer->status == TransferStatusId::Declined) {
-                      
+                        $paymentIntent = $this->stripeServiceRepository->createPaymentIntentFromUser(Auth::user(), $request->get('transfer_amount'));
+                        $transfer->stripe_payment_intent = $paymentIntent->id;
+                        $transfer->save();
                     }
                 }
                 if ($statusTransition == TransferStatusTransitions::ToAccepted) {
