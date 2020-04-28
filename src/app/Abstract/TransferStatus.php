@@ -8,6 +8,7 @@ abstract class TransferStatus
     const Rejected = "Rejected";
     const AwaitingAcceptance = "Awaiting Acceptance";
     const Accepted = "Accepted";
+    const Declined = "Declined";
     const PendingApproval = "Pending Approval";
     const InDispute = "In Dispute";
     const Approved = "Approved";

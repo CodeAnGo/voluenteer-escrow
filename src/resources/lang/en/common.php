@@ -27,4 +27,5 @@ return [
     'accept' => 'Accept',
     'reject' => 'Reject',
     'dispute' => 'Dispute',
+    'decline' => 'Decline',
 ];

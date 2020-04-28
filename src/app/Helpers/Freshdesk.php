@@ -3,6 +3,8 @@
 
 namespace App\Helpers;
 
+use App\FreshdeskTicketPriority;
+use App\FreshdeskTicketStatus;
 use App\Models\Transfer;
 use App\Models\Charity;
 use Illuminate\Support\Facades\Http;
@@ -61,5 +63,26 @@ class Freshdesk
 
         $request = Http::withBasicAuth($charity->api_key, '');
         return $request->put($url, $data);
+    }
+
+    public function createTicket($transfer_id)
+    {
+        $transfer = Transfer::where('id', $transfer_id)->first();
+        $charity = Charity::where('id', $transfer->charity_id)->first();
+
+        $url = "https://$charity->domain.freshdesk.com/api/v2/tickets";
+
+        $ticket_data = array(
+            "description" => env('APP_URL') . '/transfers/'. $transfer->id,
+            "subject" => "Escrow Transfer",
+            "priority" => FreshdeskTicketPriority::Low,
+            "status" => FreshdeskTicketStatus::Open,
+            "unique_external_id" => "transfer-" . $transfer_id,
+            "custom_fields" => array(
+                "cf_transfer_amount" => $transfer->transfer_amount),
+        );
+
+        $request = Http::withBasicAuth($charity->api_key, '');
+        return $request->post($url, $ticket_data);
     }
 }

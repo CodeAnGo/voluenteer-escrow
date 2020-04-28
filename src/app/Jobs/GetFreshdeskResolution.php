@@ -2,23 +2,22 @@
 
 namespace App\Jobs;
 
+use App\Models\Charity;
+use App\Models\Transfer;
+use App\TransferStatusTransitions;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\{Charity, Transfer};
 use Illuminate\Support\Facades\Http;
-use App\Helpers\Freshdesk;
 
-
-class CreateFreshdeskTicket implements ShouldQueue
+class GetFreshdeskResolution implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 2;//number of times to attempt (doesn't work)
+    public $tries = 2;
     private $id;
-
     /**
      * Create a new job instance.
      *
@@ -36,16 +35,18 @@ class CreateFreshdeskTicket implements ShouldQueue
      */
     public function handle()
     {
-        $freshdesk = new Freshdesk();
-        $update_response = $freshdesk->createTicket($this->id);
-        $this->handleResponse($update_response);
-    }
-
-    public function handleResponse($response)
-    {
+        $transfer = Transfer::where('id', $this->id)->first();
+        $charity = Charity::where('id', $transfer->charity_id)->first();
+        $url = "https://$charity->domain.freshdesk.com/api/v2/tickets/$transfer->freshdesk_id";
+        $response = Http::withBasicAuth($charity->api_key, '')->get($url);
         if ($response->successful()) {
             $decodedBody = json_decode($response->getBody());
-            Transfer::find($this->id)->update(['freshdesk_id' => $decodedBody->id]);
+            if($decodedBody->status == '3'){
+                $transfer->actual_amount = $decodedBody->custom_fields->cf_actual_amount;
+                $transfer->save();
+                $transfer->transition(TransferStatusTransitions::ToApproved);
+                $transfer->save();
+            }
         } else {
             $this->fail('HTTP Error ' . $response->getStatusCode() . ':' . $response->getReasonPhrase());
         }
