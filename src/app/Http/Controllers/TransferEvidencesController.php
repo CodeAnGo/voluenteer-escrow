@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TransferEvidenceRequest;
 use App\Http\Requests\TransferUpdateRequest;
 use App\Http\Requests\TransferUpdateStatusRequest;
 use App\Models\Charity;
@@ -78,13 +79,9 @@ class TransferEvidencesController extends Controller
      * @param $transfer_id
      * @return RedirectResponse|Redirector
      */
-    public function store(Request $request, $transfer_id)
+    public function store(TransferEvidenceRequest $request, $transfer_id)
     {
-        $validator = request()->validate([
-            'evidence' => 'required',
-            'evidence.*' => 'image',
-            'actual_amount' => 'required|numeric|min:0',
-        ]);
+        $request->validated();
 
         $paths = [];
         foreach ($request->files->get('evidence') as $file) {

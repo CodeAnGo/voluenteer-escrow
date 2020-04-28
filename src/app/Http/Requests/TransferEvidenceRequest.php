@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserAddressCreateRequest extends FormRequest
+class TransferEvidenceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,11 @@ class UserAddressCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'line1' => 'required|max:255',
-            'line2' => 'max:255',
-            'city' => 'required|max:255|alpha',
-            'county' => 'max:255',
-            'postcode' => 'required|alpha_num|max:10',
-            'country' => 'required|max:255',
+            'evidence' => 'required',
+            'evidence.*' => 'image|max:2048|mimes:jpeg,png,jpg',
+            'actual_amount' => 'required|numeric|min:0',
+            'transfer_note' => 'max:255'
         ];
     }
+
 }

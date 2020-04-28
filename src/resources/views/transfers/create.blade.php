@@ -59,10 +59,18 @@
                                             @if(isset($addresses) && $addresses->count() === 0)
                                                 <option value="">{{ __('addresses.no_saved_addresses') }}</option>
                                             @endif
+
                                             @foreach($addresses as $address)
                                                 <option value="{{$address->id}}">{{$address->line1}}@if(isset($address->line2)){{", " . $address->line2}}@endif{{", " . $address->city}}@if(isset($address->county)){{", " . $address->county}}@endif{{", " . $address->postcode}}</option>
                                             @endforeach
                                         </select>
+                                        @error('user_address_select')
+                                        <div>
+                                            <p class="text-red-600 text-sm tracking-wide font-light">
+                                                Please provide an address, you can add a new one or select one from the dropdown.
+                                            </p>
+                                        </div>
+                                        @enderror
                                     </div>
                                     <div class="flex flex-row justify-end">
                                         <a href="{{ route('addresses.create') }}" class="mt-2 inline-flex items-center justify-center py-2 px-4 text-md font-medium text-indigo-500 hover:text-indigo-700 focus:text-indigo-700 transition duration-150 ease-in-out">
@@ -78,9 +86,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
                 <div class="flex flex-col">
                     <div class="bg-white shadow overflow-hidden sm:rounded-lg h-full">
                         <div class="px-4 py-3 border-b border-gray-200 sm:px-6">
