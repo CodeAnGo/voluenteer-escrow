@@ -283,17 +283,17 @@ class TransfersController extends Controller
                 // unable to transition
             }
             if ($statusTransition === TransferStatusTransitions::ToInDispute) {
-//                if ($transfer->receiving_party_id == Auth::id()) {
-//                    Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
-//                } else {
-//                    Mail::to(\App\User::where('id', $transfer->receiving_party_id)->value('email'))->send(new TransferDisputeMail($transfer, true));
-//                }
-//            } else {
-//                if ($transfer->receiving_party_id == Auth::id()) {
-//                    Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer->sending_party_id, $transfer->id, $status_map[$statusTransition], $transfer->delivery_first_name));
-//                } else {
-//                    Mail::to(\App\User::where('id', $transfer->receiving_party_id)->value('email'))->send(new TransferGenericMail($transfer->receiving_party_id, $transfer->id, $status_map[$statusTransition], Auth::user()->first_name));
-//                }
+                if ($transfer->receiving_party_id == Auth::id()) {
+                    Mail::to($transfer->delivery_email)->send(new TransferDisputeMail($transfer, false));
+                } else {
+                    Mail::to(\App\User::where('id', $transfer->receiving_party_id)->value('email'))->send(new TransferDisputeMail($transfer, true));
+                }
+            } else if ($statusTransition !== TransferStatusTransitions::ToAwaitingAcceptance) {
+                if ($transfer->receiving_party_id == Auth::id()) {
+                    Mail::to($transfer->delivery_email)->send(new TransferGenericMail($transfer->sending_party_id, $transfer->id, $status_map[$statusTransition], $transfer->delivery_first_name));
+                } else {
+                    Mail::to(\App\User::where('id', $transfer->receiving_party_id)->value('email'))->send(new TransferGenericMail($transfer->receiving_party_id, $transfer->id, $status_map[$statusTransition], Auth::user()->first_name));
+                }
             }
         }
 
