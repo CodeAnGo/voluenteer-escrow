@@ -23,6 +23,7 @@
                                         'label' => __('common.first_name'),
                                         'value' => $user->first_name,
                                         'input_id' => 'first_name',
+                                        'required' => true,
                                     ])
                                 </div>
                                 <div class="sm:col-span-1">

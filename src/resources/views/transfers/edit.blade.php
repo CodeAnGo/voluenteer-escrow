@@ -23,7 +23,7 @@
                             <dl class="grid grid-cols-1 col-gap-4 row-gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                 <div class="sm:col-span-1">
                                     @include('layouts.input_with_label', [
-                                        'label' => __('common.name'),
+                                        'label' => 'First name',
                                         'value' => $transfer->delivery_first_name,
                                         'input_id' => 'delivery_first_name',
                                         'required' => true,
@@ -31,7 +31,7 @@
                                 </div>
                                 <div class="sm:col-span-1">
                                     @include('layouts.input_with_label', [
-                                        'label' => __('common.name'),
+                                        'label' => 'Last name',
                                         'value' => $transfer->delivery_last_name,
                                         'input_id' => 'delivery_last_name',
                                         'required' => true,

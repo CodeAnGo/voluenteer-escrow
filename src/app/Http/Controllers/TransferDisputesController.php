@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TransferDisputeRequest;
 use App\Http\Requests\TransferUpdateRequest;
 use App\Http\Requests\TransferUpdateStatusRequest;
 use App\Jobs\UpdateFreshdeskTicketTransferDispute;
@@ -62,12 +63,10 @@ class TransferDisputesController extends Controller
      * @param $transfer_id
      * @return RedirectResponse|Redirector
      */
-    public function store(Request $request, $transfer_id)
+    public function store(TransferDisputeRequest $request, $transfer_id)
     {
-        $validator = request()->validate([
-            'dispute_reason' => 'required|between:1,255',
-            'evidence.*' => 'image',
-        ]);
+
+        $request->validated();
 
         $dispute_reason = request('dispute_reason');
         $transfer_dispute = TransferDispute::create([

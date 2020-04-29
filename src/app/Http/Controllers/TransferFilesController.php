@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TransferCreateRequest;
 use App\Http\Requests\TransferUpdateRequest;
 use App\Http\Requests\TransferUpdateStatusRequest;
 use App\Models\Charity;
@@ -53,7 +54,7 @@ class TransferFilesController extends Controller
      * @param $transfer_id
      * @return RedirectResponse|Redirector
      */
-    public function store(Request $request, $transfer_id)
+    public function store(TransferCreateRequest $request, $transfer_id)
     {
         $paths = [];
         $images = (array)$request->files->get('images');
