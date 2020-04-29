@@ -30,7 +30,7 @@ class OnBoarding extends Controller
 
 
         foreach($request->input() as $key => $value) {
-           if ($key !== "_token" && $key !== "file") {
+           if ($key !== "_token" && $key !== "file" && $key!="card-button") {
                UserCharity::create([
                    'user_id' => Auth::id(),
                    'charity_id' => $value

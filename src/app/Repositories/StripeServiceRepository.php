@@ -50,6 +50,15 @@ class StripeServiceRepository implements StripeServiceRepositoryInterface
         ]);
     }
 
+    public function updateCardPaymentsCapability($user){
+        $account = $user->account;
+        \Stripe\Account::updateCapability(
+            $account->stripe_user_id,
+            'card_payments',
+            ['requested' => true]
+        );
+    }
+
     public function getCustomerFromUser(User $user)
     {
         $stripeAccount = Account::where('user_id', $user->id)->first();
@@ -132,7 +141,7 @@ class StripeServiceRepository implements StripeServiceRepositoryInterface
     }
 
     public function convertToStripeAmount($amount){
-        return $amount * 100;
+        return round($amount * 100);
     }
 
     public function calculateStripeFee($transfer_amount){
