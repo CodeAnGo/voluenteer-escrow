@@ -141,7 +141,7 @@ class StripeHelper
             $stripe_user_id ,
             ['object' => 'card', 'limit' => 3]
         );
-    return $cards;
+        return $cards;
     }
 
     public static function cancelPaymentIntent( $stripe_payment_intent )
