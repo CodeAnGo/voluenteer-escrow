@@ -48,4 +48,9 @@ Route::middleware(['auth', 'striped'])->group(function (){
     Route::get('/notification/{transfer_id}', 'Notification@delete')->name('notification.delete');
 });
 
+Route::get('logout', function() {
+    Auth::logout();
+    return redirect()->route('home');
+});
+
 
