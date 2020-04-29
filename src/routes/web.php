@@ -18,11 +18,9 @@ Route::get('/', function () {
 })->name('home');
 
 Auth::routes();
-Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
+Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse')->middleware('auth');
 
 Route::middleware(['auth', 'striped'])->group(function (){
-
-Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
 
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 

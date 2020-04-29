@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Stripe\Stripe;
+use Illuminate\Foundation\Auth\User;
 
 class OAuthRedirectController extends Controller
 {
