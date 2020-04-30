@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TransferCreateRequest;
 use App\Http\Requests\TransferUpdateRequest;
 use App\Http\Requests\TransferUpdateStatusRequest;
-use App\Models\Account;
 use App\Models\Address;
 use App\Models\Transfer;
 use App\Jobs\CreateFreshdeskTicket;
 use App\Models\TransferEvidence;
+use App\Repositories\Interfaces\AddressRepositoryInterface;
+use App\Repositories\Interfaces\CharityRepositoryInterface;
 use App\Repositories\Interfaces\StripeServiceRepositoryInterface;
+use App\Repositories\Interfaces\TransferRepositoryInterface;
 use App\TransferStatus;
 use App\TransferStatusId;
 use Exception;
@@ -38,15 +40,24 @@ use App\Models\TransferFile;
 class TransfersController extends Controller
 {
     private $stripeServiceRepository;
+    private $transferRepository;
+    private $charityRepository;
+    private $addressRepository;
 
 
     /**
      * TransfersController constructor.
      * @param StripeServiceRepositoryInterface $stripeServiceRepository
+     * @param TransferRepositoryInterface $transferRepository
+     * @param CharityRepositoryInterface $charityRepository
+     * @param AddressRepositoryInterface $addressRepository
      */
-    public function __construct(StripeServiceRepositoryInterface $stripeServiceRepository)
+    public function __construct(StripeServiceRepositoryInterface $stripeServiceRepository, TransferRepositoryInterface $transferRepository, CharityRepositoryInterface $charityRepository, AddressRepositoryInterface $addressRepository)
     {
         $this->stripeServiceRepository = $stripeServiceRepository;
+        $this->transferRepository = $transferRepository;
+        $this->charityRepository = $charityRepository;
+        $this->addressRepository = $addressRepository;
     }
 
 
@@ -57,31 +68,7 @@ class TransfersController extends Controller
      */
     public function index()
     {
-        $transfer_identifier = (Auth::User()->volunteer === 0 ? 'sending_party_id' : 'receiving_party_id');
-        $other_identifier = (Auth::User()->volunteer === 0 ? 'receiving_party_id' : 'sending_party_id');
-
-        $transfers = Transfer::where($transfer_identifier, Auth::id());
-
-        $user_ids = $transfers->get($other_identifier);
-        $users = User::whereIn('id', $user_ids);
-
-        $charity_ids = $transfers->get('charity_id');
-        $charities = Charity::whereIn('id', $charity_ids);
-
-        $status_map = $this->getStatusMap();
-        $closed_status_id = $this->getClosedStatus();
-        $active_transfers = clone $transfers;
-        $active_transfers = $active_transfers->whereNotIn('status', $closed_status_id);
-
-        return view('transfers.index', [
-            'users' => $users->get(),
-            'charities' => $charities->get(),
-            'transfers' => $transfers->get(),
-            'active_transfers' => $active_transfers->get(),
-            'closed_status' => $closed_status_id,
-            'volunteer' => !(Auth::User()->volunteer === 0),
-            'status_map' => $status_map
-        ]);
+        return view('transfers.index');
     }
 
     /**
@@ -121,32 +108,34 @@ class TransfersController extends Controller
     {
         $request->validated();
 
-        $address = Address::where('id', $request->get('user_address_select'))->first();
-
+        $address = $this->addressRepository->getAddressFromId($request->get('user_address_select'));
         $paymentIntent = $this->stripeServiceRepository->createPaymentIntentFromUser(Auth::user(), $request->get('transfer_amount'));
+        $transfer = $this->transferRepository->createTransfer(
+            Auth::user(),
+            $this->charityRepository->getCharityFromId($request->get('charity_id')),
+            $request->get('delivery_first_name'),
+            $request->get('delivery_last_name'),
+            $request->get('delivery_email'),
+            $request->get('delivery_phone'),
+            $address->line1,
+            $address->city,
+            $address->postcode,
+            $address->country,
+            $request->get('transfer_amount'),
+            $request->get('transfer_reason'),
+            TransferStatusId::AwaitingAcceptance,
+            $request->get('transfer_note'),
+            $paymentIntent->id,
+            null,
+            null,
+            Auth::user()->account->id,
+            1,
+            $paymentIntent->transfer_group,
+            $address->line2,
+            $address->county,
+            null
+        );
 
-        $transfer = Transfer::create([
-            'sending_party_id' => Auth::id(),
-            'status' => TransferStatusId::AwaitingAcceptance,
-            'delivery_first_name' => $request->get('delivery_first_name'),
-            'delivery_last_name' => $request->get('delivery_last_name'),
-            'delivery_email' => $request->get('delivery_email'),
-            'delivery_phone' => $request->get('delivery_phone'),
-            'delivery_street_1' => $address->line1,
-            'delivery_street_2' => $address->line2,
-            'delivery_city' => $address->city,
-            'delivery_county' => $address->county,
-            'delivery_postcode' => $address->postcode,
-            'delivery_country' => $address->country,
-            'transfer_amount' => $request->get('transfer_amount'),
-            'transfer_reason' => $request->get('transfer_reason'),
-            'transfer_note' => $request->get('transfer_note'),
-            'charity_id' => $request->get('charity_id'),
-            'stripe_id' => Auth::user()->account->id,
-            'freshdesk_id' => 1,
-            'stripe_payment_intent' => $paymentIntent->id,
-            'transfer_group' => $paymentIntent->transfer_group
-        ]);
         Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
         Storage::makeDirectory('/dispute/' . $transfer->id . '/' . Auth::id());
 
@@ -167,26 +156,23 @@ class TransfersController extends Controller
     {
         Notification::where('transfer_id', $transfer->id)->where('user_id', Auth::id())->delete();
 
-        $sending_user = User::where('id', $transfer->sending_party_id)->first();
-        $receiving_user = User::where('id', $transfer->receiving_party_id)->first();
-
-        $charity = Charity::where('id', $transfer->charity_id)->first();
-
         $status_map = $this->getStatusMap();
+
         $closed_status = $this->getClosedStatus();
+
         $history = Audit::where('auditable_type', Transfer::class)
             ->where('auditable_id', $transfer->id)
             ->orderBy('created_at', 'desc');
 
         $user_ids = $history->get('user_id');
-        $change_users = User::whereIn('id', $user_ids)->get();
 
+        $change_users = User::whereIn('id', $user_ids)->get();
 
         return view('transfers.show', [
             'transfer' => $transfer,
-            'charity' => $charity ? $charity->name : 'No Charity Oversight (Not Recommended)',
-            'sending_user' => $sending_user,
-            'receiving_user' => $receiving_user,
+            'charity' => $transfer->charity ? $transfer->charity->name : 'No Charity Oversight (Not Recommended)',
+            'sending_user' => $transfer->sendingParty,
+            'receiving_user' => $transfer->receivingParty,
             'closed_status' => $closed_status,
             'transfer_history' => $history->get(),
             'change_users' => $change_users,
@@ -199,22 +185,18 @@ class TransfersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  uuid  $id
+     * @param Transfer $transfer
      * @return Factory|RedirectResponse|View
      */
-    public function edit($id)
+    public function edit(Transfer $transfer)
     {
-        $transfer = Transfer::where('id', $id)->first();
-
-        if (!isset($transfer) || $transfer->sending_party_id !== Auth::id()) {
+        if (!isset($transfer) || $transfer->sendingParty !== Auth::user()) {
             return redirect()->route('transfers.index');
         }
 
-        $charity = Charity::where('id', $transfer->charity_id)->first();
-
         return view('transfers.edit', [
             'transfer' => $transfer,
-            'charity' => $charity ? $charity->name : '-',
+            'charity' => $transfer->charity ? $transfer->charity->name : '-',
         ]);
     }
 
@@ -222,14 +204,13 @@ class TransfersController extends Controller
      * Update the specified resource in storage.
      *
      * @param TransferUpdateRequest $request
-     * @param uuid $id
+     * @param Transfer $transfer
      * @return RedirectResponse
      */
-    public function update(TransferUpdateRequest $request, $id)
+    public function update(TransferUpdateRequest $request, Transfer $transfer)
     {
         $request->validated();
 
-        $transfer = Transfer::where('id', $id)->first();
         if ($transfer->status === TransferStatusId::AwaitingAcceptance || $transfer->status === TransferStatusId::Rejected) {
             $transfer->delivery_first_name = $request->get('delivery_first_name');
             $transfer->delivery_last_name = $request->get('delivery_last_name');
@@ -245,7 +226,7 @@ class TransfersController extends Controller
             $transfer->transfer_note = $request->get('transfer_note');
             $transfer->save();
         }
-        return redirect()->route('transfers.show', [$id]);
+        return redirect()->route('transfers.show', [$transfer->id]);
     }
 
     /**
@@ -258,8 +239,7 @@ class TransfersController extends Controller
      */
     public function statusUpdate(TransferUpdateStatusRequest $request, $id, $statusTransition)
     {
-        $transfer = Transfer::where('id', $id)->first();
-        $sending_user = $transfer->sending_party_id;
+        $transfer = $this->transferRepository->getTransferFromID($id);
 
         $status_map = $this->getStatusMap();
 
@@ -286,7 +266,7 @@ class TransfersController extends Controller
                 }
 
                 if ($statusTransition == TransferStatusTransitions::ToDeclined) {
-                    StripeHelper::refundCustomer($transfer->stripe_payment_intent, $transfer->transfer_amount * 100);
+                    $this->stripeServiceRepository->refundFullPaymentFromPaymentIntent($transfer->stripe_payment_intent);
                 }
 
                 if ($statusTransition == TransferStatusTransitions::ToApproved) {
@@ -330,25 +310,5 @@ class TransfersController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function getClosedStatus(){
-        return [
-            TransferStatusId::Cancelled,
-            TransferStatusId::Closed,
-            TransferStatusId::ClosedNonPayment,
-            TransferStatusId::Rejected,
-            TransferStatusId::InDispute,
-            TransferStatusId::Declined
-        ];
-    }
-
-    public function getStatusMap(){
-        $reflection = new \ReflectionClass(TransferStatus::class);
-        $status_map = array('Unable to get Status');
-        foreach ($reflection->getConstants() as $value){
-            array_push($status_map, $value);
-        }
-        return $status_map;
     }
 }

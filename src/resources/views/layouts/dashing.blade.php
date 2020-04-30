@@ -15,6 +15,7 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 @stack('fonts')
+@livewireStyles
 
 <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -174,4 +175,5 @@
 </div>
 </body>
 @stack('js')
+@livewireScripts
 </html>

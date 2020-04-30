@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Stripe;
 use App\Helpers\StripeHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;

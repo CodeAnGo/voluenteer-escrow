@@ -7,35 +7,7 @@
 @section('header_sub_title', "Collecting for $sending_user->first_name $sending_user->last_name")
 
 @section('header_buttons')
-    @if(Auth::id() === $transfer->sending_party_id)
-        @if($transfer->status == \App\TransferStatusId::Rejected || $transfer->status == \App\TransferStatusId::Declined)
-            @include('transfers.action_buttons.restart')
-        @endif
-        @if($transfer->status == \App\TransferStatusId::Rejected || $transfer->status == \App\TransferStatusId::AwaitingAcceptance)
-            @include('transfers.action_buttons.edit')
-        @endif
-        @if($transfer->status == \App\TransferStatusId::PendingApproval)
-            @include('transfers.action_buttons.approve')
-            @include('transfers.action_buttons.dispute')
-        @endif
-        @if($transfer->status == \App\TransferStatusId::AwaitingAcceptance || $transfer->status == \App\TransferStatusId::Rejected)
-            @include('transfers.action_buttons.cancel')
-        @endif
-    @elseif(Auth::id() === $transfer->receiving_party_id)
-        @if($transfer->status == \App\TransferStatusId::Accepted)
-            @include('transfers.action_buttons.evidence')
-            @include('transfers.action_buttons.decline')
-        @endif
-        @if($transfer->status == \App\TransferStatusId::PendingApproval)
-            @include('transfers.action_buttons.dispute')
-        @endif
-    @elseif(Auth::user()->volunteer)
-        @if($transfer->status == \App\TransferStatusId::AwaitingAcceptance)
-            @include('transfers.action_buttons.accept')
-            @include('transfers.action_buttons.reject')
-        @endif
-    @endif
-    @include('transfers.action_buttons.copy')
+    @livewire('transfer-header-component', ['transfer' => $transfer])
 @endsection
 
 <script>
