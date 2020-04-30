@@ -1,4 +1,4 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4" wire:poll="rerender">
     <div class="p-2 sm:rounded-md shadow bg-white flex flex-col sm:flex-row">
         @if($transfer->status === \App\TransferStatusId::Cancelled)
             @include('transfers.status.negative', [

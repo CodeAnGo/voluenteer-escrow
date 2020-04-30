@@ -16,7 +16,7 @@
 
                 <div class="mt-8">
                     <div class="mt-6">
-                        <form action="{{ route('onboarding.store') }}" method="POST">
+                        <form action="{{ route('onboarding.store') }}" method="POST" id="charityForm" name="charityForm">
                             @csrf
                             <div>
                                 <label class="block text-sm font-medium leading-5 text-gray-700 text-center">
@@ -30,10 +30,21 @@
                                 @endforeach
                             </div>
 
-                            <button type="submit" class="mt-6 w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
-                                Complete profile
-                            </button>
+                            <div class="my-2 mt-4">
+                                <label class="block text-sm font-medium leading-5 text-gray-700 text-center">
+                                    Attach a card
+                                </label>
+                                <div id="setup-form">
+                                    <div id="card-element"></div>
+                                </div>
+                            </div>
                         </form>
+                        <button type="submit" form="charityForm" name="card-button" id="card-button" class="mt-6 w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+                            Complete profile
+                        </button>
+                        <label class="block text-xs font-thin leading-5 text-gray-600 text-center">
+                            By completing your profile you hereby authorise Netcompany A/S to send instructions to the financial institution that issued my card to take payments from my card account in accordance with the terms of my agreement with you.
+                        </label>
                     </div>
 
                 </div>
@@ -45,3 +56,40 @@
 
     </div>
 @endsection
+
+@push('js')
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    var stripe = Stripe('{{ env('STRIPE_PUBLIC_KEY', 'pk_test_rTNg2U0zNrU46OQ72vqutnNO00gTut97d5') }}');
+
+    var elements = stripe.elements();
+    var cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+
+    var cardButton = document.getElementById('card-button');
+    var clientSecret = "{{ $intent->client_secret }}";
+
+    cardButton.addEventListener('click', function(ev) {
+
+        stripe.confirmCardSetup(
+            clientSecret,
+            {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: {
+                        name: "{{ Auth::user()->getName() }}",
+                    },
+                },
+            }
+        ).then(function(result) {
+            if (result.error) {
+                console.log(result.error)
+            } else {
+                document.getElementById('charityForm').submit();
+            }
+        });
+    });
+
+</script>
+
+@endpush

@@ -4,26 +4,32 @@ environments:
     devtest:
         storage: devtest-s3-bucket
         domain: devtest.sncdw.co.uk
-        database: escrowdb
+        database: escrowdb_devtest
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
     production:
         memory: 1024
         cli-memory: 512
         runtime: php-7.4
+        domain: volpayment.com
+        database: escrowdb
+        storage: devtest-s3-bucket
+        concurrency: 50
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
             - 'php artisan event:cache'
             - 'npm ci && npm run prod && rm -rf node_modules'
+        deploy:
+            - 'php artisan migrate --force'
     staging:
         memory: 1024
         cli-memory: 512
         runtime: php-7.4
-        database: escrowdb
+        database: escrowdb_staging
         storage: devtest-s3-bucket
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
             - 'npm ci && npm run dev && rm -rf node_modules'
         deploy:
-            - 'php artisan migrate --force'
+            - 'php artisan migrate:fresh --force'
