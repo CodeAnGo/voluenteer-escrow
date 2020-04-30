@@ -35,6 +35,7 @@ class Transfer extends Model implements Auditable
         'status',
         'stripe_id',
         'stripe_payment_intent',
+        'stripe_transfer_id',
         'freshdesk_id',
         'transfer_group'
     ];

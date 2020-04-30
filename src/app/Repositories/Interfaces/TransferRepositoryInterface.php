@@ -11,6 +11,7 @@ namespace App\Repositories\Interfaces;
 
 use App\Models\Charity;
 use App\Models\Transfer;
+use App\TransferStatusId;
 use App\User;
 
 interface TransferRepositoryInterface
@@ -26,6 +27,8 @@ interface TransferRepositoryInterface
                                    $status, $transferNote=null, $stripePaymentIntent=null,
                                    $actualAmount=null, $approvalNote=null, $stripeId=null,
                                    $freshdeskId=null, $transferGroup=null, $deliveryStreet2=null,
-                                   $deliveryCounty=null, User $receivingParty=null);
+                                   $deliveryCounty=null, User $receivingParty=null, $stripeTransferId=null);
+
+    public function getAllTransfersOfStatus($transferStatus);
 
 }

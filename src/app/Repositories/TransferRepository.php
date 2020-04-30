@@ -12,7 +12,6 @@ namespace App\Repositories;
 use App\Models\Charity;
 use App\Models\Transfer;
 use App\Repositories\Interfaces\TransferRepositoryInterface;
-use App\TransferStatus;
 use App\TransferStatusId;
 use App\User;
 
@@ -47,7 +46,7 @@ class TransferRepository implements TransferRepositoryInterface
         }
     }
 
-    public function createTransfer(User $sendingParty, Charity $charity, $deliveryFirstName, $deliveryLastName, $deliveryEmail, $deliveryPhone, $deliveryStreet1, $deliveryCity, $deliveryPostCode, $deliveryCountry, $transferAmount, $transferReason, $status, $transferNote = null, $stripePaymentIntent = null, $actualAmount = null, $approvalNote = null, $stripeId = null, $freshdeskId = null, $transferGroup = null, $deliveryStreet2 = null, $deliveryCounty = null, User $receivingParty=null)
+    public function createTransfer(User $sendingParty, Charity $charity, $deliveryFirstName, $deliveryLastName, $deliveryEmail, $deliveryPhone, $deliveryStreet1, $deliveryCity, $deliveryPostCode, $deliveryCountry, $transferAmount, $transferReason, $status, $transferNote = null, $stripePaymentIntent = null, $actualAmount = null, $approvalNote = null, $stripeId = null, $freshdeskId = null, $transferGroup = null, $deliveryStreet2 = null, $deliveryCounty = null, User $receivingParty=null, $stripeTransferId=null)
     {
         return Transfer::create([
             'sending_party_id' => $sendingParty->id,
@@ -71,8 +70,14 @@ class TransferRepository implements TransferRepositoryInterface
             'status' => $status,
             'stripe_id' => $stripeId,
             'stripe_payment_intent' => $stripePaymentIntent,
+            'stripe_transfer_id' => $stripeTransferId,
             'freshdesk_id' => $freshdeskId,
             'transfer_group' => $transferGroup
         ]);
+    }
+
+    public function getAllTransfersOfStatus($transferStatus)
+    {
+        return Transfer::where('status', $transferStatus)->get();
     }
 }
