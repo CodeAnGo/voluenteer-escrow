@@ -53,4 +53,8 @@ class Transfer extends Model implements Auditable
     public function receivingParty(){
         return $this->belongsTo(User::class, 'receiving_party_id');
     }
+
+    public function transferFile() {
+        return $this->hasMany(TransferFile::class);
+    }
 }

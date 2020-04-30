@@ -19,7 +19,7 @@ class CreateTransferCalculationComponent extends Component
 
     public function updatingTransferAmount($value){
         if ($value){
-            $this->amountToBeCharged = money_format('%i', round($value + ($value*(2.7/100)) + 0.5, 2));
+            $this->amountToBeCharged = sprintf('%01.2f', '%i', round($value + ($value*(2.7/100)) + 0.5, 2));
         } else {
             $this->value = 0;
             $this->amountToBeCharged = money_format('%i', $this->value);

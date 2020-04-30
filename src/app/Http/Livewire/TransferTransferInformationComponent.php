@@ -13,11 +13,13 @@ class TransferTransferInformationComponent extends Component
     public $transfer;
     public $closedStatuses;
     public $statuses;
+    public $transfer_files;
 
     public function mount(Transfer $transfer){
         $this->transfer = $transfer;
         $this->closedStatuses = $this->getClosedStatus();
         $this->statuses = $this->getStatusMap();
+        $this->transfer_files = $transfer->transferFile;
     }
 
     public function rerender(TransferRepositoryInterface $transferRepository){

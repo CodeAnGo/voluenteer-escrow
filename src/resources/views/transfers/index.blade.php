@@ -10,7 +10,8 @@
                     <h3 class="text-lg leading-6 font-medium text-gray-800 p-4">
                         Active transfers
                     </h3>
-                    @if (!Auth::user()->volunteer)
+
+                @if (!Auth::user()->volunteer)
                     <a href="{{ route('transfers.create') }}" class="ml-2 inline-flex items-center justify-center py-2 px-4 rounded shadow-md border-b-2 border-green-500 hover:border-green-700 focus:border-green-700 bg-white hover:bg-green-500 focus:bg-green-500 text-md font-medium text-green-500 hover:text-white focus:text-white transition duration-150 ease-in-out">
                         <span class="mr-2 hidden md:inline-flex">{{ __('transfers.create_transfer') }}</span>
                         <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.create') }}</span>
