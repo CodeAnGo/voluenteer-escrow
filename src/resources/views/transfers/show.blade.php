@@ -53,7 +53,6 @@
                                     @if ($transfer->sending_party_id === Auth::id())
                                         Please review the evidence your volunteer has attached below, you can then choose to approve the transfer.
                                         @else
-
                                     @endif
                                 </p>
                             </div>

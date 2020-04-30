@@ -10,14 +10,14 @@
             <rect x="118" width="404" height="784" fill="url(#9ebea6f4-a1f5-4d96-8c4e-4c2abf658047)" />
         </svg>
     </div>
-    <div class="relative pt-6 pb-16 md:pb-20 lg:pb-24 xl:pb-32">
+    <div class="relative pt-6 pb-16 md:pb-20 lg:pb-24 xl:pb-32" @click.away="open = false" class="relative" x-data="{ open: false }">
         <nav class="relative max-w-screen-xl mx-auto flex items-center justify-between px-4 sm:px-6">
             <div class="flex items-center flex-1">
                 <div class="flex items-center justify-between w-full md:w-auto">
                     <a href="#">
                         <img class="h-8 w-auto sm:h-10" src="{{ asset('img/netcompany.63c83485.svg') }}" alt="" />
                     </a>
-                    <div class="-mr-2 flex items-center md:hidden">
+                    <div @click="open = !open" class="-mr-2 flex items-center md:hidden">
                         <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                             <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -59,15 +59,31 @@
             From: "opacity-100 scale-100"
             To: "opacity-0 scale-95"
         -->
+
+{{--        <div @click.away="open = false" class="relative" x-data="{ open: false }">--}}
+{{--            <button value="copy" @click="open = !open" onclick="copyToClipboard('{{ env('APP_URL') . '/transfers/'. $transfer->id }}')" class="ml-4 inline-flex items-center justify-center py-2 px-4 rounded shadow-md border-b-2 border-indigo-500 hover:border-indigo-700 focus:border-indigo-700 bg-white hover:bg-indigo-500 focus:bg-indigo-500 text-md font-medium text-indigo-500 hover:text-white focus:text-white transition duration-150 ease-in-out">--}}
+{{--                <span class="mr-2 hidden md:inline-flex">{{ __('transfers.copy_link') }}</span>--}}
+{{--                <span class="mr-2 sm:inline-flex md:hidden">{{ __('common.copy') }}</span>--}}
+{{--                <svg fill="currentColor" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">--}}
+{{--                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z"></path>--}}
+{{--                </svg>--}}
+{{--            </button>--}}
+{{--            <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 origin-top-right">--}}
+{{--                <div class="rounded-md bg-white shadow-2xl py-1 border border-gray-200 w-64 sm:w-96">--}}
+{{--                    <p class="block px-4 py-2 text-sm leading-5 font-medium text-gray-500">{{ __('transfers.copy_link_text') }}</p>--}}
+{{--                    <p class="block px-4 py-2 text-sm leading-5 text-gray-700 select-all">{{ env('APP_URL') . '/transfers/'. $transfer->id }}</p>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
         <div class="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden">
             <div class="rounded-lg shadow-md">
-                <div class="rounded-lg bg-white shadow-xs overflow-hidden">
+                <div class="rounded-lg bg-white shadow-xs overflow-hidden" x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95">
                     <div class="px-5 pt-4 flex items-center justify-between">
                         <div>
                             <img class="h-8 w-auto" src="/img/logos/workflow-mark-on-white.svg" alt="" />
                         </div>
                         <div class="-mr-2">
-                            <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                            <button type="button" @click="open = !open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>

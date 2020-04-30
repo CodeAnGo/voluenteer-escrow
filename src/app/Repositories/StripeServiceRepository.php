@@ -42,8 +42,9 @@ class StripeServiceRepository implements StripeServiceRepositoryInterface
     {
         $receiving_party = User::where('id', $transfer->receiving_party_id)->first();
         $source_charge = $this->getChargeFromTransfer($transfer);
+        $transfer_amount = $transfer->actual_amount < $transfer->transfer_amount ? $transfer->actual_amount : $transfer->transfer_amount;
         $transferActual =  \Stripe\Transfer::create([
-            'amount' => $this->convertToStripeAmount($transfer->transfer_amount),
+            'amount' => $this->convertToStripeAmount($transfer_amount),
             'currency' => 'gbp',
             'destination' => $receiving_party->account->stripe_user_id,
             'source_transaction' => $source_charge->id,
@@ -52,6 +53,15 @@ class StripeServiceRepository implements StripeServiceRepositoryInterface
         $transfer->stripe_transfer_id = $transferActual->id;
         $transfer->save();
         return $transferActual;
+    }
+
+    public function updateCardPaymentsCapability($user){
+//        $account = $user->account;
+//        \Stripe\Account::updateCapability(
+//            $account->stripe_user_id,
+//            'card_payments',
+//            ['requested' => true]
+//        );
     }
 
     public function getCustomerFromUser(User $user)
@@ -136,7 +146,7 @@ class StripeServiceRepository implements StripeServiceRepositoryInterface
     }
 
     public function convertToStripeAmount($amount){
-        return $amount * 100;
+        return round($amount * 100);
     }
 
     public function calculateStripeFee($transfer_amount){
