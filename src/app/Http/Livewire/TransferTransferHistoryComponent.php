@@ -30,6 +30,6 @@ class TransferTransferHistoryComponent extends Component
 
     public function rerender(TransferRepositoryInterface $transferRepository){
         $this->transfer = $transferRepository->getTransferFromID($this->transfer->id);
-        $this->transferHistory = $this->transfer->audits()->with('user')->get();
+        $this->transferHistory = $this->transfer->audits()->with('user')->orderBy('created_at', 'DESC')->get();
     }
 }
