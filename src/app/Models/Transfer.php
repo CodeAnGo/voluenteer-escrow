@@ -57,4 +57,8 @@ class Transfer extends Model implements Auditable
     public function transferFile() {
         return $this->hasMany(TransferFile::class);
     }
+
+    public function transferDispute() {
+        return $this->hasOne(TransferDispute::class);
+    }
 }
