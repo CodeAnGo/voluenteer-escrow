@@ -18,11 +18,12 @@ class CreateTransferCalculationComponent extends Component
     }
 
     public function updatingTransferAmount($value){
+        $fmt = numfmt_create( 'en_GB', \NumberFormatter::CURRENCY );
         if ($value){
-            $this->amountToBeCharged = money_format('%i', round($value + ($value*(2.7/100)) + 0.5, 2));
+            $this->amountToBeCharged = numfmt_format_currency ( $fmt , round($value + ($value*(2.7/100)) + 0.5, 2) , 'GBP' );
         } else {
             $this->value = 0;
-            $this->amountToBeCharged = money_format('%i', $this->value);
+            $this->amountToBeCharged = numfmt_format_currency ( $fmt , $this->value , 'GBP' );
         }
     }
 

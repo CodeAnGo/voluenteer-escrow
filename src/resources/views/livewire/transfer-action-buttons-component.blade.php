@@ -1,4 +1,4 @@
-<div wire:poll="rerender">
+<div wire:poll="rerender" class="mx-2 mt-2 sm:mt-0 sm:mx-4 rounded-md flex flex-row justify-end">
     @if(Auth::id() === $transfer->sending_party_id)
         @if($transfer->status == \App\TransferStatusId::Rejected || $transfer->status == \App\TransferStatusId::Declined)
             @include('transfers.action_buttons.restart')

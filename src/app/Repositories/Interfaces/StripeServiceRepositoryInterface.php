@@ -22,6 +22,8 @@ interface StripeServiceRepositoryInterface
 
     public function createCustomerFromUser(User $user);
 
+    public function updateCardPaymentsCapability(User $user);
+
     public function createSetupIntentFromCustomer($customer_id);
 
     public function getDefaultPaymentMethodForCustomer($customer_id);
