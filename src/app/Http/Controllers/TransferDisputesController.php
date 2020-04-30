@@ -132,7 +132,7 @@ class TransferDisputesController extends Controller
         if ($request->get('buttonPressed') === 'accept') {
             // Stripe Payout to individual bank account
             dispatch(new UpdateFreshDeskTicketDisputeResolved($transfer->id));
-            $transfer->transition(9);
+            $transfer->transition(TransferStatusTransitions::ToClosedNonPayment);
             $transfer->save();
         } else {
             dispatch(new UpdateFreshDeskTicketDisputeRejected($transfer->id));
