@@ -14,8 +14,13 @@ class TransferDispute extends Model implements Auditable
     protected $fillable = [
         'transfer_id',
         'user_id',
-        'dispute_reason'
+        'dispute_reason',
+        'resolved'
     ];
 
     protected $table = 'transfer_disputes';
+
+    public function transferDisputeEvidence() {
+        return $this->hasMany(TransferDisputeEvidence::class);
+    }
 }

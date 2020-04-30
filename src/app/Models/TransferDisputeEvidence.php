@@ -18,4 +18,8 @@ class TransferDisputeEvidence extends Model implements Auditable
     ];
 
     protected $table = 'transfer_dispute_evidences';
+
+    public function transferDispute() {
+        return $this->belongsTo(TransferDispute::class);
+    }
 }

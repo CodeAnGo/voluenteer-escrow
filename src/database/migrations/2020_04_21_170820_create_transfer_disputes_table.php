@@ -20,6 +20,7 @@ class CreateTransferDisputesTable extends Migration
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('dispute_reason');
+            $table->boolean('resolved')->default(false);
             $table->timestamps();
         });
     }

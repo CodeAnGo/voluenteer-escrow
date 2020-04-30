@@ -43,7 +43,7 @@
                                             <div class="col-span-6 sm:col-span-6">
                                                 <label for="dispute_reason"
                                                        class="block text-sm font-medium leading-5 text-gray-700">
-                                                    Reason for disputing.
+                                                    Dispute Reason
                                                 </label>
                                                 <textarea
                                                     placeholder="E.g., Goods weren't delivered."

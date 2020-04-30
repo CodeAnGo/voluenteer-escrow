@@ -42,6 +42,11 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col pt-4">
+                <div class="flex flex-col">
+                    @if ($transfer->status == \App\TransferStatusId::InDispute)
+                        @include('transfers.transfer_sections.dispute')
+                    @endif
+                </div>
                 @if ($transfer->actual_amount)
                     <div class="bg-white shadow overflow-hidden mb-4 sm:rounded-lg">
                         <div class="px-4 py-3 border-b border-gray-200 sm:px-6">
@@ -52,7 +57,7 @@
                                 <p class="mt-1 text-sm leading-5 text-gray-500">
                                     @if ($transfer->sending_party_id === Auth::id())
                                         Please review the evidence your volunteer has attached below, you can then choose to approve the transfer.
-                                        @else
+                                    @else
                                     @endif
                                 </p>
                             </div>
@@ -96,47 +101,47 @@
                     </div>
             </div>
             @endif
-                @livewire('transfer-delivery-information-component', ['transfer' => $transfer])
+            @livewire('transfer-delivery-information-component', ['transfer' => $transfer])
 
 
 
-                @livewire('transfer-transfer-information-component', ['transfer' => $transfer])
-                @if(isset($transfer->receiving_party_id) && (Auth::id() === $transfer->sending_party_id || Auth::id() === $transfer->receiving_party_id))
-                    <div class="bg-white shadow overflow-hidden  sm:rounded-lg mt-4">
-                        <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                {{ __('transfers.volunteering_information') }}
-                            </h3>
-                        </div>
-                        <div class="px-4 py-3 sm:px-6">
-                            <dl class="grid grid-cols-1 col-gap-4 row-gap-8 sm:grid-cols-3">
-                                <div class="sm:col-span-1">
-                                    <dt class="text-sm leading-5 font-medium text-gray-500">
-                                        {{ __('common.full_name') }}
-                                    </dt>
-                                    <dd class="mt-1 text-sm leading-5 text-gray-900">
-                                        {{ $receiving_user->first_name }} {{ $receiving_user->last_name }}
-                                    </dd>
-                                </div>
-                                <div class="sm:col-span-1">
-                                    <dt class="text-sm leading-5 font-medium text-gray-500">
-                                        {{ __('common.email_address') }}
-                                    </dt>
-                                    <dd class="mt-1 text-sm leading-5 text-gray-900">
-                                        {{ $receiving_user->email }}
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
+            @livewire('transfer-transfer-information-component', ['transfer' => $transfer])
+            @if(isset($transfer->receiving_party_id) && (Auth::id() === $transfer->sending_party_id || Auth::id() === $transfer->receiving_party_id))
+                <div class="bg-white shadow overflow-hidden  sm:rounded-lg mt-4">
+                    <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            {{ __('transfers.volunteering_information') }}
+                        </h3>
                     </div>
-                @endif
+                    <div class="px-4 py-3 sm:px-6">
+                        <dl class="grid grid-cols-1 col-gap-4 row-gap-8 sm:grid-cols-3">
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm leading-5 font-medium text-gray-500">
+                                    {{ __('common.full_name') }}
+                                </dt>
+                                <dd class="mt-1 text-sm leading-5 text-gray-900">
+                                    {{ $receiving_user->first_name }} {{ $receiving_user->last_name }}
+                                </dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm leading-5 font-medium text-gray-500">
+                                    {{ __('common.email_address') }}
+                                </dt>
+                                <dd class="mt-1 text-sm leading-5 text-gray-900">
+                                    {{ $receiving_user->email }}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            @endif
 
-                @if($transfer->sendingParty == Auth::user())
-                    @livewire('transfer-transfer-history-component', ['transfer' => $transfer])
-                @endif
-            </div>
+            @if($transfer->sendingParty == Auth::user())
+                @livewire('transfer-transfer-history-component', ['transfer' => $transfer])
+            @endif
         </div>
-            </div>
-        </div>
+    </div>
+    </div>
+    </div>
     </div>
 @endsection

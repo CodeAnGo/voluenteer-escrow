@@ -18,6 +18,7 @@ Route::get('/', function () {
 })->name('home');
 
 Auth::routes();
+
 Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse')->middleware('auth');
 
 Route::middleware(['auth', 'striped'])->group(function (){
@@ -36,12 +37,13 @@ Route::middleware(['auth', 'striped'])->group(function (){
     ])->middleware(['canViewTransferEvidence']);
 
     Route::resource('transfers.dispute', 'TransferDisputesController')->except([
-        'edit', 'update'
+        'edit'
     ]);
 
     Route::get('/profile', 'UserProfile@index')->name('profile.index');
     Route::get('/profile/edit', 'UserProfile@edit')->name('profile.edit');
     Route::put('/profile/edit', 'UserProfile@update')->name('profile.update');
+
 
     Route::resource('addresses', 'UserAddress');
 

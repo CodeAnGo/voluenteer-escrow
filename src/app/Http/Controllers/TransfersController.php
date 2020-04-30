@@ -6,9 +6,13 @@ use App\Helpers\StatusHelper;
 use App\Http\Requests\TransferCreateRequest;
 use App\Http\Requests\TransferUpdateRequest;
 use App\Http\Requests\TransferUpdateStatusRequest;
+use App\Mail\TransferDisputeMail;
+use App\Models\Account;
 use App\Models\Address;
 use App\Models\Transfer;
 use App\Jobs\CreateFreshdeskTicket;
+use App\Models\TransferDispute;
+use App\Models\TransferDisputeEvidence;
 use App\Models\TransferEvidence;
 use App\Repositories\Interfaces\AddressRepositoryInterface;
 use App\Repositories\Interfaces\CharityRepositoryInterface;
@@ -31,7 +35,6 @@ use Stripe\Exception\ApiErrorException;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TransferGenericMail;
-use App\Mail\TransferDisputeMail;
 use App\Models\TransferFile;
 
 
@@ -152,6 +155,7 @@ class TransfersController extends Controller
             'receiving_user' => $transfer->receivingParty,
             'transfer_files' => TransferFile::where('transfer_id', $transfer->id)->get(),
             'transferEvidence' => TransferEvidence::where('transfer_id', $transfer->id)->get(),
+            'transferDispute' => TransferDispute::where('transfer_id', $transfer->id)->first()
         ]);
     }
 

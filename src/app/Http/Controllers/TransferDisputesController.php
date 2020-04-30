@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TransferUpdateRequest;
 use App\Http\Requests\TransferUpdateStatusRequest;
+use App\Jobs\UpdateFreshDeskTicketDisputeRejected;
+use App\Jobs\UpdateFreshDeskTicketDisputeResolved;
 use App\Jobs\UpdateFreshdeskTicketTransferDispute;
 use App\Models\Transfer;
 use App\Models\TransferDispute;
@@ -79,7 +81,7 @@ class TransferDisputesController extends Controller
         $paths = [];
         $evidence = (array) $request->files->get('evidence');
         foreach ($evidence as $file) {
-            $path = Storage::putFile('\\dispute\\' . $transfer_id . '\\' . Auth::id(), new File($file));
+            $path = Storage::disk('public')->putFile('transfer_dispute_evidence', new File($file));
             array_push($paths, $path);
         }
 
@@ -111,13 +113,31 @@ class TransferDisputesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param $transfer_id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Transfer $transfer, TransferDispute $dispute)
     {
-        //
+        return view('transfers.dispute.show', [
+            'transferDispute' => $dispute,
+            'transfer' => $transfer
+        ]);
     }
+
+    public function update(Request $request, Transfer $transfer, TransferDispute $dispute)
+    {
+        $dispute->resolved = true;
+        $dispute->save();
+
+        if ($request->get('buttonPressed') === 'accept') {
+            // Stripe Payout to individual bank account
+            dispatch(new UpdateFreshDeskTicketDisputeResolved($transfer->id));
+            $transfer->transition(TransferStatusTransitions::ToClosedNonPayment);
+            $transfer->save();
+        } else {
+            dispatch(new UpdateFreshDeskTicketDisputeRejected($transfer->id));
+        }
+}
 
     /**
      * Remove the specified resource from storage.
