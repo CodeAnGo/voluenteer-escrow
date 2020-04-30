@@ -7,7 +7,7 @@
 @section('header_sub_title', "Collecting for $sending_user->first_name $sending_user->last_name")
 
 @section('header_buttons')
-    @livewire('transfer-header-component', ['transfer' => $transfer])
+    @livewire('transfer-action-buttons-component', ['transfer' => $transfer])
 @endsection
 
 <script>
@@ -37,7 +37,7 @@
 
 @section('content')
     @if(Auth::user() == $transfer->sendingParty || Auth::user() == $transfer->receivingParty)
-        @include('transfers.status')
+        @livewire('transfer-header-component', ['transfer' => $transfer])
     @endif
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl mx-auto">

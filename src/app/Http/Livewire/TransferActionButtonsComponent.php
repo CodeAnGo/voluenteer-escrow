@@ -6,7 +6,7 @@ use App\Models\Transfer;
 use App\Repositories\Interfaces\TransferRepositoryInterface;
 use Livewire\Component;
 
-class TransferHeaderComponent extends Component
+class TransferActionButtonsComponent extends Component
 {
     public $transfer;
 
@@ -14,12 +14,12 @@ class TransferHeaderComponent extends Component
         $this->transfer = $transfer;
     }
 
-    public function render()
-    {
-        return view('livewire.transfer-header-component');
-    }
-
     public function rerender(TransferRepositoryInterface $transferRepository){
         $this->transfer = $transferRepository->getTransferFromID($this->transfer->id);
+    }
+
+    public function render()
+    {
+        return view('livewire.transfer-action-buttons-component');
     }
 }

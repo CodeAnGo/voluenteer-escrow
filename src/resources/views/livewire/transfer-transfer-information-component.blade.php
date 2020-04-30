@@ -1,4 +1,4 @@
-<div class="bg-white shadow overflow-hidden  sm:rounded-lg mt-4">
+<div class="bg-white shadow overflow-hidden sm:rounded-lg mt-4" wire:poll="rerender">
     <div class="px-4 py-3 border-b border-gray-200 sm:px-6">
         <div class="flex flex-row items-center">
             <div class="flex flex-col">
