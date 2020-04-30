@@ -34,11 +34,17 @@
             </div>
             <div class="hidden md:block text-right">
         <span class="inline-flex rounded-md shadow-md">
-          <span class="inline-flex rounded-md shadow-xs">
-            <a href="/login" class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-50 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
-              Log in
-            </a>
-          </span>
+            <span class="inline-flex rounded-md shadow-xs">
+                @if (Auth::check())
+                    <a href="/dashboard" class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-blue-900 hover:bg-gray-700 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                        My Dashboard
+                    </a>
+                @else
+                    <a href="/login" class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-indigo-600 bg-white hover:bg-gray-50 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                        Log in
+                    </a>
+                @endif
+            </span>
         </span>
             </div>
         </nav>
@@ -75,9 +81,15 @@
                         <a href="https://netcompany.com/" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">Company</a>
                     </div>
                     <div>
-                        <a href="/login" class="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100 hover:text-indigo-700 focus:outline-none focus:bg-gray-100 focus:text-indigo-700 transition duration-150 ease-in-out">
-                            Log in
-                        </a>
+                        @if (Auth::check())
+                            <a href="/dashboard" class="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100 hover:text-indigo-700 focus:outline-none focus:bg-gray-100 focus:text-indigo-700 transition duration-150 ease-in-out">
+                                Dashboard
+                            </a>
+                        @else
+                            <a href="/login" class="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100 hover:text-indigo-700 focus:outline-none focus:bg-gray-100 focus:text-indigo-700 transition duration-150 ease-in-out">
+                                Log in
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>

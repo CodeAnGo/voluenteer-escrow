@@ -19,14 +19,12 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse');
+Route::get('/oauth/redirect', 'Stripe\OAuthRedirectController@onboardingResponse')->middleware('auth');
 
 Route::middleware(['auth', 'striped'])->group(function (){
 
 
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
-
-    Route::get('/home', 'HomeController@index')->name('home');
 
 
     Route::get('/onboarding', 'OnBoarding@edit')->name('onboarding.edit');

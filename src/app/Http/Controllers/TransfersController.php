@@ -34,6 +34,8 @@ use App\Helpers\StripeHelper;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TransferGenericMail;
+use App\Mail\TransferDisputeMail;
+use App\Models\TransferFile;
 
 
 class TransfersController extends Controller
@@ -118,7 +120,8 @@ class TransfersController extends Controller
         //Stripe accepts the amount in integer
         $amount=($request->input('transfer_amount'))*100;
         // Creates a Payment Intent to transfer amount from Senders Card to Senders Stripe Account
-        $paymentIntent=StripeHelper::createPaymentIntent($amount,Auth::id());
+           $paymentintentid=StripeHelper::createPaymentIntentToPlatfromAcount($amount,Auth::id());
+
 
         $transfer = Transfer::create([
             'sending_party_id' => Auth::id(),
@@ -139,13 +142,16 @@ class TransfersController extends Controller
             'charity_id' => $request->get('charity_id'),
             'stripe_id' => 1,
             'freshdesk_id' => 1,
-            'stripe_payment_intent'=>$paymentIntent,
+            'stripe_payment_intent'=>$paymentintentid,
             'transfer_group'=>now()->format('Ymd His')
         ]);
         Storage::makeDirectory('/evidence/' . $transfer->id . '/' . Auth::id());
         Storage::makeDirectory('/dispute/' . $transfer->id . '/' . Auth::id());
 
         $this->dispatch(new CreateFreshdeskTicket($transfer->id));
+
+        app('App\Http\Controllers\TransferFilesController')->store($request, $transfer->id);
+
         return redirect()->route('transfers.show', ['transfer' => $transfer->id]);
     }
 
@@ -184,6 +190,7 @@ class TransfersController extends Controller
             'transfer_history' => $history->get(),
             'change_users' => $change_users,
             'status_map' => $status_map,
+            'transfer_files' => TransferFile::where('transfer_id', $transfer->id)->get(),
             'transferEvidence' => TransferEvidence::where('transfer_id', $transfer->id)->get(),
             'transferDispute' => TransferDispute::where('transfer_id', $transfer->id)->first()
         ]);
@@ -253,30 +260,46 @@ class TransfersController extends Controller
     {
 
         $transfer = Transfer::where('id', $id)->first();
-        $sending_user =  $transfer->sending_party_id;
+        $sending_user = $transfer->sending_party_id;
 
         $status_map = $this->getStatusMap();
 
-        if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
-            $transfer->receiving_party_id = null;
-        }
-        if ($statusTransition == TransferStatusTransitions::ToAccepted) {
-            $transfer->receiving_party_id = Auth::id();
-            //Transfer amount from Senders stripe account to Platform account
-            //StripeHelper::createTransfertoPlatform(round($transfer->transfer_amount)*100,$sending_user,$transfer->transfer_group);
-        }
-
-        if ($statusTransition == TransferStatusTransitions::ToRejected) {
-            $transfer->receiving_party_id = Auth::id();
-        }
-
-        if ($statusTransition == TransferStatusTransitions::ToApproved) {
-            //Transfer amount from platform account to Volunteers stripe account.
-            //StripeHelper::createTransfer(round($transfer->actual_amount) * 100, $transfer->receiving_party_id, $transfer->transfer_group);
-        }
-
         if ($transfer->transitionAllowed($statusTransition)) {
             try {
+                if ($statusTransition == TransferStatusTransitions::ToAwaitingAcceptance) {
+                    $transfer->receiving_party_id = null;
+                    if ($transfer->status == TransferStatusId::Declined) {
+                        //Previous Intent had a transfer to platform which is reversed, so create a new intent.
+                        $payment_intent = StripeHelper::createPaymentIntentToPlatfromAcount($transfer->transfer_amount * 100, Auth::id());
+                        $transfer->stripe_payment_intent = $payment_intent;
+                    }
+                }
+                if ($statusTransition == TransferStatusTransitions::ToAccepted) {
+                    $transfer->receiving_party_id = Auth::id();
+                    //Transfer amount from Senders stripe account to Platform account
+                    StripeHelper::confirmPaymentIntent($transfer->stripe_payment_intent);
+                }
+
+                if ($statusTransition == TransferStatusTransitions::ToRejected) {
+                    $transfer->receiving_party_id = Auth::id();
+                    //Cancel the payment Intent.
+                    StripeHelper::cancelPaymentIntent( $transfer->stripe_payment_intent);
+                }
+
+                if ($statusTransition == TransferStatusTransitions::ToDeclined) {
+                    StripeHelper::refundCustomer($transfer->stripe_payment_intent, $transfer->transfer_amount * 100);
+                }
+
+                if ($statusTransition == TransferStatusTransitions::ToApproved) {
+                    //Transfer amount from platform account to Volunteers stripe account.
+                    StripeHelper::createTransfer(($transfer->actual_amount) * 100, $transfer->receiving_party_id, $transfer->transfer_group);
+                    //Partially refund the sender
+                    $refund_amount = ($transfer->transfer_amount - $transfer->actual_amount) * 100;
+                    if ($refund_amount > 0) {
+                        StripeHelper::refundCustomer($transfer->stripe_payment_intent, $refund_amount, true);
+                    }
+                }
+
                 $transfer->transition($statusTransition);
                 $transfer->save();
             } catch (Exception $e) {
@@ -317,7 +340,8 @@ class TransfersController extends Controller
             TransferStatusId::Closed,
             TransferStatusId::ClosedNonPayment,
             TransferStatusId::Rejected,
-            TransferStatusId::InDispute
+            TransferStatusId::InDispute,
+            TransferStatusId::Declined
         ];
     }
 

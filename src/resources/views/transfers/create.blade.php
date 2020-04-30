@@ -4,7 +4,7 @@
 @section('header_title', __('transfers.create.title'))
 
 @section('content')
-    <form action="{{ route('transfers.store') }}" method="POST" id="createTransfer">
+    <form action="{{ route('transfers.store') }}" method="POST" id="createTransfer" enctype="multipart/form-data">
         @csrf
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
             <div class="max-w-6xl mx-auto grid grid-cols-1 col-gap-4 row-gap-4 sm:grid-cols-1">
@@ -129,6 +129,26 @@
                                         'input_type' => 'textarea',
                                         'required' => true,
                                     ])
+                                </div>
+                                <div class="sm:col-span-1">
+                                    @include('layouts.input_with_label', [
+                                        'label' => __('transfers.transfer_information.images'),
+                                        'value' => old('images[]') ??  '',
+                                        'input_id' => 'images[]',
+                                        'required' => false,
+                                        'input_type' => 'file',
+                                        'multiple' => true
+                                    ])
+                                    @error('images.*')
+                                    <div>
+                                        <p class="text-red-600 text-sm tracking-wide font-light">
+                                            The attached Evidence must be an image.
+                                        </p>
+                                    </div>
+                                    @enderror
+                                    <p class="mt-1 text-sm leading-5 text-gray-500">
+                                        {{ __('transfers.transfer_information.images_sub_text') }}
+                                    </p>
                                 </div>
                             </dl>
                         </div>

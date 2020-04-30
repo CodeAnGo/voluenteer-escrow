@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\FreshdeskTicketPriority;
 use App\FreshdeskTicketStatus;
 use App\Helpers\Freshdesk;
 use Illuminate\Bus\Queueable;
@@ -11,7 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class UpdateFreshdeskTicketTransferDispute implements ShouldQueue
+class UpdateFreshdeskTicketTransferFile implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     private $transfer_id;
@@ -42,13 +41,6 @@ class UpdateFreshdeskTicketTransferDispute implements ShouldQueue
     public function handle()
     {
         $freshdesk = new Freshdesk();
-        $update_response = $freshdesk->updateTicket($this->transfer_id, [
-            'priority' => FreshdeskTicketPriority::Urgent,
-            'status' => FreshdeskTicketStatus::Pending,
-            'tags'=> ['Dispute']
-        ]);
-        $this->handleResponse($update_response);
-
         $add_note_response = $freshdesk->addNote($this->transfer_id, $this->body, $this->evidence);
         $this->handleResponse($add_note_response);
     }

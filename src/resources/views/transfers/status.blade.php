@@ -30,6 +30,15 @@
             'status_message' => 'A Volunteer has been assigned and is completing the requested task',
         ])
         <span class="mx-2 sm:mx-0 sm:my-2 border-b sm:border-b-0 sm:border-l border-gray-200"></span>
+        @if($transfer->status === \App\TransferStatusId::Declined)
+            @include('transfers.status.negative', [
+                'status_id' => \App\TransferStatusId::Declined,
+                'status_title' => 'Declined',
+                'status_message' => 'Transfer has been declined by a Volunteer as they can no longer complete it',
+                'status_final' => false,
+            ])
+            <span class="mx-2 sm:mx-0 sm:my-2 border-b sm:border-b-0 sm:border-l border-gray-200"></span>
+        @endif
         @include('transfers.status.positive', [
             'status_id' => \App\TransferStatusId::PendingApproval,
             'status_title' => 'Pending Approval',
