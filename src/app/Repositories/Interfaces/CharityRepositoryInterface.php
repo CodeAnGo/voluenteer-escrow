@@ -12,4 +12,6 @@ namespace App\Repositories\Interfaces;
 interface CharityRepositoryInterface
 {
     public function getCharityFromId($charity_id);
+
+    public function getAllActiveCharities();
 }

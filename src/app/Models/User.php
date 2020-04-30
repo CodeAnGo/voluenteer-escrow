@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Account;
+use App\Models\Address;
 use App\Models\Concerns\UsesUUID;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -51,5 +52,9 @@ class User extends Authenticatable implements Auditable
 
     public function getName(){
         return $this->first_name . " " . $this->last_name;
+    }
+
+    public function addresses(){
+        return $this->hasMany(Address::class);
     }
 }

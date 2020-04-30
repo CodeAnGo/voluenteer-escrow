@@ -79,22 +79,10 @@ class TransfersController extends Controller
      */
     public function create()
     {
-        $stripe_account =  $this->stripeServiceRepository->getAccountFromUser(Auth::user());
-
-        $charities = Charity::where('active', true)->orderBy('name', 'asc')->get();
-        $cards = [];
-
-        $addresses = Address::where('user_id', Auth::id())->get();
-
-        //Lists all existing cards stored in Stripe
-        //$cards= StripeHelper::listAllCards(Auth::user()->id);
-
-
         return view('transfers.create',[
-            'charities' => $charities,
-            'cards' => $cards,
-            'addresses' => $addresses,
-            'phone' => $stripe_account->business_profile->support_phone ?? '',
+            'charities' => $this->charityRepository->getAllActiveCharities(),
+            'cards' => [],
+            'phone' => $this->stripeServiceRepository->getAccountFromUser(Auth::user())->business_profile->support_phone ?? '',
         ]);
     }
 

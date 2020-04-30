@@ -19,4 +19,9 @@ class CharityRepository implements CharityRepositoryInterface
     {
         return Charity::where('id', $charity_id)->first();
     }
+
+    public function getAllActiveCharities()
+    {
+        return Charity::where('active', true)->orderBy('name', 'asc')->get();
+    }
 }

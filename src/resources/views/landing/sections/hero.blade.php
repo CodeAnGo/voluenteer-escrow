@@ -106,8 +106,9 @@
                         <br class="hidden md:inline" />
                         <span class="text-blue-900">Empowering Volunteers</span>
                     </h2>
-                    <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                        Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat fugiat aliqua ad ad non deserunt sunt.
+                    <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl leading-relaxed">
+                        Through digital innovation and specialist knowledge we are laying the foundations for the next generation of volunteers with VolPayments, an escrow-based mobile application.
+                        By using cutting edge technology, we are enabling the charitable efforts of those that want to help and supporting the most vulnerable who depend on that help.
                     </p>
                     <div class="mt-5 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
                         <p class="text-base font-medium text-gray-900">
