@@ -35,8 +35,10 @@ class TransferGarbageCollector implements ShouldQueue
     {
         $transfersWithPendingPayouts = $transferRepository->getAllTransfersOfStatus(TransferStatusId::Accepted);
         foreach ($transfersWithPendingPayouts as $pendingPayout){
-            $stripeServiceRepository->getAccountFromUser($pendingPayout->recievingParty);
-
+            $balanceTransaction = $stripeServiceRepository->getBalanceTransactionFromTransfer($pendingPayout);
+            if ($balanceTransaction->status == 'available'){
+                $pendingPayout->status = TransferStatusId::Closed;
+            }
         }
     }
 }

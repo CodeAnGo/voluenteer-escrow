@@ -39,4 +39,6 @@ interface StripeServiceRepositoryInterface
     public function refundFullPaymentFromPaymentIntent($payment_intent_id);
 
     public function refundPartialPaymentFromPaymentIntent($payment_intent_id, $refund_amount);
+
+    public function getBalanceTransactionFromTransfer(Transfer $transfer);
 }

@@ -14,6 +14,7 @@ use App\Models\Transfer;
 use App\Repositories\Interfaces\StripeServiceRepositoryInterface;
 use App\User;
 use Ramsey\Uuid\Uuid;
+use Stripe\BalanceTransaction;
 use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\PaymentMethod;
@@ -143,5 +144,13 @@ class StripeServiceRepository implements StripeServiceRepositoryInterface
         $payment_processing_fee_percent = 2.7;
         $payment_processing_fee = ($payment_processing_fee_percent/100) * $transfer_amount;
         return $this->convertToStripeAmount($card_processing_fee + $transfer_amount + $payment_processing_fee);
+    }
+
+    public function getBalanceTransactionFromTransfer(Transfer $transfer)
+    {
+        $transferActual = \Stripe\Transfer::retrieve($transfer->stripe_transfer_id);
+        if ($transferActual){
+            return($transferActual->balance_transaction);
+        }
     }
 }
