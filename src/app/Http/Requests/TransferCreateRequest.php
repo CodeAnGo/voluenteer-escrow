@@ -30,6 +30,7 @@ class TransferCreateRequest extends FormRequest
             'delivery_phone' => 'required|digits_between:1,20',
             'transfer_reason' => 'required|max:255',
             'transfer_amount' => 'required|between:0.01,9999.99',
+            'images.*' => 'sometimes|image'
         ];
     }
 }

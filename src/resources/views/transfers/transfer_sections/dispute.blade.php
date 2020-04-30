@@ -1,4 +1,4 @@
-<div class="bg-white shadow overflow-hidden  sm:rounded-lg mt-4">
+<div class="bg-white shadow overflow-hidden mb-4  sm:rounded-lg">
     <div class="px-4 py-3 border-b border-gray-200 sm:px-6">
         <h3 class="text-lg font-medium leading-6 text-red-500">
             Dispute Raised

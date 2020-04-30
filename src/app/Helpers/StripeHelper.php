@@ -21,8 +21,9 @@ class StripeHelper
       return head($balance->toArray()['available'])['amount'];
   }
 
-  Public function createStripeCustomer($userid, $stripeId, $email)
+  Public static function createStripeCustomer( $email)
   {
+
       \Stripe\Stripe::setApiKey(config('stripe.api_key'));
       $customer = \Stripe\Customer::create([
           'email' => $email,
@@ -55,24 +56,47 @@ class StripeHelper
     }
 
    //Create PaymentIntent
-    Public static function createPaymentIntent( $tranferamount, $userid)
+    Public static function createPaymentIntentToPlatfromAcount( $tranferamount, $userid)
     {
-        $sending_user = Account::where('User_id',  $userid)->value('stripe_user_id');
-
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
+
+        $sending_user = Account::where('User_id',  $userid)->value('stripe_user_id');
+        $stripe_customer_id = Account::where('User_id',  $userid)->value('stripe_customer_id');
+        $platformaccount = \Stripe\Account::retrieve();
+
          $paymentIntent = \Stripe\PaymentIntent::create([
+            'customer'=> $stripe_customer_id,
+            //'payment_method'=>$paymentMethod->id,
             'payment_method_types' => ['card'],
             'amount' => ($tranferamount),
             'currency' => 'gbp',
-            'transfer_data' => [
-                'destination' => $sending_user
-            ]
+
          ]);
-        $paymentIntent->confirm([
+         return $paymentIntent->id;
+    }
+
+    public static function payoutVolunteer($amount,$stripe_customer_id)
+    {
+        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
+        $payout = \Stripe\Payout::create([
+            'amount' => 1000,
+            'currency' => 'gbp',
+        ]
+          /*  [
+            'stripe_account' => 'acct_1GcZFdB7P393bdVq'
+             ]*/
+        );
+    }
+    Public static function confirmPaymentIntent($stripe_payment_intent)
+    {
+        \Stripe\Stripe::setApiKey(config('stripe.api_key'));
+        $payment_intent = \Stripe\PaymentIntent::retrieve(
+            $stripe_payment_intent
+        );
+
+        $payment_intent->confirm([
             'payment_method' => 'pm_card_visa',
         ]);
-
-        return $paymentIntent->id;
     }
     //Raise the transfer
     public static function createTransfer( $amount, $receivingUserid, $TransferGroup)
@@ -117,13 +141,13 @@ class StripeHelper
             $stripe_user_id ,
             ['object' => 'card', 'limit' => 3]
         );
-    return $cards;
+        return $cards;
     }
 
-    public static function cancelPaymentIntent( $tranferId)
+    public static function cancelPaymentIntent( $stripe_payment_intent )
     {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
-        $stripe_payment_intent=Transfer::where('id', $tranferId)->value('stripe_payment_intent');
+
 
         $payment_intent = \Stripe\PaymentIntent::retrieve(
             $stripe_payment_intent
@@ -132,18 +156,23 @@ class StripeHelper
         return $payment_intent->status;
     }
 
-    public static function payoutClosedNonPayment($transfer) {
 
+    public static function refundCustomer($stripe_payment_intent, $transfer_amount, $partial = false)
+    {
         \Stripe\Stripe::setApiKey(config('stripe.api_key'));
 
-        \Stripe\Payout::create([
-            'amount' => $transfer->transfer_amount * 100,
-            'currency' => 'gbp'
-        ]);
+        $payment_intent = \Stripe\PaymentIntent::retrieve(
+            $stripe_payment_intent
+        );
+
+        if ($payment_intent->status == 'succeeded' || $partial) {
+            $refund = \Stripe\Refund::create([
+                'payment_intent' => $stripe_payment_intent,
+                'amount' => $transfer_amount
+            ]);
+        } else {
+            self::cancelPaymentIntent($stripe_payment_intent);
+        }
     }
-
-    //Refund
-
-
 
 }

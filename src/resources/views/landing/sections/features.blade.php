@@ -11,21 +11,20 @@
 
         <div class="relative">
             <h3 class="text-center text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
-                A better way to send money
+                Risks become barriers. Disputes can erode trust.
             </h3>
             <p class="mt-4 max-w-3xl mx-auto text-center text-xl leading-7 text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus magnam voluptatum cupiditate veritatis in, accusamus quisquam.
+                By enhancing the security and simplifying the money transfer process, we have pioneered a new type of payment system for a new kind of volunteer.
             </p>
         </div>
 
         <div class="relative mt-12 lg:mt-24 lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
             <div class="relative">
                 <h4 class="text-2xl leading-8 font-extrabold text-gray-900 tracking-tight sm:text-3xl sm:leading-9">
-                    Transfer funds world-wide
+                    Trust the process
                 </h4>
                 <p class="mt-3 text-lg leading-7 text-gray-500">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur minima sequi recusandae, porro maiores officia assumenda aliquam laborum ab aliquid veritatis impedit odit adipisci optio iste blanditiis facere. Totam, velit.
-                </p>
+                    As technology matures, the demand for convenience and simplicity grows. VolPayments presents a seamless user journey with trust and security at its core, prioritising the integrity of payment data and personal information. An effortless and intuitive process that offers a seamless user journey for volunteers whilst safeguarding the vulnerable and those at risk of being defrauded. VolPayments protects both the transactions and the interests of individuals.                 </p>
 
                 <ul class="mt-10">
                     <li>
@@ -38,9 +37,9 @@
                                 </div>
                             </div>
                             <div class="ml-4">
-                                <h5 class="text-lg leading-6 font-medium text-gray-900">Competitive exchange rates</h5>
+                                <h5 class="text-lg leading-6 font-medium text-gray-900">Ease of use</h5>
                                 <p class="mt-2 text-base leading-6 text-gray-500">
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.
+                                    Simple to navigate with secure sign-up and built in notifications and email prompts for acceptance, approval and completion. The user-friendly dashboard allows users to update tasks, view transaction history and perform one-click actions at each stage.
                                 </p>
                             </div>
                         </div>
@@ -55,10 +54,9 @@
                                 </div>
                             </div>
                             <div class="ml-4">
-                                <h5 class="text-lg leading-6 font-medium text-gray-900">No hidden fees</h5>
+                                <h5 class="text-lg leading-6 font-medium text-gray-900">Dispute Handling</h5>
                                 <p class="mt-2 text-base leading-6 text-gray-500">
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.
-                                </p>
+                                    An integrated ticket allocation system means that any disputes can be rapidly acknowledged and addressed, drastically reducing time to resolution. A robust and transparent dispute transfer process that protects all parties and engenders confidence.                                </p>
                             </div>
                         </div>
                     </li>
@@ -72,10 +70,9 @@
                                 </div>
                             </div>
                             <div class="ml-4">
-                                <h5 class="text-lg leading-6 font-medium text-gray-900">Transfers are instant</h5>
+                                <h5 class="text-lg leading-6 font-medium text-gray-900">Scalability</h5>
                                 <p class="mt-2 text-base leading-6 text-gray-500">
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.
-                                </p>
+                                    International capability allowing instant transactions across countries and currencies without compromising security. VolPayments allows for extended reach and supports communities and volunteers both near and far.                                </p>
                             </div>
                         </div>
                     </li>
@@ -108,10 +105,12 @@
             <div class="lg:grid lg:grid-flow-row-dense lg:grid-cols-2 lg:gap-8 lg:items-center">
                 <div class="lg:col-start-2">
                     <h4 class="text-2xl leading-8 font-extrabold text-gray-900 tracking-tight sm:text-3xl sm:leading-9">
-                        Always in the loop
+                        Empower the commitment
                     </h4>
                     <p class="mt-3 text-lg leading-7 text-gray-500">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ex obcaecati natus eligendi delectus, cum deleniti sunt in labore nihil quod quibusdam expedita nemo.
+                        VolPayments is revolutionising the future of philanthropic and public-spirited efforts in the not-for-profit sector. We are paving the way for a unified solution that supports voluntary efforts, brings assurances to those in need and galvanises communities.
+                        <br>
+                        We encourage innovation, enable collaboration, enhance relationships and empower individuals who are passionate about making a difference.
                     </p>
 
                     <ul class="mt-10">
@@ -125,10 +124,9 @@
                                     </div>
                                 </div>
                                 <div class="ml-4">
-                                    <h5 class="text-lg leading-6 font-medium text-gray-900">Mobile notifications</h5>
+                                    <h5 class="text-lg leading-6 font-medium text-gray-900">Communication</h5>
                                     <p class="mt-2 text-base leading-6 text-gray-500">
-                                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.
-                                    </p>
+                                        Positive and timely interactions inspire credibility and dramatically improve the experience for all stakeholders. It’s easy to stay in the loop with VolPayments.                                    </p>
                                 </div>
                             </div>
                         </li>
@@ -142,9 +140,9 @@
                                     </div>
                                 </div>
                                 <div class="ml-4">
-                                    <h5 class="text-lg leading-6 font-medium text-gray-900">Reminder emails</h5>
+                                    <h5 class="text-lg leading-6 font-medium text-gray-900">Relationships</h5>
                                     <p class="mt-2 text-base leading-6 text-gray-500">
-                                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.
+                                        By nurturing the commitment and cultivating trust we allow those involved to accomplish more. We facilitate the values of charities and NGOs whilst protecting the vulnerable and empowering volunteers.
                                     </p>
                                 </div>
                             </div>

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\FreshdeskTicketPriority;
 use App\FreshdeskTicketStatus;
 use App\Helpers\Freshdesk;
 use Illuminate\Bus\Queueable;
@@ -42,7 +43,8 @@ class UpdateFreshdeskTicketTransferDispute implements ShouldQueue
     {
         $freshdesk = new Freshdesk();
         $update_response = $freshdesk->updateTicket($this->transfer_id, [
-            'priority' => FreshdeskTicketStatus::Urgent,
+            'priority' => FreshdeskTicketPriority::Urgent,
+            'status' => FreshdeskTicketStatus::Pending,
             'tags'=> ['Dispute']
         ]);
         $this->handleResponse($update_response);
