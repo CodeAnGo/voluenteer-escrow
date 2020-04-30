@@ -16,8 +16,13 @@
                                 </span>
                             </div>
                             <div class="ml-2 flex-shrink-0 flex">
-                                <span class="px-2 inline-flex text-xs leading-5 rounded-full tracking-wide font-normal md:text-green-700 md:bg-green-100 text-green-600">
-                                    {{ $statuses[$transfer->status] }}
+                                <span class="px-2 inline-flex text-xs leading-5 rounded-full tracking-wide font-normal
+                                    @if (in_array($transfer->status, $closedStatuses))
+                                        bg-red-200 text-red-800 tracking-wide font-thin
+                                    @else
+                                        bg-green-200 text-green-800 tracking-wide font-thin
+                                    @endif
+                                    ">{{$statuses[$transfer->status]}}
                                 </span>
                             </div>
                         </div>

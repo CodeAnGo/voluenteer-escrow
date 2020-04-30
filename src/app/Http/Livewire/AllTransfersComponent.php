@@ -12,11 +12,13 @@ class AllTransfersComponent extends Component
     use StatusHelper;
     public $transfers;
     public $statuses;
+    public $closedStatuses;
 
 
     public function mount(TransferRepositoryInterface $transferRepository){
         $this->transfers = $transferRepository->getAllTransfersForUser(Auth::user());
         $this->statuses = $this->getStatusMap();
+        $this->closedStatuses = $this->getClosedStatus();
     }
 
     public function render()

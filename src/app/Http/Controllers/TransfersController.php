@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\StatusHelper;
 use App\Http\Requests\TransferCreateRequest;
 use App\Http\Requests\TransferUpdateRequest;
 use App\Http\Requests\TransferUpdateStatusRequest;
@@ -13,7 +14,6 @@ use App\Repositories\Interfaces\AddressRepositoryInterface;
 use App\Repositories\Interfaces\CharityRepositoryInterface;
 use App\Repositories\Interfaces\StripeServiceRepositoryInterface;
 use App\Repositories\Interfaces\TransferRepositoryInterface;
-use App\TransferStatus;
 use App\TransferStatusId;
 use Exception;
 use Illuminate\Foundation\Auth\User;
@@ -22,14 +22,12 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use OwenIt\Auditing\Models\Audit;
 use Ramsey\Uuid\Uuid;
 use App\Models\Charity;
 use Stripe\Exception\ApiErrorException;
-use Stripe\Stripe;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TransferGenericMail;
@@ -39,6 +37,8 @@ use App\Models\TransferFile;
 
 class TransfersController extends Controller
 {
+    use StatusHelper;
+
     private $stripeServiceRepository;
     private $transferRepository;
     private $charityRepository;
@@ -156,27 +156,11 @@ class TransfersController extends Controller
     {
         Notification::where('transfer_id', $transfer->id)->where('user_id', Auth::id())->delete();
 
-        $status_map = $this->getStatusMap();
-
-        $closed_status = $this->getClosedStatus();
-
-        $history = Audit::where('auditable_type', Transfer::class)
-            ->where('auditable_id', $transfer->id)
-            ->orderBy('created_at', 'desc');
-
-        $user_ids = $history->get('user_id');
-
-        $change_users = User::whereIn('id', $user_ids)->get();
-
         return view('transfers.show', [
             'transfer' => $transfer,
             'charity' => $transfer->charity ? $transfer->charity->name : 'No Charity Oversight (Not Recommended)',
             'sending_user' => $transfer->sendingParty,
             'receiving_user' => $transfer->receivingParty,
-            'closed_status' => $closed_status,
-            'transfer_history' => $history->get(),
-            'change_users' => $change_users,
-            'status_map' => $status_map,
             'transfer_files' => TransferFile::where('transfer_id', $transfer->id)->get(),
             'transferEvidence' => TransferEvidence::where('transfer_id', $transfer->id)->get(),
         ]);
@@ -190,7 +174,7 @@ class TransfersController extends Controller
      */
     public function edit(Transfer $transfer)
     {
-        if (!isset($transfer) || $transfer->sendingParty !== Auth::user()) {
+        if (!isset($transfer) || $transfer->sendingParty != Auth::user()) {
             return redirect()->route('transfers.index');
         }
 

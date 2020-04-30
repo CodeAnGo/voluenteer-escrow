@@ -6,6 +6,7 @@ use App\Models\Concerns\Statable;
 use App\Models\Concerns\UsesUUID;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Audit;
 use OwenIt\Auditing\Contracts\Auditable;
 
 class Transfer extends Model implements Auditable
