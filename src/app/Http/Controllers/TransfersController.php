@@ -242,6 +242,10 @@ class TransfersController extends Controller
                     $this->stripeServiceRepository->cancelPaymentFromPaymentIntent($transfer->stripe_payment_intent);
                 }
 
+                if ($statusTransition == TransferStatusTransitions::ToCancelled) {
+                    $this->stripeServiceRepository->cancelPaymentFromPaymentIntent($transfer->stripe_payment_intent);
+                }
+
                 if ($statusTransition == TransferStatusTransitions::ToDeclined) {
                     $this->stripeServiceRepository->refundFullPaymentFromPaymentIntent($transfer->stripe_payment_intent);
                 }

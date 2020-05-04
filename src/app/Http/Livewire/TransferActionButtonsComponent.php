@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Transfer;
+use App\Models\TransferDispute;
 use App\Repositories\Interfaces\TransferRepositoryInterface;
 use Livewire\Component;
 

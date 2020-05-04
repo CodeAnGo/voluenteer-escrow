@@ -86,9 +86,9 @@
                                     <dt class="text-sm leading-5 font-medium text-gray-500 mb-2">
                                         Proof of Purchase
                                     </dt>
-                                    <dd class="mt-1 text-sm leading-5 text-gray-900 flex">
+                                    <dd class="mt-1 text-sm leading-5 text-gray-900 flex justify-start">
                                         @foreach($transferEvidence as $transferPhoto)
-                                            <div class="flex-auto mb-2 h-56">
+                                            <div class="mb-2 h-56">
                                                 <a href="{{Storage::disk('public')->url($transferPhoto->path)}}" target="_blank">
                                                     <img class="mr-4 object-contain h-56 w-auto" src="{{Storage::disk('public')->url($transferPhoto->path)}}" alt="">
                                                 </a>

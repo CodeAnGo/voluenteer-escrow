@@ -11,6 +11,7 @@ use App\Models\Transfer;
 use App\Models\TransferDispute;
 use App\Models\TransferDisputeEvidence;
 use App\Models\TransferEvidence;
+use App\Repositories\Interfaces\StripeServiceRepositoryInterface;
 use App\TransferStatusId;
 use App\TransferStatusTransitions;
 use Illuminate\Contracts\View\Factory;
@@ -25,6 +26,14 @@ use Ramsey\Uuid\Uuid;
 
 class TransferDisputesController extends Controller
 {
+    private $stripeServiceRepository;
+
+    public function __construct(StripeServiceRepositoryInterface $stripeServiceRepository)
+    {
+        $this->stripeServiceRepository = $stripeServiceRepository;
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -132,11 +141,14 @@ class TransferDisputesController extends Controller
         if ($request->get('buttonPressed') === 'accept') {
             // Stripe Payout to individual bank account
             dispatch(new UpdateFreshDeskTicketDisputeResolved($transfer->id));
+            $this->stripeServiceRepository->refundFullPaymentFromPaymentIntent($transfer->stripe_payment_intent);
             $transfer->transition(TransferStatusTransitions::ToClosedNonPayment);
             $transfer->save();
         } else {
             dispatch(new UpdateFreshDeskTicketDisputeRejected($transfer->id));
         }
+
+        return app('App\Http\Controllers\TransfersController')->show($transfer);
 }
 
     /**

@@ -27,5 +27,10 @@
             @include('transfers.action_buttons.reject')
         @endif
     @endif
+        @if($transfer->status == \App\TransferStatusId::InDispute)
+            @if ($transfer->transferDispute->user_id !== Auth::id())
+                @include('transfers.action_buttons.acceptdispute')
+            @endif
+        @endif
     @include('transfers.action_buttons.copy')
 </div>

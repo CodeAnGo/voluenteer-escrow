@@ -6,7 +6,7 @@
             <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
     </button>
-    <form class="hidden" action="{{ route('transfers.dispute.update', ['transfer' => $transfer, 'dispute' => $transferDispute])}}" method="POST" id="accept" name="accept">
+    <form class="hidden" action="{{ route('transfers.dispute.update', ['transfer' => $transfer, 'dispute' => $transfer->transferDispute])}}" method="POST" id="accept" name="accept">
         @csrf
         @method('PATCH')
         <input type="text" class="hidden" value="accept" name="buttonPressed">
@@ -19,7 +19,7 @@
             <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
     </button>
-    <form class="hidden" action="{{ route('transfers.dispute.update', ['transfer' => $transfer, 'dispute' => $transferDispute])}}" method="POST" id="rejectDispute" name="rejectDispute">
+    <form class="hidden" action="{{ route('transfers.dispute.update', ['transfer' => $transfer, 'dispute' => $transfer->transferDispute])}}" method="POST" id="rejectDispute" name="rejectDispute">
         @csrf
         @method('PATCH')
         <input type="text" class="hidden" value="reject" name="buttonPressed">
