@@ -254,7 +254,9 @@ class TransfersController extends Controller
                     //Transfer amount from platform account to Volunteers stripe account.
                     $this->stripeServiceRepository->createTransfer($transfer);
                     //Partially refund the sender
-                    $refund_amount = ($transfer->transfer_amount - $transfer->actual_amount) * 100;
+                    $transfer_with_fee = $this->stripeServiceRepository->calculateStripeFee($transfer->transfer_amount);
+                    $actual_with_fee = $this->stripeServiceRepository->calculateStripeFee($transfer->actual_amount);
+                    $refund_amount = $transfer_with_fee - $actual_with_fee;
                     if ($refund_amount > 0) {
                         $this->stripeServiceRepository->refundPartialPaymentFromPaymentIntent($transfer->stripe_payment_intent, $refund_amount);
                     }
